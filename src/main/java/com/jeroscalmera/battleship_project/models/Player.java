@@ -21,8 +21,8 @@ public class Player implements Comparable<Player>{
     @Column(name = "playerNumber")
     private String playerNumber;
 
-    @Column(name = "playerType")
-    private String playerType;
+    @Column(name = "player_is_computer")
+    private boolean isComputer;
 
     @Column(name = "level")
     private int level;
@@ -40,15 +40,26 @@ public class Player implements Comparable<Player>{
     @JsonIgnoreProperties({"player"})
     private Room room;
 
+    @Column(name = "ready")
+    private boolean ready;
+
+    @Column(name = "aiShot", length = 1000)
+    private String aiShot;
+
+    @Column(name = "aiConfirmedHit")
+    private String aiConfirmedHit;
+
+    @Column(name = "aiHitCheck")
+    private boolean aiHitCheck;
+
+
     public Player(String name) {
-        this.id = id;
         this.name = name;
-        this.playerNumber = playerNumber;
-        this.playerType = playerType;
-        this.level = level;
-        this.roomNumber = roomNumber;
-        this.ships = ships;
-        this.room = room;
+        this.isComputer = false;
+        this.ready = false;
+        this.aiHitCheck = false;
+        this.aiShot = "*";
+        this.aiConfirmedHit = "*";
     }
 
     public Player() {
@@ -62,12 +73,12 @@ public class Player implements Comparable<Player>{
         this.ships = ships;
     }
 
-    public String getPlayerType() {
-        return playerType;
+    public boolean isComputer() {
+        return isComputer;
     }
 
-    public void setPlayerType(String playerType) {
-        this.playerType = playerType;
+    public void setComputer(boolean computer) {
+        isComputer = computer;
     }
 
     public String getPlayerNumber() {
@@ -134,5 +145,62 @@ public class Player implements Comparable<Player>{
         this.ships.add(ship);
     }
 
+    public void setReady() {this.ready = true;}
 
+    public void setUnReady() {this.ready = false;}
+
+    public String checkReady() {
+        String output = "No info";
+        if (!this.ready) {
+            output = this.name + " is not ready!";
+        }
+        else if (this.ready){
+            output = this.name + " is ready!";
+        }
+        return output;
+    }
+
+    public boolean isReady() {
+        return ready;
+    }
+
+    public void setReady(boolean ready) {
+        this.ready = ready;
+    }
+
+    public String getAiShot() {
+        return aiShot;
+    }
+
+    public void setAiShot(String aiShot) {
+        this.aiShot = aiShot;
+    }
+
+    public boolean getAiHitCheck() {
+        return aiHitCheck;
+    }
+
+    public void setAiHitCheck(boolean aiHitCheck) {
+        this.aiHitCheck = aiHitCheck;
+    }
+
+    public String getAiConfirmedHit() {
+        return aiConfirmedHit;
+    }
+
+    public void setAiConfirmedHit(String aiConfirmedHit) {
+        this.aiConfirmedHit = aiConfirmedHit;
+    }
+
+    public String getRoomNumber() {
+        return roomNumber;
+    }
+
+    public void setRoomNumber(String roomNumber) {
+        this.roomNumber = roomNumber;
+    }
+
+    public boolean isAiHitCheck() {
+        return aiHitCheck;
+    }
 }

@@ -8,13 +8,24 @@ import com.jeroscalmera.battleship_project.models.Player;
 import com.jeroscalmera.battleship_project.models.Room;
 import com.jeroscalmera.battleship_project.websocket.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 @Controller
 public class MessageController {
+
+
+    private final SimpMessagingTemplate messagingTemplate;
+    @Autowired
+    public MessageController(SimpMessagingTemplate messagingTemplate) {
+        this.messagingTemplate = messagingTemplate;
+    }
+
+    // Other ex
     @Autowired
     private PlayerAndRoom playerAndRoom;
     @Autowired
@@ -34,8 +45,19 @@ public class MessageController {
         String chat = message.getContent();
         return new Chat(chat);
     }
+
+    @MessageMapping("/globalChat")
+    @SendTo("/topic/globalChat")
+    public Chat globalChat(Chat message) throws Exception {
+        String chat = message.getContent();
+        return new Chat(chat);
+    }
     @MessageMapping("/gameUpdate")
     public void gameUpdate(Player name) throws InterruptedException {
+    }
+
+    @MessageMapping("/nameValidated")
+    public void nameValidated() throws InterruptedException {
     }
     @MessageMapping("/startup")
     public void startup(Player name) throws InterruptedException {
@@ -53,8 +75,7 @@ public class MessageController {
         placing.computerPlaceShips(name);
     }
     @MessageMapping("/restart")
-    public void handleRestart(String hidden) {
-        placing.restart();
+    public void handleRestart(String playerName) {playerAndRoom.resetPlayer(playerName);
     }
     @MessageMapping("/room")
     public void handlePassword(String newRoom) throws InterruptedException {
@@ -71,7 +92,7 @@ public class MessageController {
     }
     @MessageMapping("/placement2")
     public void resetPlacement(String string) throws InterruptedException {
-        placing.resetPlacement(string);
+//        placing.resetPlacement(string);
     }
     @MessageMapping("/enemyDamage")
     public void enemyDamage(String string) {
@@ -100,11 +121,11 @@ public class MessageController {
 
     @MessageMapping("/autoShoot")
     public void autoShoot() throws InterruptedException {
-        shooting.autoShoot();
+//        shooting.autoShoot();
     }
     @MessageMapping("/turn")
     public void turn(String playerName) throws InterruptedException {
-        playerAndRoom.coinFlip();
+        playerAndRoom.coinFlip(playerName);
     }
 
     @MessageMapping("/turnCheck")
@@ -112,11 +133,27 @@ public class MessageController {
     }
 
     @MessageMapping("/matchStart")
-    public void matchStart(String string) throws InterruptedException {
-        playerAndRoom.matchStart();
+    public void matchStart(String playerName) throws InterruptedException {
+        playerAndRoom.matchStart(playerName);
     }
     @MessageMapping("/bugReport")
     public void bugReport(BugReport bugReport) throws InterruptedException {
         playerAndRoom.bugReport(bugReport);
     }
+
+    @MessageMapping("/private/{roomNumber}")
+    public void privateWebSocket(@DestinationVariable String roomNumber, Connection message) throws Exception {
+        System.out.println("Private connection establised for " + roomNumber);
+
+        String destination = "/topic/private/" + roomNumber;
+        messagingTemplate.convertAndSend(destination, "Private connection establised for " + roomNumber);
+    }
+
+//    @MessageMapping("/winner")
+//    @SendTo("/topic/winner")
+//    public Chat winner(Chat message) throws Exception {
+//        String chat = message.getContent();
+//        return new Chat(chat);
+//    }
+
 }

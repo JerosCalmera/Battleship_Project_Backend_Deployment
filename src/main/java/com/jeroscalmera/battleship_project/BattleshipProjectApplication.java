@@ -23,7 +23,7 @@ public class BattleshipProjectApplication {
 		while (true) {
 			System.out.println("Send admin message players:");
 			String userInput = message.nextLine();
-			webSocketMessageSender.sendMessage("/topic/chat", new Chat("Admin: " + userInput));
+			webSocketMessageSender.sendMessage("/topic/globalChat", new Chat("[GLOBAL] Admin: " + userInput));
 		}
 	}
 }

@@ -1,7 +1,10 @@
 package com.jeroscalmera.battleship_project.gameLogic;
 
+import com.jeroscalmera.battleship_project.models.Lobby;
 import com.jeroscalmera.battleship_project.models.Player;
+import com.jeroscalmera.battleship_project.models.Room;
 import com.jeroscalmera.battleship_project.models.Ship;
+import com.jeroscalmera.battleship_project.repositories.LobbyRepository;
 import com.jeroscalmera.battleship_project.repositories.PlayerRepository;
 import com.jeroscalmera.battleship_project.repositories.RoomRepository;
 import com.jeroscalmera.battleship_project.repositories.ShipRepository;
@@ -9,7 +12,6 @@ import com.jeroscalmera.battleship_project.websocket.Chat;
 import com.jeroscalmera.battleship_project.websocket.WebSocketMessageSender;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.*;
 
 @Service
@@ -17,40 +19,32 @@ public class Placing {
     private PlayerRepository playerRepository;
     private ShipRepository shipRepository;
     private RoomRepository roomRepository;
+
+    private LobbyRepository lobbyRepository;
     private WebSocketMessageSender webSocketMessageSender;
 
     public List<String> computerAllCoOrds = new ArrayList<>();
     public List<String> coOrdLetters = new ArrayList<>();
     public List<String> coOrdNumbers = new ArrayList<>();
 
-    public Placing(PlayerRepository playerRepository, ShipRepository shipRepository, RoomRepository roomRepository, WebSocketMessageSender webSocketMessageSender) {
-        this.playerRepository = playerRepository;
-        this.shipRepository = shipRepository;
-        this.roomRepository = roomRepository;
-        this.webSocketMessageSender = webSocketMessageSender;
-    }
-
-    private List<String> coOrds = new ArrayList<>();
-    private String existingCoOrds;
-    private String damage = "";
+    List<String> coOrds = new ArrayList<>();
     boolean horizontalPlacement = false;
     boolean verticalPlacement = false;
     boolean invalidPlacement = false;
+    String damage = "";
 
-    public void restart() {
-        List<Player> playerList = playerRepository.findAll();
-        for (Player player : playerList) {
-            if (Objects.equals(player.getPlayerType(), "Human")) {
-                player.setRoom(null);
-                playerRepository.save(player);
-            } else if (Objects.equals(player.getPlayerType(), "Computer")) {
-                playerRepository.delete(player);
-            }
-        }
+    public Placing(PlayerRepository playerRepository, ShipRepository shipRepository, RoomRepository roomRepository, LobbyRepository lobbyRepository, WebSocketMessageSender webSocketMessageSender) {
+        this.playerRepository = playerRepository;
+        this.shipRepository = shipRepository;
+        this.roomRepository = roomRepository;
+        this.lobbyRepository = lobbyRepository;
+        this.webSocketMessageSender = webSocketMessageSender;
     }
 
+    // Ship placing logic (Checks ship placement is valid)
     public synchronized void placeShip(String target) throws InterruptedException {
         Thread.sleep(50);
+        System.out.println("Target: " + target);
         Player selectedPlayer = playerRepository.findByNameContaining((target.substring(4, 9)));
         List<String> shipsList = playerRepository.findAllCoOrdsByPlayerName(selectedPlayer.getName());
         if (shipsList.contains(target.substring(1, 3))) {
@@ -186,7 +180,6 @@ public class Placing {
             } else {
                 coOrds.clear();
                 newShip.setDamage(damage);
-                existingCoOrds += damage;
                 selectedPlayer.addShip(newShip);
                 newShip.setPlayer(selectedPlayer);
                 shipRepository.save(newShip);
@@ -200,13 +193,7 @@ public class Placing {
         }
     }
 
-    public void resetPlacement(String trigger) {
-        if (trigger.length() > 1) {
-            coOrds.clear();
-            damage = "";
-        }
-    }
-
+    // Filling the coordinate array
     public void fillCoOrds() {
         coOrdLetters = Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I", "J");
         coOrdNumbers = Arrays.asList("0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
@@ -223,6 +210,7 @@ public class Placing {
         }
     }
 
+    // Generates a random second coordinate when given a first
     public String generateStartingRandomCoOrds(String firstCoOrds, Boolean computerGame) {
         coOrdLetters = Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I", "J");
         coOrdNumbers = Arrays.asList("0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
@@ -349,8 +337,16 @@ public class Placing {
             return firstCoOrd + secondCoOrd;
         }
     }
+    public boolean shipPlacement = false;
 
+    // Logic so that the computer can automatically place ships in a random fashion
     public void computerPlaceShips(Player player) throws InterruptedException {
+        if (shipPlacement) {
+            player = playerRepository.findByNameContaining(player.getName());
+            webSocketMessageSender.sendMessage("/topic/chat", new Chat(player.getRoom().getRoomNumber() + "Admin: The computer is placing ships, please wait and try again"));
+            return;
+        }
+        shipPlacement = true;
         List<String> shipsList = playerRepository.findAllCoOrdsByPlayerName(player.getName());
         String shipList = String.join("", shipsList);
         String placedShips = "";
@@ -382,5 +378,6 @@ public class Placing {
             placeShip("P" + firstCoOrd + 2 + player.getName());
             placeShip("P" + secondCoOrd + 2 + player.getName());
         }
+        shipPlacement = false;
     }
 }

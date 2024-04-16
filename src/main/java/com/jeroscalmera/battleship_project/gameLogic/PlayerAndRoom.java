@@ -1,12 +1,10 @@
 package com.jeroscalmera.battleship_project.gameLogic;
 
 import com.jeroscalmera.battleship_project.models.BugReport;
+import com.jeroscalmera.battleship_project.models.Lobby;
 import com.jeroscalmera.battleship_project.models.Player;
 import com.jeroscalmera.battleship_project.models.Room;
-import com.jeroscalmera.battleship_project.repositories.BugreportRepository;
-import com.jeroscalmera.battleship_project.repositories.PlayerRepository;
-import com.jeroscalmera.battleship_project.repositories.RoomRepository;
-import com.jeroscalmera.battleship_project.repositories.ShipRepository;
+import com.jeroscalmera.battleship_project.repositories.*;
 import com.jeroscalmera.battleship_project.websocket.*;
 import org.springframework.stereotype.Service;
 
@@ -19,26 +17,79 @@ public class PlayerAndRoom {
     private RoomRepository roomRepository;
     private ShipRepository shipRepository;
     private BugreportRepository bugreportRepository;
+
+    private LobbyRepository lobbyRepository;
     private WebSocketMessageSender webSocketMessageSender;
     private static final List<Player> playersNotInRoom = new ArrayList<>();
-
     private Placing placing;
     private Shooting shooting;
 
-    public PlayerAndRoom(PlayerRepository playerRepository, RoomRepository roomRepository, ShipRepository shipRepository, BugreportRepository bugreportRepository, WebSocketMessageSender webSocketMessageSender, Placing placing, Shooting shooting) {
+    public PlayerAndRoom(LobbyRepository lobbyRepository, PlayerRepository playerRepository, RoomRepository roomRepository, ShipRepository shipRepository, BugreportRepository bugreportRepository, WebSocketMessageSender webSocketMessageSender, Placing placing, Shooting shooting) {
         this.playerRepository = playerRepository;
         this.roomRepository = roomRepository;
         this.shipRepository = shipRepository;
         this.bugreportRepository = bugreportRepository;
+        this.lobbyRepository = lobbyRepository;
         this.webSocketMessageSender = webSocketMessageSender;
         this.placing = placing;
         this.shooting = shooting;
     }
+    
+    boolean reseting = false;
+    
+    List<String> storedPlayers = new ArrayList<>();
 
+    // Restart a players room and ships, deletes the room the player is the last player removed from the room, it will store players for reset if the function is already running
+    public void resetPlayer(String playerName) {
+        Player player = playerRepository.findByNameContaining(playerName.substring(1, 6));
+        if (placing.shipPlacement) {
+            webSocketMessageSender.sendMessage("/topic/chat", new Chat(player.getRoom().getRoomNumber() + "Admin: Auto ship placement in progress, cannot reset right now!"));
+            return;
+        }
+        if (reseting) {
+            storedPlayers.add(playerName);
+            return;
+        }
+        reseting = true;
+        if (storedPlayers.contains(playerName)) {
+            storedPlayers.remove(playerName);
+        }
+        System.out.println("Player name to delete from room: " + playerName.substring(1, 6));
+        shipRepository.deleteAllCoOrdsByPlayerId(player.getId());
+        Room room = roomRepository.findRoomByPlayersName(player.getName());
+        if (room == null) {
+            return;
+        }
+        System.out.println("Players remaining in room " + room.getRoomNumber() + " is " + room.getPlayers().size());
+        boolean playerPresent = roomRepository.existsByPlayersName(player.getName());
+        if (playerPresent)
+            {player.setRoom(null);
+                room.removePlayerFromRoom(player);
+            System.out.println("deleting player: " + player.getName());}
+        player.setUnReady();
+        player.setShips(null);
+        playerRepository.save(player);
+        roomRepository.save(room);
+        System.out.println("Player reset done");
+        if (room.getPlayers() == null || room.getPlayers().isEmpty() || room.getPlayers().size() == 1)
+        {
+            roomRepository.delete(room);
+            System.out.println("Deleting room: " + room.getRoomNumber());}
+        if (player.getName().contains("Computer")) {
+            playerRepository.delete(player);
+            System.out.println("Computer player deleted");
+        }
+        reseting = false;
+        if (!storedPlayers.isEmpty()) {
+            resetPlayer(storedPlayers.get(0));}
+    }
+
+    // Saves a bugreport to the database
     public void bugReport(BugReport bugReport) {
         bugreportRepository.save(bugReport);
     }
 
+    // Submits a players starting ships to the frontend
     public void submitStartStats(Player name) {
         Player player = playerRepository.findByNameContaining(name.getName());
         List<String> allCoOrds = playerRepository.findAllCoOrdsByPlayerName(name.getName());
@@ -46,139 +97,154 @@ public class PlayerAndRoom {
         webSocketMessageSender.sendMessage("/topic/gameData", new GameData(player.getRoom().getRoomNumber() + name.getName() + converted));
     }
 
-    boolean roomSaved = false;
-    boolean roomValidated = false;
-
-    String player1;
-
-    String player2;
-    public String roomNumberString;
-
-    int trigger = 0;
-
-
-    public void matchStart() throws InterruptedException {
-        trigger = (trigger + 1);
-        if (trigger == 2) {
-            trigger = 0;
-            coinFlip();
-        }
-    }
-
+    // Sends the top ten players to the leaderboard display on the frontend
     public void leaderBoard(String trigger) throws InterruptedException {
         List<Player> leaderboard = playerRepository.findAll();
-        Player player = new Player();
         Collections.sort(leaderboard);
         int total = 0;
         for (Player playerLeader : leaderboard) {
             if (total < 10) {
+                if (!playerLeader.isComputer()){
                 webSocketMessageSender.sendMessage("/topic/leaderBoard", new Chat("Level (" + playerLeader.getLevel() + ") " + playerLeader.getName()));
+                }
                 total++;
             } else {
                 break;
             }
         }
     }
-    public void coinFlip() throws InterruptedException {
-        Random random = new Random();
-        int coin = random.nextInt(2) + 1;
-        selectPlayer(coin);
+
+    // Logic to ensure that both players are ready to start the game
+    public void matchStart(String playerName) throws InterruptedException {
+        if (!playerName.contains("Computer")) {
+            playerName = playerName.substring(1, playerName.length() -1);
+        }
+        System.out.println("input: " + playerName);
+        Player activePlayer = playerRepository.findByNameContaining(playerName);
+        System.out.println("found player:  " + activePlayer.getName());
+        activePlayer.setReady();
+        playerRepository.save(activePlayer);
+        Room activeRoom = roomRepository.findRoomByPlayersName(playerName);
+        if (activeRoom.getPlayersReady() == 0) {
+            activeRoom.setPlayersReady(1);
+            roomRepository.save(activeRoom);
+        }
+        else if (activeRoom.getPlayersReady() == 1) {
+            activeRoom.setPlayersReady(2);
+            roomRepository.save(activeRoom);
+            Lobby lobbyRoomToDelete = lobbyRepository.findLobbySingleRoom(activeRoom.getRoomNumber());
+            lobbyRepository.delete(lobbyRoomToDelete);
+            coinFlip(playerName);
+        }
     }
 
-    public void selectPlayer(int coin) throws InterruptedException {
+    // Logic to randomly select which player starts first
+    public void coinFlip(String playerName) throws InterruptedException {
+        Random random = new Random();
+        Room room = roomRepository.findRoomByPlayersName(playerName);
+        System.out.println("Room number is: " + room.getRoomNumber());
+        List<Player> playerList = room.getPlayers();
+        Player playerToSelect = new Player(playerName);
+        int coin = random.nextInt(2) + 1;
         if (coin == 1) {
-            Player player = playerRepository.findByNameContaining(player1);
-            webSocketMessageSender.sendMessage("/topic/turn", new Chat(player.getRoom().getRoomNumber() + player.getName()));
-            if (Objects.equals(player.getPlayerType(), "Computer")) {
-                shooting.computerShoot(player1);
+            Player player = playerRepository.findByNameContaining(playerName);
+            webSocketMessageSender.sendMessage("/topic/turn", new Chat(room.getRoomNumber() + player.getName()));
+            if (player.isComputer()) {
+                shooting.computerShoot(player.getName());
             }
-            webSocketMessageSender.sendMessage("/topic/chat", new Chat(player.getRoom().getRoomNumber() + "All ships placed! Match Start!"));
+            webSocketMessageSender.sendMessage("/topic/chat", new Chat(room.getRoomNumber() + "All ships placed! Match Start!"));
         }
         if (coin == 2) {
-        Player player = playerRepository.findByNameContaining(player2);
-            webSocketMessageSender.sendMessage("/topic/turn", new Chat(player.getRoom().getRoomNumber() + player.getName()));
-            if (Objects.equals(player.getPlayerNumber(), "Computer")) {;
-                shooting.computerShoot(player2);
-            }
-            webSocketMessageSender.sendMessage("/topic/chat", new Chat(player.getRoom().getRoomNumber() + "All ships placed! Match Start!"));
-        }
-    }
-
-    public void handlePassword(String roomNumber) throws InterruptedException {
-        String roomNumberSave = roomNumber;
-        if
-        (!Objects.equals(roomNumberString, roomNumber)) {
-            if (!roomSaved) {
-                roomSaved = true;
-                roomNumberString = roomNumber;
-                webSocketMessageSender.sendMessage("/topic/connect", new Greeting("Server: Room saved!"));
-            } else {
-                webSocketMessageSender.sendMessage("/topic/chat", new Chat("Admin: Psst! Wrong room number!"));
-            }
+            if (Objects.equals(playerList.get(0).getName(), playerToSelect.getName())) {
+                playerToSelect = playerList.get(0);}
+            System.out.println("Coin flip 2, setting player to index 0");
         } else {
-            roomValidated = true;
-        }
-        if (roomSaved && roomValidated) {
-            webSocketMessageSender.sendMessage("/topic/connect", new Greeting("Server: Rooms synced"));
-            Room addRoom = new Room(roomNumberSave);
-            addRoom.setRoomNumber(roomNumber.substring(1, 5));
-            roomRepository.save(addRoom);
-            Thread.sleep(50);
-            for (Player newPlayer : playersNotInRoom) {
-                Player playerToFind = playerRepository.findByName(newPlayer.getName());
-                if (playerToFind != null) {
-                    playerToFind.setRoom(addRoom);
-                    shipRepository.deleteAllCoOrdsByPlayerId((playerToFind.getId()));
-                    playerRepository.save(playerToFind);
-
-                } else {
-                    newPlayer.setRoom(addRoom);
-                    shipRepository.deleteAllCoOrdsByPlayerId((newPlayer.getId()));
-                    playerRepository.save(newPlayer);
-                }
-                addRoom.addPlayerToRoom(newPlayer);
-            }
-            Player playerDetails1 = playerRepository.findByNameContaining(playersNotInRoom.get(1).getName());
-            Player playerDetails2 = playerRepository.findByNameContaining(playersNotInRoom.get(0).getName());
-            webSocketMessageSender.sendMessage("/topic/playerData1", new Hidden(addRoom.getRoomNumber() + playerDetails1.getDetails()));
-            player1 = playersNotInRoom.get(1).getName();
-            player2 = playersNotInRoom.get(0).getName();
-            webSocketMessageSender.sendMessage("/topic/playerData2", new Hidden(addRoom.getRoomNumber() + playerDetails2.getDetails()));
-            roomRepository.save(addRoom);
-            roomSaved = false;
-            roomValidated = false;
-            playerRepository.save(playerDetails1);
-            playerRepository.save(playerDetails2);
-            playersNotInRoom.clear();
-            webSocketMessageSender.sendMessage("/topic/chat", new Chat(addRoom.getRoomNumber() + "Admin: Welcome to the private chatroom for game: " + addRoom.getRoomNumber() + ", type /global to talk to all players online now,  to place your ships, click on the ship and click two cells on the board, or press the random placement button to randomly place your ships"));
-        }
+            playerToSelect = playerList.get(1);
+            System.out.println("Coin flip 2, setting player to index 1"); }
+        webSocketMessageSender.sendMessage("/topic/turn", new Chat(room.getRoomNumber() + playerToSelect.getName()));
+        if (playerToSelect.isComputer()) {
+            shooting.computerShoot(playerToSelect.getName());}
+        webSocketMessageSender.sendMessage("/topic/chat", new Chat(room.getRoomNumber() + "All ships placed! Match Start!"));
     }
 
+    // Handles the room number submission from the frontend and decides if it is an existing room or a new one
+    public void handlePassword(String roomNumber) throws InterruptedException {
+        System.out.println("Starting handle password");
+        roomNumber = roomNumber.substring(1, roomNumber.length() - 1);
+            if
+            (!lobbyRepository.findLobbyRoomExists(roomNumber)) {
+                Lobby roomToSave = new Lobby(roomNumber);
+                roomToSave.setSaved(true);
+                lobbyRepository.save(roomToSave);
+                System.out.println("Lobby saved for first time");
+                webSocketMessageSender.sendMessage("/topic/connect", new Greeting("Server: Room saved!"));
+                webSocketMessageSender.sendMessage("/topic/hidden", new Hidden(roomNumber + "Server: Room saved!"));
+            } else {
+                Lobby roomToValidate = lobbyRepository.findLobbySingleRoom(roomNumber);
+                roomToValidate.setValidated(true);
+                lobbyRepository.save(roomToValidate);
+                System.out.println("Lobby validated");
+            }
+            Lobby roomToCheck = lobbyRepository.findLobbySingleRoom(roomNumber);
+            if (roomToCheck.isSaved() && roomToCheck.isValidated()) {
+                webSocketMessageSender.sendMessage("/topic/connect", new Greeting("Server: Rooms synced"));
+                webSocketMessageSender.sendMessage("/topic/hidden", new Hidden(roomNumber + "Server: Room synced!"));
+                Room addRoom = new Room(roomNumber);
+                addRoom.setRoomNumber(roomNumber.substring(0, 4));
+                roomRepository.save(addRoom);
+                Thread.sleep(50);
+                for (Player newPlayer : playersNotInRoom) {
+                    Player playerToFind = playerRepository.findByName(newPlayer.getName());
+                    if (playerToFind != null) {
+                        playerToFind.setRoom(addRoom);
+                        shipRepository.deleteAllCoOrdsByPlayerId((playerToFind.getId()));
+                        playerRepository.save(playerToFind);
+
+                    } else {
+                        newPlayer.setRoom(addRoom);
+                        shipRepository.deleteAllCoOrdsByPlayerId((newPlayer.getId()));
+                        playerRepository.save(newPlayer);
+                    }
+                    addRoom.addPlayerToRoom(newPlayer);
+                }
+                Player playerDetails1 = playerRepository.findByNameContaining(playersNotInRoom.get(1).getName());
+                Player playerDetails2 = playerRepository.findByNameContaining(playersNotInRoom.get(0).getName());
+                webSocketMessageSender.sendMessage("/topic/playerData1", new Hidden(addRoom.getRoomNumber() + playerDetails1.getDetails()));
+                webSocketMessageSender.sendMessage("/topic/playerData2", new Hidden(addRoom.getRoomNumber() + playerDetails2.getDetails()));
+                roomRepository.save(addRoom);
+                playerRepository.save(playerDetails1);
+                playerRepository.save(playerDetails2);
+                playersNotInRoom.clear();
+            }
+        }
+
+        // Handles a players name entry from the frontend
     public void handleNewPlayer(Player playerName) throws InterruptedException {
         Thread.sleep(100);
         List<String> players = playerRepository.findName();
         if (!players.contains(playerName.getName())) {
             if (players.stream().anyMatch(name -> name.startsWith(playerName.getName().substring(0, 4)))) {
-                webSocketMessageSender.sendMessage("/topic/chat", new Chat("Admin: Sorry, " + playerName.getName() + " is too similar to an existing username!"));
-                webSocketMessageSender.sendMessage("/topic/hidden", new Chat(playerName.getName()));
+                webSocketMessageSender.sendMessage("/topic/globalChat", new Chat("Admin: Sorry, " + playerName.getName() + " is too similar to an existing username!"));
             } else {
                 String name = playerName.getName();
                 Player player = new Player(name);
-                player.setPlayerType("Human");
                 playersNotInRoom.add(player);
-                webSocketMessageSender.sendMessage("/topic/chat", new Chat("Admin: Hello to our new player " + playerName.getName() + " your profile has been saved!"));
+                webSocketMessageSender.sendMessage("/topic/globalChat", new Chat("Admin: Hello to our new player " + playerName.getName() + " your profile has been saved!"));
+                webSocketMessageSender.sendMessage("/topic/nameValidated", new Chat(playerName.getName()));
             }
         } else {
             if (!playerName.getName().contains("Computer")) {
-                webSocketMessageSender.sendMessage("/topic/chat", new Chat("Admin: Welcome back " + playerName.getName() + "!"));
+                webSocketMessageSender.sendMessage("/topic/globalChat", new Chat("Admin: Welcome back " + playerName.getName() + "!"));
+                webSocketMessageSender.sendMessage("/topic/nameValidated", new Chat(playerName.getName()));
             }else
-            {webSocketMessageSender.sendMessage("/topic/chat", new Chat("Admin: A Game against the Computer has been selected"));}
+            {webSocketMessageSender.sendMessage("/topic/globalChat", new Chat("Admin: A Game against the Computer has been selected"));}
             String name = playerName.getName();
             Player player = new Player(name);
-            player.setPlayerType("Human");
             playersNotInRoom.add(player);
         }
     }
+
+    // Logic for a computer player to prepare itself for the game
     public void computerMatchStart(String roomNumber) throws InterruptedException {
         Random random = new Random();
         int rando = random.nextInt(10000);
@@ -186,7 +252,7 @@ public class PlayerAndRoom {
         String ident = randomNumber;
         Player computerPlayerCreated = new Player();
         computerPlayerCreated.setName(ident + "Computer");
-        computerPlayerCreated.setPlayerType("Computer");
+        computerPlayerCreated.setComputer(true);
         playerRepository.save(computerPlayerCreated);
         handleNewPlayer(computerPlayerCreated);
         Thread.sleep(50);
@@ -203,8 +269,8 @@ public class PlayerAndRoom {
         });
         placeShipsThread.start();
         placeShipsThread.join();
-        matchStart();
-        webSocketMessageSender.sendMessage("/topic/chat", new Chat("Admin: Computer player ready"));
+        matchStart(computerPlayerCreated.getName());
+        webSocketMessageSender.sendMessage("/topic/chat", new Chat(roomNumber.substring(1, roomNumber.length() - 1) + "Admin: Computer player ready"));
     }
 }
 
