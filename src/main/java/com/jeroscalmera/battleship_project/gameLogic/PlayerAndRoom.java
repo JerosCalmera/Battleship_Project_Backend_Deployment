@@ -137,7 +137,7 @@ public class PlayerAndRoom {
             playerToSelect = playerList.get(1);
             System.out.println("Coin flip 2, setting player to index 1"); }
 
-        if (playerToSelect.isComputer()) {
+        if (coin == 2 && playerToSelect.isComputer()) {
             shooting.computerShoot(playerToSelect.getName());
             webSocketMessageSender.sendMessage("/topic/chat", new Chat( ChatToken.generateChatToken() + room.getRoomNumber() + "The computer has has won the coin flip and goes first!"));
         }
