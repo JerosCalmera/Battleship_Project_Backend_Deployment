@@ -146,10 +146,10 @@ public class PlayerAndRoom {
         else {
             webSocketMessageSender.sendMessage("/topic/chat", new Chat( ChatToken.generateChatToken() + room.getRoomNumber() + playerToSelect.getName() + " has won the coin flip and goes first!"));
             webSocketMessageSender.sendMessage("/topic/turn", new Chat(room.getRoomNumber() + playerToSelect.getName()));
-        }
+        }}
         webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken()+ room.getRoomNumber() + "All ships placed! Match Start!"));
         lobbyRepository.delete(lobby);
-    }}
+    }
 
     // Handles the room number submission from the frontend and decides if it is an existing room or a new one
     public void handlePassword(String roomNumber) throws InterruptedException {
