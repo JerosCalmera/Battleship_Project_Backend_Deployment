@@ -130,15 +130,14 @@ public class PlayerAndRoom {
             webSocketMessageSender.sendMessage("/topic/chat", new Chat( ChatToken.generateChatToken() + room.getRoomNumber() + player.getName() + " has won the coin flip and goes first!"));
             lobbyRepository.delete(lobby);
         }
-        if (coin == 2) {
+        else {
             if (Objects.equals(playerList.get(0).getName(), player.getName())) {
                 playerToNotSelect = playerList.get(0);
                 playerToSelect = playerList.get(1);
-            }
         } else {
             playerToNotSelect = playerList.get(1);
             playerToSelect = playerList.get(0);}
-        if (coin == 2) {
+        {
         if (playerToSelect.isComputer()) {
             webSocketMessageSender.sendMessage("/topic/chat", new Chat( ChatToken.generateChatToken() + room.getRoomNumber() + "The computer has has won the coin flip and goes first!"));
             webSocketMessageSender.sendMessage("/topic/turn", new Chat(room.getRoomNumber() + playerToSelect.getName()));
@@ -147,7 +146,7 @@ public class PlayerAndRoom {
         else {
             webSocketMessageSender.sendMessage("/topic/chat", new Chat( ChatToken.generateChatToken() + room.getRoomNumber() + playerToSelect.getName() + " has won the coin flip and goes first!"));
             webSocketMessageSender.sendMessage("/topic/turn", new Chat(room.getRoomNumber() + playerToSelect.getName()));
-        }}
+        }}}
         webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken()+ room.getRoomNumber() + "All ships placed! Match Start!"));
         lobbyRepository.delete(lobby);
     }
