@@ -126,7 +126,7 @@ public class PlayerAndRoom {
             if (player.isComputer()) {
                 shooting.computerShoot(player.getName());
             }
-            webSocketMessageSender.sendMessage("/topic/chat", new Chat( ChatToken.generateChatToken() + room.getRoomNumber() + "All ships placed! Match Start!"));
+            webSocketMessageSender.sendMessage("/topic/chat", new Chat( ChatToken.generateChatToken() + room.getRoomNumber() + player.getName() + " has won the coin flip and goes first!"));
             lobbyRepository.delete(lobby);
         }
         else if (coin == 2) {
@@ -137,8 +137,13 @@ public class PlayerAndRoom {
             playerToSelect = playerList.get(1);
             System.out.println("Coin flip 2, setting player to index 1"); }
         webSocketMessageSender.sendMessage("/topic/turn", new Chat(room.getRoomNumber() + playerToSelect.getName()));
-        if (playerToSelect.isComputer()) {
-            shooting.computerShoot(playerToSelect.getName());}
+        if (coin == 2 && playerToSelect.isComputer()) {
+            shooting.computerShoot(playerToSelect.getName());
+            webSocketMessageSender.sendMessage("/topic/chat", new Chat( ChatToken.generateChatToken() + room.getRoomNumber() + "The computer has has won the coin flip and goes first!"));
+        }
+        else {
+            webSocketMessageSender.sendMessage("/topic/chat", new Chat( ChatToken.generateChatToken() + room.getRoomNumber() + playerToSelect.getName() + " has won the coin flip and goes first!"));
+        }
         webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken()+ room.getRoomNumber() + "All ships placed! Match Start!"));
         lobbyRepository.delete(lobby);
     }
