@@ -80,8 +80,7 @@ public class PlayerAndRoom {
             if (total < 10) {
                 if (!playerLeader.isComputer()){
                 webSocketMessageSender.sendMessage("/topic/leaderBoard", new Chat("Level (" + playerLeader.getLevel() + ") " + playerLeader.getName()));
-                }
-                total++;
+                total++;}
             } else {
                 break;
             }
