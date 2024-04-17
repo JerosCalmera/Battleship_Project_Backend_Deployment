@@ -43,14 +43,14 @@ public class MessageController {
     @SendTo("/topic/chat")
     public Chat chat(Chat message) throws Exception {
         String chat = message.getContent();
-        return new Chat(chat);
+        return new Chat(playerAndRoom.generateChatToken() + chat);
     }
 
     @MessageMapping("/globalChat")
     @SendTo("/topic/globalChat")
     public Chat globalChat(Chat message) throws Exception {
         String chat = message.getContent();
-        return new Chat(chat);
+        return new Chat(playerAndRoom.generateChatToken() + chat);
     }
     @MessageMapping("/gameUpdate")
     public void gameUpdate(Player name) throws InterruptedException {
