@@ -17,6 +17,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     }
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/game").setAllowedOriginPatterns("*").withSockJS();
+        registry.addEndpoint("/game").setAllowedOriginPatterns("https://solar-fury-v1-c6d0bb48da3c.herokuapp.com/").withSockJS();
     }
 }
