@@ -141,7 +141,7 @@ public class PlayerAndRoom {
         if (playerToSelect.isComputer()) {
             webSocketMessageSender.sendMessage("/topic/chat", new Chat( ChatToken.generateChatToken() + room.getRoomNumber() + "The computer has has won the coin flip and goes first!"));
             webSocketMessageSender.sendMessage("/topic/turn", new Chat(room.getRoomNumber() + playerToSelect.getName()));
-            shooting.computerShoot(playerToSelect.getName());
+            shooting.computerShoot(player.getName());
         }
         else {
             webSocketMessageSender.sendMessage("/topic/chat", new Chat( ChatToken.generateChatToken() + room.getRoomNumber() + playerToSelect.getName() + " has won the coin flip and goes first!"));
