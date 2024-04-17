@@ -118,46 +118,38 @@ public class PlayerAndRoom {
         Lobby lobby = lobbyRepository.findLobbySingleRoom(room.getRoomNumber());
         System.out.println("Room number is: " + room.getRoomNumber());
         List<Player> playerList = room.getPlayers();
+        Player playerToNotSelect = new Player(playerName);
+        Player playerToSelect = new Player(playerName);
         Player player = playerRepository.findByNameContaining(playerName);
         int coin = random.nextInt(2) + 1;
-
         if (coin == 1) {
             webSocketMessageSender.sendMessage("/topic/turn", new Chat(room.getRoomNumber() + player.getName()));
             if (player.isComputer()) {
                 shooting.computerShoot(player.getName());
             }
-            webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + room.getRoomNumber() + player.getName() + " has won the coin flip and goes first!"));
+            webSocketMessageSender.sendMessage("/topic/chat", new Chat( ChatToken.generateChatToken() + room.getRoomNumber() + player.getName() + " has won the coin flip and goes first!"));
             lobbyRepository.delete(lobby);
-        } else if (coin == 2) {
-            Player playerToNotSelect = playerList.get(0);
-            Player playerToSelect = playerList.get(1);
-
-            if (playerToSelect.isComputer()) {
-                webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + room.getRoomNumber() + "The computer has won the coin flip and goes first!"));
-                webSocketMessageSender.sendMessage("/topic/turn", new Chat(room.getRoomNumber() + playerToSelect.getName()));
-                shooting.computerShoot(playerToSelect.getName());
-            } else {
-                webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + room.getRoomNumber() + playerToSelect.getName() + " has won the coin flip and goes first!"));
-                webSocketMessageSender.sendMessage("/topic/turn", new Chat(room.getRoomNumber() + playerToSelect.getName()));
+        }
+        if (coin == 2) {
+            if (Objects.equals(playerList.get(0).getName(), player.getName())) {
+                playerToNotSelect = playerList.get(0);
+                playerToSelect = playerList.get(1);
             }
         } else {
-            Player playerToNotSelect = playerList.get(1);
-            Player playerToSelect = playerList.get(0);
-
-            if (playerToSelect.isComputer()) {
-                webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + room.getRoomNumber() + "The computer has won the coin flip and goes first!"));
-                webSocketMessageSender.sendMessage("/topic/turn", new Chat(room.getRoomNumber() + playerToSelect.getName()));
-                shooting.computerShoot(playerToSelect.getName());
-            } else {
-                webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + room.getRoomNumber() + playerToSelect.getName() + " has won the coin flip and goes first!"));
-                webSocketMessageSender.sendMessage("/topic/turn", new Chat(room.getRoomNumber() + playerToSelect.getName()));
-            }
+            playerToNotSelect = playerList.get(1);
+            playerToSelect = playerList.get(0);
+        if (coin == 2 && playerToSelect.isComputer()) {
+            webSocketMessageSender.sendMessage("/topic/chat", new Chat( ChatToken.generateChatToken() + room.getRoomNumber() + "The computer has has won the coin flip and goes first!"));
+            webSocketMessageSender.sendMessage("/topic/turn", new Chat(room.getRoomNumber() + playerToSelect.getName()));
+            shooting.computerShoot(player.getName());
         }
-
-        webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + room.getRoomNumber() + "All ships placed! Match Start!"));
+        else if (coin == 2 && !playerToSelect.isComputer()) {
+            webSocketMessageSender.sendMessage("/topic/chat", new Chat( ChatToken.generateChatToken() + room.getRoomNumber() + playerToSelect.getName() + " has won the coin flip and goes first!"));
+            webSocketMessageSender.sendMessage("/topic/turn", new Chat(room.getRoomNumber() + playerToSelect.getName()));
+        }}
+        webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken()+ room.getRoomNumber() + "All ships placed! Match Start!"));
         lobbyRepository.delete(lobby);
     }
-
 
     // Handles the room number submission from the frontend and decides if it is an existing room or a new one
     public void handlePassword(String roomNumber) throws InterruptedException {
