@@ -136,13 +136,14 @@ public class PlayerAndRoom {
         } else {
             playerToSelect = playerList.get(1);
             System.out.println("Coin flip 2, setting player to index 1"); }
-        webSocketMessageSender.sendMessage("/topic/turn", new Chat(room.getRoomNumber() + playerToSelect.getName()));
-        if (coin == 2 && playerToSelect.isComputer()) {
+
+        if (playerToSelect.isComputer()) {
             shooting.computerShoot(playerToSelect.getName());
             webSocketMessageSender.sendMessage("/topic/chat", new Chat( ChatToken.generateChatToken() + room.getRoomNumber() + "The computer has has won the coin flip and goes first!"));
         }
         else {
             webSocketMessageSender.sendMessage("/topic/chat", new Chat( ChatToken.generateChatToken() + room.getRoomNumber() + playerToSelect.getName() + " has won the coin flip and goes first!"));
+            webSocketMessageSender.sendMessage("/topic/turn", new Chat(room.getRoomNumber() + playerToSelect.getName()));
         }
         webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken()+ room.getRoomNumber() + "All ships placed! Match Start!"));
         lobbyRepository.delete(lobby);
