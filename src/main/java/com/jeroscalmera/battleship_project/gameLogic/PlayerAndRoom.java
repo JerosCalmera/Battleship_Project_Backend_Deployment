@@ -34,13 +34,6 @@ public class PlayerAndRoom {
         this.shooting = shooting;
     }
 
-    // Generates a random chat token to be attached to messages to ensure lagged messages are not repeated
-    public String generateChatToken() {
-        Random random = new Random();
-        int token = random.nextInt(1000);
-        return String.format("%04d", token);
-    }
-
     // Restart a players room and ships, deletes the room the player is the last player removed from the room
     public void resetPlayer(String playerName) {
         System.out.println("Player name to delete from room: " + playerName.substring(1, 6));
@@ -133,7 +126,7 @@ public class PlayerAndRoom {
             if (player.isComputer()) {
                 shooting.computerShoot(player.getName());
             }
-            webSocketMessageSender.sendMessage("/topic/chat", new Chat(generateChatToken() + room.getRoomNumber() + "All ships placed! Match Start!"));
+            webSocketMessageSender.sendMessage("/topic/chat", new Chat( ChatToken.generateChatToken() + room.getRoomNumber() + "All ships placed! Match Start!"));
             lobbyRepository.delete(lobby);
         }
         if (coin == 2) {
@@ -146,7 +139,7 @@ public class PlayerAndRoom {
         webSocketMessageSender.sendMessage("/topic/turn", new Chat(room.getRoomNumber() + playerToSelect.getName()));
         if (playerToSelect.isComputer()) {
             shooting.computerShoot(playerToSelect.getName());}
-        webSocketMessageSender.sendMessage("/topic/chat", new Chat(generateChatToken() + room.getRoomNumber() + "All ships placed! Match Start!"));
+        webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken()+ room.getRoomNumber() + "All ships placed! Match Start!"));
         lobbyRepository.delete(lobby);
     }
 
@@ -207,20 +200,20 @@ public class PlayerAndRoom {
         List<String> players = playerRepository.findName();
         if (!players.contains(playerName.getName())) {
             if (players.stream().anyMatch(name -> name.startsWith(playerName.getName().substring(0, 4)))) {
-                webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(generateChatToken() + "Admin: Sorry, " + playerName.getName() + " is too similar to an existing username!"));
+                webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken() + "Admin: Sorry, " + playerName.getName() + " is too similar to an existing username!"));
             } else {
                 String name = playerName.getName();
                 Player player = new Player(name);
                 playersNotInRoom.add(player);
-                webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(generateChatToken()  + "Admin: Hello to our new player " + playerName.getName() + " your profile has been saved!"));
+                webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken()  + "Admin: Hello to our new player " + playerName.getName() + " your profile has been saved!"));
                 webSocketMessageSender.sendMessage("/topic/nameValidated", new Chat(playerName.getName()));
             }
         } else {
             if (!playerName.getName().contains("Computer")) {
-                webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(generateChatToken() + "Admin: Welcome back " + playerName.getName() + "!"));
+                webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken() + "Admin: Welcome back " + playerName.getName() + "!"));
                 webSocketMessageSender.sendMessage("/topic/nameValidated", new Chat(playerName.getName()));
             }else
-            {webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(generateChatToken()  + "Admin: A Game against the Computer has been selected"));}
+            {webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken() + "Admin: A Game against the Computer has been selected"));}
             String name = playerName.getName();
             Player player = new Player(name);
             playersNotInRoom.add(player);
@@ -253,7 +246,7 @@ public class PlayerAndRoom {
         placeShipsThread.start();
         placeShipsThread.join();
         matchStart(computerPlayerCreated.getName());
-        webSocketMessageSender.sendMessage("/topic/chat", new Chat(generateChatToken() + roomNumber.substring(1, roomNumber.length() - 1) + "Admin: Computer player ready"));
+        webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + roomNumber.substring(1, roomNumber.length() - 1) + "Admin: Computer player ready"));
     }
 }
 

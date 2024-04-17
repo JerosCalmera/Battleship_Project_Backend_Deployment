@@ -28,13 +28,11 @@ public class Placing {
     boolean verticalPlacement = false;
     boolean invalidPlacement = false;
     String damage = "";
-    private PlayerAndRoom playerAndRoom;
 
-    public Placing(PlayerRepository playerRepository, ShipRepository shipRepository, WebSocketMessageSender webSocketMessageSender, PlayerAndRoom playerAndRoom) {
+    public Placing(PlayerRepository playerRepository, ShipRepository shipRepository, WebSocketMessageSender webSocketMessageSender) {
         this.playerRepository = playerRepository;
         this.shipRepository = shipRepository;
         this.webSocketMessageSender = webSocketMessageSender;
-        this.playerAndRoom = playerAndRoom;
     }
 
     // Ship placing logic (Checks ship placement is valid)
@@ -338,7 +336,7 @@ public class Placing {
     // Logic so that the computer can automatically place ships in a random fashion
     public void computerPlaceShips(Player player) throws InterruptedException {
         if (shipPlacement) {
-            webSocketMessageSender.sendMessage("/topic/chat", new Chat(playerAndRoom.generateChatToken() + player.getRoomNumber() + "Admin: The computer is placing ships, please wait and try again"));
+            webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + player.getRoomNumber() + "Admin: The computer is placing ships, please wait and try again"));
             return;
         }
         shipPlacement = true;

@@ -1,17 +1,16 @@
 package com.jeroscalmera.battleship_project.controllers;
 
+import com.jeroscalmera.battleship_project.gameLogic.ChatToken;
 import com.jeroscalmera.battleship_project.gameLogic.Placing;
 import com.jeroscalmera.battleship_project.gameLogic.PlayerAndRoom;
 import com.jeroscalmera.battleship_project.gameLogic.Shooting;
 import com.jeroscalmera.battleship_project.models.BugReport;
 import com.jeroscalmera.battleship_project.models.Player;
-import com.jeroscalmera.battleship_project.models.Room;
 import com.jeroscalmera.battleship_project.websocket.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
@@ -43,14 +42,14 @@ public class MessageController {
     @SendTo("/topic/chat")
     public Chat chat(Chat message) throws Exception {
         String chat = message.getContent();
-        return new Chat(playerAndRoom.generateChatToken() + chat);
+        return new Chat(ChatToken.generateChatToken() + chat);
     }
 
     @MessageMapping("/globalChat")
     @SendTo("/topic/globalChat")
     public Chat globalChat(Chat message) throws Exception {
         String chat = message.getContent();
-        return new Chat(playerAndRoom.generateChatToken() + chat);
+        return new Chat(ChatToken.generateChatToken() + chat);
     }
     @MessageMapping("/gameUpdate")
     public void gameUpdate(Player name) throws InterruptedException {

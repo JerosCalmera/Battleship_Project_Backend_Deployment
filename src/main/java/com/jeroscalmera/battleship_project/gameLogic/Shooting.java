@@ -23,14 +23,12 @@ public class Shooting {
     private List<String> coOrdLetters = new ArrayList<>();
     private List<String> coOrdNumbers = new ArrayList<>();
     private Placing placing;
-    private PlayerAndRoom playerAndRoom;
-    public Shooting(PlayerRepository playerRepository, ShipRepository shipRepository, WebSocketMessageSender webSocketMessageSender, RoomRepository roomRepository, Placing placing, PlayerAndRoom playerAndRoom) {
+    public Shooting(PlayerRepository playerRepository, ShipRepository shipRepository, WebSocketMessageSender webSocketMessageSender, RoomRepository roomRepository, Placing placing) {
         this.playerRepository = playerRepository;
         this.shipRepository = shipRepository;
         this.webSocketMessageSender = webSocketMessageSender;
         this.roomRepository = roomRepository;
         this.placing = placing;
-        this.playerAndRoom = playerAndRoom;
     }
 
     // Debugging function
@@ -108,7 +106,7 @@ public class Shooting {
             if (Objects.equals(shipToCheck.getShipDamage(), "XXXXXXXXXX")) {
                 shipToCheck.setShipDamage("Destroyed");
                 shipRepository.save(shipToCheck);
-                webSocketMessageSender.sendMessage("/topic/chat", new Chat(playerAndRoom.generateChatToken() + playerToCheck.getRoom().getRoomNumber() + playerName + ": You destroyed my Carrier!"));
+                webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + playerToCheck.getRoom().getRoomNumber() + playerName + ": You destroyed my Carrier!"));
                 if (!playerName.contains("Computer")) {
                     playerToCheck.setAiHitCheck(false);
                     playerRepository.save(playerToCheck);
@@ -116,7 +114,7 @@ public class Shooting {
             } else if (Objects.equals(shipToCheck.getShipDamage(), "XXXXXXXX")) {
                 shipToCheck.setShipDamage("Destroyed");
                 shipRepository.save(shipToCheck);
-                webSocketMessageSender.sendMessage("/topic/chat", new Chat(playerAndRoom.generateChatToken() + playerToCheck.getRoom().getRoomNumber() + playerName + ": You destroyed my Battleship!"));
+                webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + playerToCheck.getRoom().getRoomNumber() + playerName + ": You destroyed my Battleship!"));
                 if (!playerName.contains("Computer")) {
                     playerToCheck.setAiHitCheck(false);
                     playerRepository.save(playerToCheck);
@@ -124,7 +122,7 @@ public class Shooting {
             } else if (Objects.equals(shipToCheck.getShipDamage(), "XXXXXX")) {
                 shipToCheck.setShipDamage("Destroyed");
                 shipRepository.save(shipToCheck);
-                webSocketMessageSender.sendMessage("/topic/chat", new Chat(playerAndRoom.generateChatToken() + playerToCheck.getRoom().getRoomNumber() + playerName + ": You destroyed my Cruiser!"));
+                webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + playerToCheck.getRoom().getRoomNumber() + playerName + ": You destroyed my Cruiser!"));
                 if (!playerName.contains("Computer")) {
                     playerToCheck.setAiHitCheck(false);
                     playerRepository.save(playerToCheck);
@@ -132,7 +130,7 @@ public class Shooting {
             } else if (Objects.equals(shipToCheck.getShipDamage(), "XXXX")) {
                 shipToCheck.setShipDamage("Destroyed");
                 shipRepository.save(shipToCheck);
-                webSocketMessageSender.sendMessage("/topic/chat", new Chat(playerAndRoom.generateChatToken() + playerToCheck.getRoom().getRoomNumber() + playerName + ": You destroyed my Destroyer!"));
+                webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + playerToCheck.getRoom().getRoomNumber() + playerName + ": You destroyed my Destroyer!"));
                 if (!playerName.contains("Computer")) {
                     playerToCheck.setAiHitCheck(false);
                     playerRepository.save(playerToCheck);
@@ -144,7 +142,7 @@ public class Shooting {
             }
 
         if (allShipsDestroyed) {
-            webSocketMessageSender.sendMessage("/topic/chat", new Chat(playerAndRoom.generateChatToken() + playerToCheck.getRoom().getRoomNumber() + playerToCheck.getName() + " has had all their starships destroyed! And is defeated!"));
+            webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + playerToCheck.getRoom().getRoomNumber() + playerToCheck.getName() + " has had all their starships destroyed! And is defeated!"));
             Room roomToCheck = new Room();
             Room roomId = roomRepository.findRoomIdByPlayersId(playerToCheck.getId());
             List<Player> players = playerRepository.findPlayersByRoomId(roomId.getId());
@@ -161,7 +159,7 @@ public class Shooting {
                     winner.setAiShot(null);
                     winner.setAiHitCheck(false);
                     playerRepository.save(winner);
-                    webSocketMessageSender.sendMessage("/topic/chat", new Chat(playerAndRoom.generateChatToken() + playerToCheck.getRoom().getRoomNumber() + winnerName + " is the Winner!"));
+                    webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + playerToCheck.getRoom().getRoomNumber() + winnerName + " is the Winner!"));
                     webSocketMessageSender.sendMessage("/topic/winner", new Chat(playerToCheck.getRoom().getRoomNumber() + winnerName));
                     Thread.sleep(50);
                     webSocketMessageSender.sendMessage("/topic/gameInfo", new Chat(playerToCheck.getRoom().getRoomNumber() + winnerName + " Wins!"));
