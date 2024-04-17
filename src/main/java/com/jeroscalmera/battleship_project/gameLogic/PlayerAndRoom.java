@@ -129,7 +129,7 @@ public class PlayerAndRoom {
             webSocketMessageSender.sendMessage("/topic/chat", new Chat( ChatToken.generateChatToken() + room.getRoomNumber() + player.getName() + " has won the coin flip and goes first!"));
             lobbyRepository.delete(lobby);
         }
-        else if (coin == 2) {
+        if (coin == 2) {
             if (Objects.equals(playerList.get(0).getName(), playerToSelect.getName())) {
                 playerToSelect = playerList.get(0);}
             System.out.println("Coin flip 2, setting player to index 0");
