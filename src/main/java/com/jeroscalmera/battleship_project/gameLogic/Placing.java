@@ -1,26 +1,22 @@
 package com.jeroscalmera.battleship_project.gameLogic;
 
-import com.jeroscalmera.battleship_project.models.Lobby;
 import com.jeroscalmera.battleship_project.models.Player;
-import com.jeroscalmera.battleship_project.models.Room;
 import com.jeroscalmera.battleship_project.models.Ship;
-import com.jeroscalmera.battleship_project.repositories.LobbyRepository;
 import com.jeroscalmera.battleship_project.repositories.PlayerRepository;
-import com.jeroscalmera.battleship_project.repositories.RoomRepository;
 import com.jeroscalmera.battleship_project.repositories.ShipRepository;
 import com.jeroscalmera.battleship_project.websocket.Chat;
 import com.jeroscalmera.battleship_project.websocket.WebSocketMessageSender;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 @Service
 public class Placing {
     private PlayerRepository playerRepository;
     private ShipRepository shipRepository;
-    private RoomRepository roomRepository;
-
-    private LobbyRepository lobbyRepository;
     private WebSocketMessageSender webSocketMessageSender;
 
     public List<String> computerAllCoOrds = new ArrayList<>();
@@ -32,13 +28,13 @@ public class Placing {
     boolean verticalPlacement = false;
     boolean invalidPlacement = false;
     String damage = "";
+    private PlayerAndRoom playerAndRoom;
 
-    public Placing(PlayerRepository playerRepository, ShipRepository shipRepository, RoomRepository roomRepository, LobbyRepository lobbyRepository, WebSocketMessageSender webSocketMessageSender) {
+    public Placing(PlayerRepository playerRepository, ShipRepository shipRepository, WebSocketMessageSender webSocketMessageSender, PlayerAndRoom playerAndRoom) {
         this.playerRepository = playerRepository;
         this.shipRepository = shipRepository;
-        this.roomRepository = roomRepository;
-        this.lobbyRepository = lobbyRepository;
         this.webSocketMessageSender = webSocketMessageSender;
+        this.playerAndRoom = playerAndRoom;
     }
 
     // Ship placing logic (Checks ship placement is valid)
@@ -342,8 +338,7 @@ public class Placing {
     // Logic so that the computer can automatically place ships in a random fashion
     public void computerPlaceShips(Player player) throws InterruptedException {
         if (shipPlacement) {
-            player = playerRepository.findByNameContaining(player.getName());
-            webSocketMessageSender.sendMessage("/topic/chat", new Chat(player.getRoom().getRoomNumber() + "Admin: The computer is placing ships, please wait and try again"));
+            webSocketMessageSender.sendMessage("/topic/chat", new Chat(playerAndRoom.generateChatToken() + player.getRoomNumber() + "Admin: The computer is placing ships, please wait and try again"));
             return;
         }
         shipPlacement = true;
