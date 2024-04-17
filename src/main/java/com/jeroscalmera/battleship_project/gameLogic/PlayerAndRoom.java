@@ -137,9 +137,8 @@ public class PlayerAndRoom {
             }
         } else {
             playerToNotSelect = playerList.get(1);
-            playerToSelect = playerList.get(0);}
-
-        if (coin == 2 && playerToSelect.isComputer()) {
+            playerToSelect = playerList.get(0);
+        if (playerToSelect.isComputer()) {
             webSocketMessageSender.sendMessage("/topic/chat", new Chat( ChatToken.generateChatToken() + room.getRoomNumber() + "The computer has has won the coin flip and goes first!"));
             webSocketMessageSender.sendMessage("/topic/turn", new Chat(room.getRoomNumber() + playerToSelect.getName()));
             shooting.computerShoot(player.getName());
@@ -150,7 +149,7 @@ public class PlayerAndRoom {
         }
         webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken()+ room.getRoomNumber() + "All ships placed! Match Start!"));
         lobbyRepository.delete(lobby);
-    }
+    }}
 
     // Handles the room number submission from the frontend and decides if it is an existing room or a new one
     public void handlePassword(String roomNumber) throws InterruptedException {
