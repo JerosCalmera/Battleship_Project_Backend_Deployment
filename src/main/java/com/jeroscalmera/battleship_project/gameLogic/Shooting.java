@@ -33,13 +33,10 @@ public class Shooting {
 
     // Debugging function
     public void computerCheck(String string) throws InterruptedException {
-        System.out.println("Checking if: " + string + " is a human or computer player");
         Player playerToCheck;
         playerToCheck = playerRepository.findByNameContaining(string.substring(1, 5));
-        System.out.println(playerToCheck.getName());
         if (playerToCheck.isComputer()) {
             computerShoot(playerToCheck.getName());
-            System.out.println("Computer: " + playerToCheck.getName() + " is shooting");
         }
     }
 
@@ -48,12 +45,8 @@ public class Shooting {
         String target = input.trim();
         String aimPoint = target.substring(0, 2);
         aimPoint = aimPoint.trim();
-        System.out.println("Targeting data : " + target);
         Player selectedPlayer = playerRepository.findByNameContaining(target.substring(2, 6));
-        System.out.println("The target is : " + selectedPlayer.getName());
         Player selectedPlayer2 = playerRepository.findByNameContaining(target.substring(6, 10));
-        System.out.println("The shooter is : " + selectedPlayer2.getName());
-        System.out.println(selectedPlayer2.getName() + " shooting at " + selectedPlayer.getName());
         List<String> shipList = playerRepository.findAllCoOrdsByPlayerName(selectedPlayer.getName());
         String converted = String.join("", shipList);
         if (converted.contains(aimPoint)) {
@@ -194,13 +187,9 @@ public class Shooting {
         if (players.get(0).isComputer()) {
             humanPlayer = players.get(1);
             computerPlayer = players.get(0);
-            System.out.println("Human is : " + players.get(1).getName());
-            System.out.println("Computer is : " + players.get(0).getName());
         } else {
             humanPlayer = players.get(0);
-            computerPlayer = players.get(1);
-        System.out.println("Human is : " + players.get(0).getName());
-        System.out.println("Computer is : " + players.get(1).getName());}
+            computerPlayer = players.get(1);}
 
         if (computerPlayer.getAiShot() == null) {
             computerPlayer.setAiShot("");
@@ -208,13 +197,11 @@ public class Shooting {
 
         String shoot = generateRandomCoOrd();
         if (computerPlayer.getAiHitCheck()) {
-            shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
-            System.out.println("hit ship at: " + computerPlayer.getAiConfirmedHit() + " , now shooting: " + shoot);}
+            shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));}
 
         while (computerPlayer.getAiShot().contains(shoot)) {
             if (computerPlayer.getAiHitCheck()) {
                 shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
-                System.out.println("hit ship at: " + computerPlayer.getAiConfirmedHit() + " , now shooting: " + shoot);
             } else {
                 shoot = generateRandomCoOrd();
             }
@@ -224,7 +211,6 @@ public class Shooting {
             }
         }
         computerPlayer.setAiShot(computerPlayer.getAiShot() + shoot);
-        System.out.println("Shot: = " + computerPlayer.getAiShot());
         playerRepository.save(computerPlayer);
         shootAtShip(shoot + humanPlayer.getName().substring(0, 4) + computerPlayer.getName().substring(0, 4));
     }

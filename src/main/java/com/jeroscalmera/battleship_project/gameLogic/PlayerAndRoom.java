@@ -92,9 +92,7 @@ public class PlayerAndRoom {
         if (!playerName.contains("Computer")) {
             playerName = playerName.substring(1, playerName.length() -1);
         }
-        System.out.println("input: " + playerName);
         Player activePlayer = playerRepository.findByNameContaining(playerName);
-        System.out.println("found player:  " + activePlayer.getName());
         activePlayer.setReady();
         playerRepository.save(activePlayer);
         Room activeRoom = roomRepository.findRoomByPlayersName(playerName);
@@ -115,7 +113,6 @@ public class PlayerAndRoom {
         Random random = new Random();
         Room room = roomRepository.findRoomByPlayersName(playerName);
         Lobby lobby = lobbyRepository.findLobbySingleRoom(room.getRoomNumber());
-        System.out.println("Room number is: " + room.getRoomNumber());
         List<Player> playerList = room.getPlayers();
         Player playerToNotSelect = new Player(playerName);
         Player playerToSelect = new Player(playerName);
@@ -152,21 +149,18 @@ public class PlayerAndRoom {
 
     // Handles the room number submission from the frontend and decides if it is an existing room or a new one
     public void handlePassword(String roomNumber) throws InterruptedException {
-        System.out.println("Starting handle password");
         roomNumber = roomNumber.substring(1, roomNumber.length() - 1);
             if
             (!lobbyRepository.findLobbyRoomExists(roomNumber)) {
                 Lobby roomToSave = new Lobby(roomNumber);
                 roomToSave.setSaved(true);
                 lobbyRepository.save(roomToSave);
-                System.out.println("Lobby saved for first time");
                 webSocketMessageSender.sendMessage("/topic/connect", new Greeting("Server: Room saved!"));
                 webSocketMessageSender.sendMessage("/topic/hidden", new Hidden(roomNumber + "Server: Room saved!"));
             } else {
                 Lobby roomToValidate = lobbyRepository.findLobbySingleRoom(roomNumber);
                 roomToValidate.setValidated(true);
                 lobbyRepository.save(roomToValidate);
-                System.out.println("Lobby validated");
             }
             Lobby roomToCheck = lobbyRepository.findLobbySingleRoom(roomNumber);
             if (roomToCheck.isSaved() && roomToCheck.isValidated()) {

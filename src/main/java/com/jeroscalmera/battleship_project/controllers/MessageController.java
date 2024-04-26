@@ -65,7 +65,6 @@ public class MessageController {
     @MessageMapping("/gameData")
     public void handleGameData(GameData gameData) throws InterruptedException {
         String target = gameData.getContent();
-        System.out.println(target);
         shooting.shootAtShip(target);
     }
 
@@ -90,8 +89,7 @@ public class MessageController {
         placing.placeShip(string);
     }
     @MessageMapping("/placement2")
-    public void resetPlacement(String string) throws InterruptedException {
-//        placing.resetPlacement(string);
+    public void secondaryPlacement(String string) throws InterruptedException {
     }
     @MessageMapping("/enemyDamage")
     public void enemyDamage(String string) {
@@ -139,20 +137,5 @@ public class MessageController {
     public void bugReport(BugReport bugReport) throws InterruptedException {
         playerAndRoom.bugReport(bugReport);
     }
-
-    @MessageMapping("/private/{roomNumber}")
-    public void privateWebSocket(@DestinationVariable String roomNumber, Connection message) throws Exception {
-        System.out.println("Private connection establised for " + roomNumber);
-
-        String destination = "/topic/private/" + roomNumber;
-        messagingTemplate.convertAndSend(destination, "Private connection establised for " + roomNumber);
-    }
-
-//    @MessageMapping("/winner")
-//    @SendTo("/topic/winner")
-//    public Chat winner(Chat message) throws Exception {
-//        String chat = message.getContent();
-//        return new Chat(chat);
-//    }
 
 }
