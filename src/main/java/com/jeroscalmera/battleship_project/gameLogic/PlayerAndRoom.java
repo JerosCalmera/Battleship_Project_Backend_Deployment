@@ -79,7 +79,7 @@ public class PlayerAndRoom {
         for (Player playerLeader : leaderboard) {
             if (total < 10) {
                 if (!playerLeader.isComputer()){
-                webSocketMessageSender.sendMessage("/topic/leaderBoard", new Chat("Level (" + playerLeader.getLevel() + ") " + playerLeader.getName()));
+                webSocketMessageSender.sendMessage("/topic/leaderBoard", new Chat("Level (" + playerLeader.getLevel() + "): " + playerLeader.getName()));
                 total++;}
             } else {
                 break;
