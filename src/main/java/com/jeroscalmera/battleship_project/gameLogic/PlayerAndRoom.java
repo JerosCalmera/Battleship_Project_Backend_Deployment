@@ -74,7 +74,7 @@ public class PlayerAndRoom {
     // Sends the top ten players to the leaderboard display on the frontend
     public void leaderBoard(String trigger) throws InterruptedException {
         List<Player> leaderboard = playerRepository.findAll();
-        Collections.sort(leaderboard);
+        Collections.sort(leaderboard, Comparator.comparingInt(Player::getLevel).reversed());
         int total = 0;
         for (Player playerLeader : leaderboard) {
             if (total < 10) {
