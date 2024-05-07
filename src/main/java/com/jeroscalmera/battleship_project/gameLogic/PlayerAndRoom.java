@@ -52,7 +52,7 @@ public class PlayerAndRoom {
         if (storedPlayers.contains(playerName)) {
             storedPlayers.remove(playerName);
         }
-        System.out.println("Player name to delete from room: " + playerName.substring(1, 6));
+        System.out.println("Player name to remove from room: " + playerName.substring(1, 6));
         shipRepository.deleteAllCoOrdsByPlayerId(player.getId());
         Room room = roomRepository.findRoomByPlayersName(player.getName());
         if (room == null) {
@@ -63,7 +63,7 @@ public class PlayerAndRoom {
         if (playerPresent)
         {player.setRoom(null);
             room.removePlayerFromRoom(player);
-            System.out.println("deleting player: " + player.getName());}
+            System.out.println("removing player: " + player.getName());}
         player.setUnReady();
         player.setShips(null);
         playerRepository.save(player);
@@ -73,9 +73,9 @@ public class PlayerAndRoom {
         {
             roomRepository.delete(room);
             System.out.println("Deleting room: " + room.getRoomNumber());}
-        if (player.getName().contains("Computer")) {
+        if (player.isComputer()) {
             playerRepository.delete(player);
-            System.out.println("Computer player deleted");
+            System.out.println(player.getName() + " deleted");
         }
         reseting = false;
         if (!storedPlayers.isEmpty()) {
