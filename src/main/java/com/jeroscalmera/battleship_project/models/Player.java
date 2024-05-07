@@ -18,9 +18,6 @@ public class Player implements Comparable<Player>{
     @Column(name = "name")
     private String name;
 
-    @Column(name = "playerNumber")
-    private String playerNumber;
-
     @Column(name = "player_is_computer")
     private boolean isComputer;
 
@@ -79,14 +76,6 @@ public class Player implements Comparable<Player>{
 
     public void setComputer(boolean computer) {
         isComputer = computer;
-    }
-
-    public String getPlayerNumber() {
-        return playerNumber;
-    }
-
-    public void setPlayerNumber(String playerNumber) {
-        this.playerNumber = playerNumber;
     }
 
     public Room getRoom() {
