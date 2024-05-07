@@ -86,6 +86,9 @@ public class PlayerAndRoom {
         resetting = false;
         if (!storedPlayers.isEmpty()) {
             resetPlayer(storedPlayers.get(0));}
+        if (playersNotInRoom.contains(player)) {
+            playersNotInRoom.remove(player);
+        }
     }
 
     // Saves a bugreport to the database
