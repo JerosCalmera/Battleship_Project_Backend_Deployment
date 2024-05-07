@@ -8,6 +8,7 @@ import com.jeroscalmera.battleship_project.repositories.*;
 import com.jeroscalmera.battleship_project.websocket.*;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.Lob;
 import java.util.*;
 
 @Service
@@ -57,6 +58,12 @@ public class PlayerAndRoom {
         Room room = roomRepository.findRoomByPlayersName(player.getName());
         if (room == null) {
             return;
+        }
+        Lobby lobby = new Lobby();
+        lobby = lobbyRepository.findLobbySingleRoom(room.getRoomNumber());
+        if (lobby != null) {
+            lobbyRepository.delete(lobby);
+            System.out.printf("Lobby " + lobby.getLobbyRoom() + " deleted");
         }
         System.out.println("Players remaining in room " + room.getRoomNumber() + " is " + room.getPlayers().size());
         boolean playerPresent = roomRepository.existsByPlayersName(player.getName());
