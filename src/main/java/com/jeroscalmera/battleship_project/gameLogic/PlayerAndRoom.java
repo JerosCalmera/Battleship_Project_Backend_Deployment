@@ -55,6 +55,10 @@ public class PlayerAndRoom {
         player.setRoom(null);
         playerRepository.save(player);
         roomRepository.save(room);
+        List<Player> playersInRoom = new ArrayList<>();
+        playersInRoom = room.getPlayers();
+        if (playersInRoom.isEmpty() || playersInRoom == null) {
+            roomRepository.delete(room);}
         System.out.println("Player reset done");
     }
 
