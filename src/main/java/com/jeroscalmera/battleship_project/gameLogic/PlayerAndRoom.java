@@ -8,7 +8,6 @@ import com.jeroscalmera.battleship_project.repositories.*;
 import com.jeroscalmera.battleship_project.websocket.*;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.Lob;
 import java.util.*;
 
 @Service
@@ -34,22 +33,22 @@ public class PlayerAndRoom {
         this.placing = placing;
         this.shooting = shooting;
     }
-    boolean reseting = false;
+    boolean resetting = false;
 
     List<String> storedPlayers = new ArrayList<>();
 
-    // Restart a players room and ships, deletes the room the player is the last player removed from the room, it will store players for reset if the function is already running
+    // Restart a players room and ships, deletes any leftover lobby, deletes the room the player is the last player removed from the room, it will store players for reset if the function is already running, deletes computer players when no longer needed
     public void resetPlayer(String playerName) {
         Player player = playerRepository.findByNameContaining(playerName.substring(1, 6));
         if (placing.shipPlacement) {
             webSocketMessageSender.sendMessage("/topic/chat", new Chat(player.getRoom().getRoomNumber() + "Admin: Auto ship placement in progress, cannot reset right now!"));
             return;
         }
-        if (reseting) {
+        if (resetting) {
             storedPlayers.add(playerName);
             return;
         }
-        reseting = true;
+        resetting = true;
         if (storedPlayers.contains(playerName)) {
             storedPlayers.remove(playerName);
         }
@@ -84,7 +83,7 @@ public class PlayerAndRoom {
             playerRepository.delete(player);
             System.out.println(player.getName() + " deleted");
         }
-        reseting = false;
+        resetting = false;
         if (!storedPlayers.isEmpty()) {
             resetPlayer(storedPlayers.get(0));}
     }
@@ -178,7 +177,7 @@ public class PlayerAndRoom {
         lobbyRepository.delete(lobby);
     }
 
-    // Handles the room number submission from the frontend and decides if it is an existing room or a new one
+    // Handles the room number submission from the frontend and decides if it is an existing room or a new one, creates a lobby for validating room information before its creation
     public void handlePassword(String roomNumber) throws InterruptedException {
         roomNumber = roomNumber.substring(1, roomNumber.length() - 1);
             if
