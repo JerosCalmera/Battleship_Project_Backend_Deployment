@@ -59,6 +59,9 @@ public class PlayerAndRoom {
         playersInRoom = room.getPlayers();
         if (playersInRoom.isEmpty() || playersInRoom == null) {
             roomRepository.delete(room);}
+        if (playersInRoom.get(0).getName().contains("Computer")) {
+            resetPlayer(playersInRoom.get(0).getName());
+        }
         System.out.println("Player reset done");
     }
 
