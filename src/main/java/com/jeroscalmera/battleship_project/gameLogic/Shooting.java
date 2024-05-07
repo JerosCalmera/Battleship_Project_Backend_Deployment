@@ -22,6 +22,7 @@ public class Shooting {
     private RoomRepository roomRepository;
     private List<String> coOrdLetters = new ArrayList<>();
     private List<String> coOrdNumbers = new ArrayList<>();
+    private List<String> lost = new ArrayList<>();
     private Placing placing;
     public Shooting(PlayerRepository playerRepository, ShipRepository shipRepository, WebSocketMessageSender webSocketMessageSender, RoomRepository roomRepository, Placing placing) {
         this.playerRepository = playerRepository;
@@ -35,6 +36,10 @@ public class Shooting {
     public void computerCheck(String string) throws InterruptedException {
         Player playerToCheck;
         playerToCheck = playerRepository.findByNameContaining(string.substring(1, 5));
+        if (lost.contains(playerToCheck.getName())) {
+            lost.remove(playerToCheck.getName());
+            return;
+        }
         if (playerToCheck.isComputer()) {
             computerShoot(playerToCheck.getName());
         }
@@ -136,6 +141,7 @@ public class Shooting {
 
         if (allShipsDestroyed) {
             webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + playerToCheck.getRoom().getRoomNumber() + playerToCheck.getName() + " has had all their starships destroyed! And is defeated!"));
+            lost.add(playerToCheck.getName());
             Room roomToCheck = new Room();
             Room roomId = roomRepository.findRoomIdByPlayersId(playerToCheck.getId());
             List<Player> players = playerRepository.findPlayersByRoomId(roomId.getId());
