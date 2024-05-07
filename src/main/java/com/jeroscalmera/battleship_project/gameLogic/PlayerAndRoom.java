@@ -33,6 +33,7 @@ public class PlayerAndRoom {
         this.placing = placing;
         this.shooting = shooting;
     }
+
     boolean resetting = false;
 
     List<String> storedPlayers = new ArrayList<>();
@@ -62,30 +63,38 @@ public class PlayerAndRoom {
         lobby = lobbyRepository.findLobbySingleRoom(room.getRoomNumber());
         if (lobby != null) {
             lobbyRepository.delete(lobby);
-            System.out.printf("Lobby " + lobby.getLobbyRoom() + " deleted");
+            System.out.println("Lobby " + lobby.getLobbyRoom() + " deleted");
         }
         System.out.println("Players remaining in room " + room.getRoomNumber() + " is " + room.getPlayers().size());
         boolean playerPresent = roomRepository.existsByPlayersName(player.getName());
-        if (playerPresent)
-        {player.setRoom(null);
+        if (playerPresent) {
+            player.setRoom(null);
             room.removePlayerFromRoom(player);
-            System.out.println("removing player: " + player.getName());}
+            System.out.println("removing player: " + player.getName());
+        }
         player.setUnReady();
         player.setShips(null);
         playerRepository.save(player);
         roomRepository.save(room);
         System.out.println("Player reset done");
-        if (room.getPlayers() == null || room.getPlayers().isEmpty() || room.getPlayers().size() == 1)
-        {
+        if (room.getPlayers() == null || room.getPlayers().isEmpty() || room.getPlayers().size() == 1) {
             roomRepository.delete(room);
-            System.out.println("Deleting room: " + room.getRoomNumber());}
+            System.out.println("Deleting room: " + room.getRoomNumber());
+        }
         if (player.isComputer()) {
             playerRepository.delete(player);
             System.out.println(player.getName() + " deleted");
         }
         resetting = false;
         if (!storedPlayers.isEmpty()) {
-            resetPlayer(storedPlayers.get(0));}
+            resetPlayer(storedPlayers.get(0));
+        }
+        if (playersNotInRoom.contains(player)) {
+            playersNotInRoom.remove(player);
+            System.out.println("Removed from players not in room");
+        } else {
+            System.out.println("player not found in players not in room");
+        }
     }
 
     // Saves a bugreport to the database
