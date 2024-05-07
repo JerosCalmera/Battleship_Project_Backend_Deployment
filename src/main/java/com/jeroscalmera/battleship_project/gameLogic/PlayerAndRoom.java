@@ -33,36 +33,53 @@ public class PlayerAndRoom {
         this.placing = placing;
         this.shooting = shooting;
     }
+    boolean reseting = false;
 
-    // Restart a players room and ships, deletes the room the player is the last player removed from the room
+    List<String> storedPlayers = new ArrayList<>();
+
+    // Restart a players room and ships, deletes the room the player is the last player removed from the room, it will store players for reset if the function is already running
     public void resetPlayer(String playerName) {
-        System.out.println("Player name to delete from room: " + playerName.substring(1, 6));
         Player player = playerRepository.findByNameContaining(playerName.substring(1, 6));
+        if (placing.shipPlacement) {
+            webSocketMessageSender.sendMessage("/topic/chat", new Chat(player.getRoom().getRoomNumber() + "Admin: Auto ship placement in progress, cannot reset right now!"));
+            return;
+        }
+        if (reseting) {
+            storedPlayers.add(playerName);
+            return;
+        }
+        reseting = true;
+        if (storedPlayers.contains(playerName)) {
+            storedPlayers.remove(playerName);
+        }
+        System.out.println("Player name to delete from room: " + playerName.substring(1, 6));
         shipRepository.deleteAllCoOrdsByPlayerId(player.getId());
         Room room = roomRepository.findRoomByPlayersName(player.getName());
+        if (room == null) {
+            return;
+        }
+        System.out.println("Players remaining in room " + room.getRoomNumber() + " is " + room.getPlayers().size());
         boolean playerPresent = roomRepository.existsByPlayersName(player.getName());
         if (playerPresent)
-            {room.removePlayerFromRoom(player);
-            System.out.println("deleting player: " + player.getName());
-            roomRepository.save(room);}
-        if (room.getPlayers() == null || room.getPlayers().isEmpty() || room.getPlayers().size() == 1)
-            {roomRepository.delete(room);
-                System.out.println("Deleting room: " + room.getRoomNumber());}
-        else {
-            System.out.println("Players remaining in room: " + room.getPlayers().size());}
+        {player.setRoom(null);
+            room.removePlayerFromRoom(player);
+            System.out.println("deleting player: " + player.getName());}
         player.setUnReady();
         player.setShips(null);
-        player.setRoom(null);
         playerRepository.save(player);
         roomRepository.save(room);
-        List<Player> playersInRoom = new ArrayList<>();
-        playersInRoom = room.getPlayers();
-        if (playersInRoom.isEmpty() || playersInRoom == null) {
-            roomRepository.delete(room);}
-        if (playersInRoom.get(0).getName().contains("Computer")) {
-            resetPlayer(playersInRoom.get(0).getName());
-        }
         System.out.println("Player reset done");
+        if (room.getPlayers() == null || room.getPlayers().isEmpty() || room.getPlayers().size() == 1)
+        {
+            roomRepository.delete(room);
+            System.out.println("Deleting room: " + room.getRoomNumber());}
+        if (player.getName().contains("Computer")) {
+            playerRepository.delete(player);
+            System.out.println("Computer player deleted");
+        }
+        reseting = false;
+        if (!storedPlayers.isEmpty()) {
+            resetPlayer(storedPlayers.get(0));}
     }
 
     // Saves a bugreport to the database
