@@ -86,9 +86,6 @@ public class PlayerAndRoom {
         resetting = false;
         if (!storedPlayers.isEmpty()) {
             resetPlayer(storedPlayers.get(0));}
-        if (playersNotInRoom.contains(player.getName())) {
-            playersNotInRoom.remove(player.getName());
-        }
     }
 
     // Saves a bugreport to the database
@@ -238,7 +235,9 @@ public class PlayerAndRoom {
             } else {
                 String name = playerName.getName();
                 Player player = new Player(name);
-                playersNotInRoom.add(player);
+                if (!playersNotInRoom.contains(player)) {
+                    playersNotInRoom.add(player);
+                }
                 webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken()  + "Admin: Hello to our new player " + playerName.getName() + " your profile has been saved!"));
                 webSocketMessageSender.sendMessage("/topic/nameValidated", new Chat(playerName.getName()));
             }
@@ -250,7 +249,9 @@ public class PlayerAndRoom {
             {webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken() + "Admin: A Game against the Computer has been selected"));}
             String name = playerName.getName();
             Player player = new Player(name);
-            playersNotInRoom.add(player);
+            if (!playersNotInRoom.contains(player)) {
+                playersNotInRoom.add(player);
+            }
         }
     }
 
