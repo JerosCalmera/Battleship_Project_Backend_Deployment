@@ -18,6 +18,9 @@ public class Player implements Comparable<Player>{
     @Column(name = "name")
     private String name;
 
+    @Column(name = "playerNumber")
+    private String playerNumber;
+
     @Column(name = "player_is_computer")
     private boolean isComputer;
 
@@ -78,6 +81,14 @@ public class Player implements Comparable<Player>{
         isComputer = computer;
     }
 
+    public String getPlayerNumber() {
+        return playerNumber;
+    }
+
+    public void setPlayerNumber(String playerNumber) {
+        this.playerNumber = playerNumber;
+    }
+
     public Room getRoom() {
         return room;
     }
@@ -115,6 +126,13 @@ public class Player implements Comparable<Player>{
         return this.level;
     }
 
+    public String generatePlayerNumber() {
+            Random random = new Random();
+            int randomNumber = random.nextInt(100000);
+            String formattedRandom = String.format("%05d", randomNumber);
+            return formattedRandom;
+        }
+
     public void setLevel(int level) {
         this.level = level;
     }
@@ -144,6 +162,10 @@ public class Player implements Comparable<Player>{
 
     public boolean isReady() {
         return ready;
+    }
+
+    public void setReady(boolean ready) {
+        this.ready = ready;
     }
 
     public String getAiShot() {
@@ -177,5 +199,8 @@ public class Player implements Comparable<Player>{
     public void setRoomNumber(String roomNumber) {
         this.roomNumber = roomNumber;
     }
-    
+
+    public boolean isAiHitCheck() {
+        return aiHitCheck;
+    }
 }
