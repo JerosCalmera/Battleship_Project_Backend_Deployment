@@ -86,8 +86,8 @@ public class PlayerAndRoom {
         resetting = false;
         if (!storedPlayers.isEmpty()) {
             resetPlayer(storedPlayers.get(0));}
-        if (playersNotInRoom.contains(player)) {
-            playersNotInRoom.remove(player);
+        if (playersNotInRoom.contains(player.getName())) {
+            playersNotInRoom.remove(player.getName());
         }
     }
 
@@ -228,7 +228,7 @@ public class PlayerAndRoom {
             }
         }
 
-        // Handles a players name entry from the frontend
+        // Handles a players name entry from the frontenda
     public void handleNewPlayer(Player playerName) throws InterruptedException {
         Thread.sleep(100);
         List<String> players = playerRepository.findName();
