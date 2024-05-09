@@ -246,7 +246,11 @@ public class PlayerAndRoom {
                 Player player = new Player(name);
                 if (!playersNotInRoom.contains(player)) {
                     playersNotInRoom.add(player);
+                    System.out.println(player.getName() + " added to players not in room list");
                 }
+                else
+                {
+                    System.out.println(player.getName() + " was not added to players in room");}
                 webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken()  + "Admin: Hello to our new player " + playerName.getName() + " your profile has been saved!"));
                 webSocketMessageSender.sendMessage("/topic/nameValidated", new Chat(playerName.getName()));
             }
@@ -258,8 +262,13 @@ public class PlayerAndRoom {
             {webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken() + "Admin: A Game against the Computer has been selected"));}
             String name = playerName.getName();
             Player player = new Player(name);
-            if (!playersNotInRoom.contains(player)) {
-                playersNotInRoom.add(player);
+                if (!playersNotInRoom.contains(player)) {
+                    playersNotInRoom.add(player);
+                    System.out.println(player.getName() + " added to players not in room list");
+                }
+                else
+                {
+                    System.out.println(player.getName() + " was not added to players in room");
             }
         }
     }
