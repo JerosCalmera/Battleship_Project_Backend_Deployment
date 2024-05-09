@@ -291,9 +291,9 @@ public class PlayerAndRoom {
         handleNewPlayer(computerPlayerCreated);
         System.out.println("Computer string: " + startComputerGame.substring(1, 5) + computerPlayerCreated.getName());
         Thread.sleep(50);
-        handlePassword( ("C" + startComputerGame.substring(1, 5)) + computerPlayerCreated.getName());
+        handlePassword( startComputerGame.substring(0, 4) + computerPlayerCreated.getName());
         Thread.sleep(50);
-        handlePassword(("C" + startComputerGame.substring(1, 5)) + startComputerGame.substring(5, 10));
+        handlePassword (startComputerGame.substring(0, 4) + startComputerGame.substring(4, 9));
         Thread.sleep(50);
         Thread placeShipsThread = new Thread(() -> {
             try {
