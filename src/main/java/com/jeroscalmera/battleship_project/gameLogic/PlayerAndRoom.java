@@ -190,7 +190,9 @@ public class PlayerAndRoom {
     // Handles the room number submission from the frontend and decides if it is an existing room or a new one, creates a lobby for validating room information before its creation
     public void handlePassword(String roomNumber) throws InterruptedException {
         String roomNumberFound = roomNumber.substring(1, 5);
+        System.out.println("Starting room creation, room number = " + roomNumberFound);
         String playerName = roomNumber.substring(5, 10);
+        System.out.println("Player used for this room = " + playerName);
         Player player = playerRepository.findByNameContaining(playerName);
             if (!lobbyRepository.findLobbyRoomExists(roomNumberFound)) {
                 Lobby roomToSave = new Lobby(roomNumberFound);
@@ -289,10 +291,16 @@ public class PlayerAndRoom {
         playerRepository.save(computerPlayerCreated);
         handleNewPlayer(computerPlayerCreated);
         Thread.sleep(50);
-        handlePassword(roomNumber);
+        handlePassword(roomNumber + computerPlayerCreated.getName());
         Thread.sleep(50);
-        handlePassword(roomNumber);
-        Thread.sleep(50);;
+        List<Player> playersNotInRoom = new ArrayList<>();
+        playersNotInRoom = playerRepository.findByStoredRoomNumber(roomNumber);
+        for (Player humanPlayer: playersNotInRoom) {
+            if (!humanPlayer.isComputer()); {
+                handlePassword(roomNumber + humanPlayer.getName());
+            }
+        }
+        Thread.sleep(50);
         Thread placeShipsThread = new Thread(() -> {
             try {
                 placing.computerPlaceShips(computerPlayerCreated);
