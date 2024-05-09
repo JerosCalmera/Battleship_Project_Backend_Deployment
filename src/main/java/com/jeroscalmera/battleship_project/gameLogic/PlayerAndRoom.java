@@ -41,6 +41,8 @@ public class PlayerAndRoom {
     // Restart a players room and ships, deletes any leftover lobby, deletes the room the player is the last player removed from the room, it will store players for reset if the function is already running, deletes computer players when no longer needed
     public void resetPlayer(String playerName) {
         Player player = playerRepository.findByNameContaining(playerName.substring(1, 6));
+        for (Player playerFound: playersNotInRoom) {
+            System.out.println("Player found in players not in room list :" + playerFound.getName());}
         if (playersNotInRoom.contains(player)) {
             playersNotInRoom.remove(player);
             System.out.println("Removed from players not in room");
@@ -234,7 +236,7 @@ public class PlayerAndRoom {
             }
         }
 
-        // Handles a players name entry from the frontenda
+        // Handles a players name entry from the frontend
     public void handleNewPlayer(Player playerName) throws InterruptedException {
         Thread.sleep(100);
         List<String> players = playerRepository.findName();
