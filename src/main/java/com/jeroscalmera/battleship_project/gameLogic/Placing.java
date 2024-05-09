@@ -214,7 +214,7 @@ public class Placing {
         int randomCoOrd = random.nextInt(100);
         // Of random CoOrd letter = index 0, number index 1,
         String firstCoOrd = computerAllCoOrds.get(randomCoOrd);
-        int rando = random.nextInt(4);
+        int rando = random.nextInt(3);
         int firstCoOrdIndexLetter = coOrdLetters.indexOf(String.valueOf(firstCoOrd.charAt(0)));
         int firstCoOrdIndexNumber = coOrdNumbers.indexOf(String.valueOf(firstCoOrd.charAt(1)));
         int secondCoOrdIndexLetter = 0;
@@ -318,11 +318,7 @@ public class Placing {
             secondCoOrdIndexNumber = firstCoOrdIndexNumber - 1;
         } else if (rando == 2) {
             secondCoOrdIndexLetter = firstCoOrdIndexLetter + 1;
-            secondCoOrdIndexNumber = firstCoOrdIndexNumber;
-        } else if (rando == 3) {
-            secondCoOrdIndexLetter = firstCoOrdIndexLetter - 1;
-            secondCoOrdIndexNumber = firstCoOrdIndexNumber;
-        }
+            secondCoOrdIndexNumber = firstCoOrdIndexNumber;}
         String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
         if (computerGame) {
             return secondCoOrd;
@@ -335,7 +331,7 @@ public class Placing {
     // Logic so that the computer can automatically place ships in a random fashion
     public void computerPlaceShips(Player player) throws InterruptedException {
         if (shipPlacement) {
-            webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + player.getRoom().getRoomNumber() + "Admin: The computer is placing ships, please wait and try again"));
+            webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + player.getRoomNumber() + "Admin: The computer is placing ships, please wait and try again"));
             return;
         }
         shipPlacement = true;
