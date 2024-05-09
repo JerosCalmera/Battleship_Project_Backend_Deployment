@@ -43,13 +43,10 @@ public class PlayerAndRoom {
         Player player = playerRepository.findByNameContaining(playerName.substring(1, 6));
         System.out.println("Player name to remove from players not in room list: " + player.getName());
         for (Player playerFound: playersNotInRoom) {
-            System.out.println("Players found in players not in room list: " + playerFound.getName());}
-        if (playersNotInRoom.contains(player)) {
-            playersNotInRoom.remove(player);
-            System.out.println("Removed from players not in room");
-        } else {
-            System.out.println("player not found in players not in room");
-        }
+            if (Objects.equals(playerFound.getName(), player.getName())) {
+                playersNotInRoom.remove(player);
+                System.out.println("Player found and removed from players not in room list : " + player.getName());
+            } else {System.out.println("player not found in players not in room list");}}
         if (placing.shipPlacement) {
             webSocketMessageSender.sendMessage("/topic/chat", new Chat(player.getRoom().getRoomNumber() + "Admin: Auto ship placement in progress, cannot reset right now!"));
             return;
