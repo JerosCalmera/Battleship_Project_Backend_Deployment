@@ -69,8 +69,8 @@ public class MessageController {
     }
 
     @MessageMapping("/randomPlacement")
-    public void handleRandomPlacement(Player name) throws InterruptedException {
-        placing.computerPlaceShips(name);
+    public void handleRandomPlacement(String name) throws InterruptedException {
+        placing.computerPlaceShips(name.substring(1, name.length() -1));
     }
     @MessageMapping("/restart")
     public void handleRestart(String playerName) {playerAndRoom.resetPlayer(playerName);
