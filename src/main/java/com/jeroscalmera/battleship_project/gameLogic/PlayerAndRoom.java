@@ -282,7 +282,7 @@ public class PlayerAndRoom {
     public void computerMatchStart(String startComputerGame) throws InterruptedException {
         System.out.println("input: " + startComputerGame);
         Random random = new Random();
-        int rando = random.nextInt(10000);
+        int rando = random.nextInt(10000);{{
         String randomNumber = String.format("%05d", rando);
         String ident = randomNumber;
         Player computerPlayerCreated = new Player();
@@ -292,9 +292,9 @@ public class PlayerAndRoom {
         handleNewPlayer(computerPlayerCreated);
         System.out.println("Computer string: " + startComputerGame.substring(1, 5) + computerPlayerCreated.getName());
         Thread.sleep(50);
-        handlePassword( startComputerGame.substring(1, 5) + computerPlayerCreated.getName());
+        handlePassword( "C" + startComputerGame.substring(1, 5) + computerPlayerCreated.getName());
         Thread.sleep(50);
-        handlePassword (startComputerGame.substring(1, 5) + startComputerGame.substring(5, 9));
+        handlePassword ("C" + startComputerGame.substring(1, 5) + startComputerGame.substring(5, 9));
         Thread.sleep(50);
         Thread placeShipsThread = new Thread(() -> {
             try {
