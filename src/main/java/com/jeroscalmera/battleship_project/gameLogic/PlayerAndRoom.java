@@ -279,7 +279,7 @@ public class PlayerAndRoom {
     }
 
     // Logic for a computer player to prepare itself for the game
-    public void computerMatchStart(String roomNumber, String humanPlayer) throws InterruptedException {
+    public void computerMatchStart(String startComputerGame) throws InterruptedException {
         Random random = new Random();
         int rando = random.nextInt(10000);
         String randomNumber = String.format("%05d", rando);
@@ -290,9 +290,9 @@ public class PlayerAndRoom {
         playerRepository.save(computerPlayerCreated);
         handleNewPlayer(computerPlayerCreated);
         Thread.sleep(50);
-        handlePassword(roomNumber + computerPlayerCreated.getName());
+        handlePassword(startComputerGame.substring(1, 5) + computerPlayerCreated.getName());
         Thread.sleep(50);
-        handlePassword(roomNumber + humanPlayer);
+        handlePassword(startComputerGame.substring(1, 5) + startComputerGame.substring(5, 10));
         Thread.sleep(50);
         Thread placeShipsThread = new Thread(() -> {
             try {
@@ -304,7 +304,7 @@ public class PlayerAndRoom {
         placeShipsThread.start();
         placeShipsThread.join();
         matchStart(computerPlayerCreated.getName());
-        webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + roomNumber.substring(1, roomNumber.length() - 1) + "Admin: Computer player ready"));
+        webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + startComputerGame.substring(1, 5) + "Admin: Computer player ready"));
     }
 }
 
