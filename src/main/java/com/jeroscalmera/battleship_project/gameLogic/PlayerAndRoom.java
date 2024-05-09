@@ -282,7 +282,7 @@ public class PlayerAndRoom {
     public void computerMatchStart(String startComputerGame) throws InterruptedException {
         System.out.println("input: " + startComputerGame);
         Random random = new Random();
-        int rando = random.nextInt(10000);{{
+        int rando = random.nextInt(10000);
         String randomNumber = String.format("%05d", rando);
         String ident = randomNumber;
         Player computerPlayerCreated = new Player();
