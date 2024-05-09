@@ -329,7 +329,8 @@ public class Placing {
     public boolean shipPlacement = false;
 
     // Logic so that the computer can automatically place ships in a random fashion
-    public void computerPlaceShips(Player player) throws InterruptedException {
+    public void computerPlaceShips(Player playerName) throws InterruptedException {
+        Player player = playerRepository.findByNameContaining(playerName.getName().substring(1,3));
         if (shipPlacement) {
             webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + player.getRoomNumber() + "Admin: The computer is placing ships, please wait and try again"));
             return;
