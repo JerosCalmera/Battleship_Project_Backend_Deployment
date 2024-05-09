@@ -42,9 +42,9 @@ public class PlayerAndRoom {
     public void resetPlayer(String playerName) {
         Player player = playerRepository.findByNameContaining(playerName.substring(1, 6));
         for (Player playerFound: playersNotInRoom) {
-            System.out.println("Player found in players not in room list :" + playerFound.getName());}
-        if (playersNotInRoom.contains(player)) {
-            playersNotInRoom.remove(player);
+            System.out.println("Players found in players not in room list: " + playerFound.getName());}
+        if (playersNotInRoom.contains(player.getName())) {
+            playersNotInRoom.remove(player.getName());
             System.out.println("Removed from players not in room");
         } else {
             System.out.println("player not found in players not in room");
