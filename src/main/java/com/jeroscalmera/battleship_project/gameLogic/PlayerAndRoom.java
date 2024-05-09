@@ -201,11 +201,13 @@ public class PlayerAndRoom {
                 webSocketMessageSender.sendMessage("/topic/connect", new Greeting("Server: Room saved!"));
                 webSocketMessageSender.sendMessage("/topic/hidden", new Hidden(roomNumberFound + "Server: Room saved!"));
                 player.setRoomNumber(roomNumberFound);
+                playerRepository.save(player);
             } else {
                 Lobby roomToValidate = lobbyRepository.findLobbySingleRoom(roomNumberFound);
                 roomToValidate.setValidated(true);
                 lobbyRepository.save(roomToValidate);
                 player.setRoomNumber(roomNumberFound);
+                playerRepository.save(player);
             }
             Lobby roomToCheck = lobbyRepository.findLobbySingleRoom(roomNumberFound);
             if (roomToCheck.isSaved() && roomToCheck.isValidated()) {
