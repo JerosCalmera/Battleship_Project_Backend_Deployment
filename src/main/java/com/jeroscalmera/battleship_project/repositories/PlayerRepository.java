@@ -24,13 +24,8 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
     @Query
     Player findPlayerById(Long id);
 
-
-    @Query("SELECT p.name FROM Player p WHERE p.room.roomNumber = :roomNumber")
-    List<Player> findPlayerNamesByRoomNumber(@Param("roomNumber") String roomNumber);
-
-    @Query("SELECT p FROM Player p WHERE p.room.roomNumber = :roomNumber")
-    List<Player> findPlayersByRoomNumber(@Param("roomNumber") String roomNumber);
-
+    @Query
+    List<Player> findByStoredRoomNumber(String storedRoomNumber);
 
     @Query("SELECT p FROM Player p WHERE p.name LIKE %:name%")
     Player findByNameContaining(@Param("name") String name);
@@ -41,7 +36,6 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
 
     @Query("SELECT s.coOrds FROM Ship s WHERE s.player.playerNumber = :playerNumber")
     List<String> findAllCoOrdsByPlayerNumber(@Param("playerNumber") String playerNumber);
-
 
     @Query
     String findAllCoOrdsById(Long id);

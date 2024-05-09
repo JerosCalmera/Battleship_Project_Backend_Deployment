@@ -27,6 +27,9 @@ public class Player implements Comparable<Player>{
     @Column(name = "level")
     private int level;
 
+    @Column(name = "stored_room_number")
+    private String storedRoomNumber;
+
     @Column(name = "room")
     private String roomNumber;
     @OneToMany(mappedBy = "player")
@@ -193,11 +196,11 @@ public class Player implements Comparable<Player>{
     }
 
     public String getRoomNumber() {
-        return roomNumber;
+        return storedRoomNumber;
     }
 
-    public void setRoomNumber(String roomNumber) {
-        this.roomNumber = roomNumber;
+    public void setRoomNumber(String storedRoomNumber) {
+        this.storedRoomNumber = storedRoomNumber;
     }
 
     public boolean isAiHitCheck() {

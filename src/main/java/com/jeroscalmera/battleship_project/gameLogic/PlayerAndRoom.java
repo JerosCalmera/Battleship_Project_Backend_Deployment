@@ -19,7 +19,7 @@ public class PlayerAndRoom {
 
     private LobbyRepository lobbyRepository;
     private WebSocketMessageSender webSocketMessageSender;
-    private static final List<Player> playersNotInRoom = new ArrayList<>();
+//    private static final List<Player> playersNotInRoom = new ArrayList<>();
     private Placing placing;
     private Shooting shooting;
 
@@ -41,12 +41,12 @@ public class PlayerAndRoom {
     // Restart a players room and ships, deletes any leftover lobby, deletes the room the player is the last player removed from the room, it will store players for reset if the function is already running, deletes computer players when no longer needed
     public void resetPlayer(String playerName) {
         Player player = playerRepository.findByNameContaining(playerName.substring(1, 6));
-        System.out.println("Player name to remove from players not in room list: " + player.getName());
-        for (Player playerFound: playersNotInRoom) {
-            if (Objects.equals(playerFound.getName(), player.getName())) {
-                playersNotInRoom.remove(player);
-                System.out.println("Player found and removed from players not in room list : " + player.getName());
-            } else {System.out.println("player not found in players not in room list");}}
+//        System.out.println("Player name to remove from players not in room list: " + player.getName());
+//        for (Player playerFound: playersNotInRoom) {
+//            if (Objects.equals(playerFound.getName(), player.getName())) {
+//                playersNotInRoom.remove(player);
+//                System.out.println("Player found and removed from players not in room list : " + player.getName());
+//            } else {System.out.println("player not found in players not in room list");}}
         if (placing.shipPlacement) {
             webSocketMessageSender.sendMessage("/topic/chat", new Chat(player.getRoom().getRoomNumber() + "Admin: Auto ship placement in progress, cannot reset right now!"));
             return;
@@ -80,6 +80,7 @@ public class PlayerAndRoom {
         }
         player.setUnReady();
         player.setShips(null);
+        player.setRoomNumber(null);
         playerRepository.save(player);
         roomRepository.save(room);
         System.out.println("Player reset done");
@@ -188,34 +189,38 @@ public class PlayerAndRoom {
 
     // Handles the room number submission from the frontend and decides if it is an existing room or a new one, creates a lobby for validating room information before its creation
     public void handlePassword(String roomNumber) throws InterruptedException {
-        roomNumber = roomNumber.substring(1, roomNumber.length() - 1);
-            if
-            (!lobbyRepository.findLobbyRoomExists(roomNumber)) {
-                Lobby roomToSave = new Lobby(roomNumber);
+        String roomNumberFound = roomNumber.substring(1, 5);
+        String playerName = roomNumber.substring(5, 10);
+        Player player = playerRepository.findByNameContaining(playerName);
+            if (!lobbyRepository.findLobbyRoomExists(roomNumberFound)) {
+                Lobby roomToSave = new Lobby(roomNumberFound);
                 roomToSave.setSaved(true);
                 lobbyRepository.save(roomToSave);
                 webSocketMessageSender.sendMessage("/topic/connect", new Greeting("Server: Room saved!"));
-                webSocketMessageSender.sendMessage("/topic/hidden", new Hidden(roomNumber + "Server: Room saved!"));
+                webSocketMessageSender.sendMessage("/topic/hidden", new Hidden(roomNumberFound + "Server: Room saved!"));
+                player.setRoomNumber(roomNumberFound);
             } else {
-                Lobby roomToValidate = lobbyRepository.findLobbySingleRoom(roomNumber);
+                Lobby roomToValidate = lobbyRepository.findLobbySingleRoom(roomNumberFound);
                 roomToValidate.setValidated(true);
                 lobbyRepository.save(roomToValidate);
+                player.setRoomNumber(roomNumberFound);
             }
-            Lobby roomToCheck = lobbyRepository.findLobbySingleRoom(roomNumber);
+            Lobby roomToCheck = lobbyRepository.findLobbySingleRoom(roomNumberFound);
             if (roomToCheck.isSaved() && roomToCheck.isValidated()) {
                 webSocketMessageSender.sendMessage("/topic/connect", new Greeting("Server: Rooms synced"));
-                webSocketMessageSender.sendMessage("/topic/hidden", new Hidden(roomNumber + "Server: Room synced!"));
-                Room addRoom = new Room(roomNumber);
-                addRoom.setRoomNumber(roomNumber.substring(0, 4));
+                webSocketMessageSender.sendMessage("/topic/hidden", new Hidden(roomNumberFound + "Server: Room synced!"));
+                Room addRoom = new Room(roomNumberFound);
+                addRoom.setRoomNumber(roomNumberFound);
                 roomRepository.save(addRoom);
                 Thread.sleep(50);
+                List<Player> playersNotInRoom = new ArrayList<>();
+                playersNotInRoom = playerRepository.findByStoredRoomNumber(roomNumberFound);
                 for (Player newPlayer : playersNotInRoom) {
                     Player playerToFind = playerRepository.findByName(newPlayer.getName());
                     if (playerToFind != null) {
                         playerToFind.setRoom(addRoom);
                         shipRepository.deleteAllCoOrdsByPlayerId((playerToFind.getId()));
                         playerRepository.save(playerToFind);
-
                     } else {
                         newPlayer.setRoom(addRoom);
                         shipRepository.deleteAllCoOrdsByPlayerId((newPlayer.getId()));
@@ -242,15 +247,15 @@ public class PlayerAndRoom {
             if (players.stream().anyMatch(name -> name.startsWith(playerName.getName().substring(0, 4)))) {
                 webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken() + "Admin: Sorry, " + playerName.getName() + " is too similar to an existing username!"));
             } else {
-                String name = playerName.getName();
-                Player player = new Player(name);
-                if (!playersNotInRoom.contains(player)) {
-                    playersNotInRoom.add(player);
-                    System.out.println("New player" + player.getName() + " added to players not in room list");
-                }
-                else
-                {
-                    System.out.println(player.getName() + " was not added to players in room");}
+//                String name = playerName.getName();
+//                Player player = new Player(name);
+//                if (!playersNotInRoom.contains(player)) {
+//                    playersNotInRoom.add(player);
+//                    System.out.println("New player" + player.getName() + " added to players not in room list");
+//                }
+//                else
+//                {
+//                    System.out.println(player.getName() + " was not added to players in room");}
                 webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken()  + "Admin: Hello to our new player " + playerName.getName() + " your profile has been saved!"));
                 webSocketMessageSender.sendMessage("/topic/nameValidated", new Chat(playerName.getName()));
             }
@@ -260,15 +265,15 @@ public class PlayerAndRoom {
                 webSocketMessageSender.sendMessage("/topic/nameValidated", new Chat(playerName.getName()));
             }else
             {webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken() + "Admin: A Game against the Computer has been selected"));}
-            Player player = playerRepository.findByNameContaining(playerName.getName());
-                if (!playersNotInRoom.contains(player)) {
-                    playersNotInRoom.add(player);
-                    System.out.println(player.getName() + " added to players not in room list");
-                }
-                else
-                {
-                    System.out.println(player.getName() + " was not added to players in room");
-            }
+//            Player player = playerRepository.findByNameContaining(playerName.getName());
+//                if (!playersNotInRoom.contains(player)) {
+//                    playersNotInRoom.add(player);
+//                    System.out.println(player.getName() + " added to players not in room list");
+//                }
+//                else
+//                {
+//                    System.out.println(player.getName() + " was not added to players in room");
+//            }
         }
     }
 
