@@ -201,6 +201,7 @@ public class PlayerAndRoom {
             } else {
                 if (Objects.equals(player.getRoomNumber(), roomNumberFound)){
                     webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken()  + "Admin: " + player.getName() + " You have rejoined the lobby for your room"));
+                    webSocketMessageSender.sendMessage("/topic/hidden", new Hidden(roomNumberFound + "Server: Room saved!"));
                     return;
                 }
                 Lobby roomToValidate = lobbyRepository.findLobbySingleRoom(roomNumberFound);
