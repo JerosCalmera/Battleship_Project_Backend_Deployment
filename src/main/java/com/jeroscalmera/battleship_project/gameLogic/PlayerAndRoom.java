@@ -46,6 +46,12 @@ public class PlayerAndRoom {
             System.out.println("Cancelling reset at ship placement is happening");
             return;
         }
+        Lobby lobby = new Lobby();
+        lobby = lobbyRepository.findLobbySingleRoom(player.getRoomNumber());
+        if (lobby != null) {
+            lobbyRepository.delete(lobby);
+            System.out.println("Lobby " + lobby.getLobbyRoom() + " deleted");
+        }
         if (resetting) {
             storedPlayers.add(playerName);
             System.out.println("Queuing reset as another player is being reset");
@@ -54,18 +60,13 @@ public class PlayerAndRoom {
         resetting = true;
         if (storedPlayers.contains(playerName)) {
             storedPlayers.remove(playerName);
+            System.out.println("player removed for reset queue");
         }
         System.out.println("Player name to remove from room: " + player.getName());
         shipRepository.deleteAllCoOrdsByPlayerId(player.getId());
         Room room = roomRepository.findRoomByPlayersName(player.getName());
         if (room == null) {
             return;
-        }
-        Lobby lobby = new Lobby();
-        lobby = lobbyRepository.findLobbySingleRoom(player.getRoomNumber());
-        if (lobby != null) {
-            lobbyRepository.delete(lobby);
-            System.out.println("Lobby " + lobby.getLobbyRoom() + " deleted");
         }
         System.out.println("Players remaining in room " + room.getRoomNumber() + " is " + room.getPlayers().size());
         boolean playerPresent = roomRepository.existsByPlayersName(player.getName());
