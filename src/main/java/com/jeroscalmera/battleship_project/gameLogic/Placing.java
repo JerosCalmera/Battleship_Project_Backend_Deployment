@@ -214,7 +214,7 @@ public class Placing {
         int randomCoOrd = random.nextInt(100);
         // Of random CoOrd letter = index 0, number index 1,
         String firstCoOrd = computerAllCoOrds.get(randomCoOrd);
-        int rando = random.nextInt(3);
+        int rando = random.nextInt(4);
         int firstCoOrdIndexLetter = coOrdLetters.indexOf(String.valueOf(firstCoOrd.charAt(0)));
         int firstCoOrdIndexNumber = coOrdNumbers.indexOf(String.valueOf(firstCoOrd.charAt(1)));
         int secondCoOrdIndexLetter = 0;
@@ -319,7 +319,7 @@ public class Placing {
         } else if (rando == 2) {
             secondCoOrdIndexLetter = firstCoOrdIndexLetter + 1;
             secondCoOrdIndexNumber = firstCoOrdIndexNumber;
-        } else {
+        } else if (rando == 3) {
             secondCoOrdIndexLetter = firstCoOrdIndexLetter - 1;
             secondCoOrdIndexNumber = firstCoOrdIndexNumber;
         }
