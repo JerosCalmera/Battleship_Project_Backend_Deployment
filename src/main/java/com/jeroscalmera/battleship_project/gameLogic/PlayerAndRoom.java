@@ -191,7 +191,7 @@ public class PlayerAndRoom {
     public void handlePassword(String roomNumber) throws InterruptedException {
         String roomNumberFound = roomNumber.substring(1, 5);
         System.out.println("Starting room creation, room number = " + roomNumberFound);
-        String playerName = roomNumber.substring(6, 11);
+        String playerName = roomNumber.substring(5, 10);
         System.out.println("Player used for this room = " + playerName);
         Player player = playerRepository.findByNameContaining(playerName);
             if (!lobbyRepository.findLobbyRoomExists(roomNumberFound)) {
