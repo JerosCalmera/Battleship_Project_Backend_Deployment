@@ -290,6 +290,7 @@ public class PlayerAndRoom {
         computerPlayerCreated.setComputer(true);
         playerRepository.save(computerPlayerCreated);
         handleNewPlayer(computerPlayerCreated);
+        System.out.println("Computer string: " + startComputerGame.substring(1, 5) + computerPlayerCreated.getName());
         Thread.sleep(50);
         handlePassword(startComputerGame.substring(1, 5) + computerPlayerCreated.getName());
         Thread.sleep(50);
