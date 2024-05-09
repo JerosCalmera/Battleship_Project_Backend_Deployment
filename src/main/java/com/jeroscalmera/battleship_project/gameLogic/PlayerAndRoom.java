@@ -194,6 +194,7 @@ public class PlayerAndRoom {
                 Lobby roomToSave = new Lobby(roomNumberFound);
                 roomToSave.setSaved(true);
                 lobbyRepository.save(roomToSave);
+                System.out.println("Creating lobby for " + playerName);
                 webSocketMessageSender.sendMessage("/topic/connect", new Greeting("Server: Room saved!"));
                 webSocketMessageSender.sendMessage("/topic/hidden", new Hidden(roomNumberFound + "Server: Room saved!"));
                 player.setRoomNumber(roomNumberFound);
