@@ -280,6 +280,7 @@ public class PlayerAndRoom {
 
     // Logic for a computer player to prepare itself for the game
     public void computerMatchStart(String startComputerGame) throws InterruptedException {
+        System.out.println("Start computer game string: " +  startComputerGame);
         Random random = new Random();
         int rando = random.nextInt(10000);
         String randomNumber = String.format("%05d", rando);
