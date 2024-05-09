@@ -140,7 +140,6 @@ public class PlayerAndRoom {
         else if (activeRoom.getPlayersReady() == 1) {
             activeRoom.setPlayersReady(2);
             roomRepository.save(activeRoom);
-            Lobby lobbyRoomToDelete = lobbyRepository.findLobbySingleRoom(activeRoom.getRoomNumber());
             coinFlip(playerName);
         }
     }
@@ -161,7 +160,7 @@ public class PlayerAndRoom {
                 shooting.computerShoot(player.getName());
             }
             webSocketMessageSender.sendMessage("/topic/chat", new Chat( ChatToken.generateChatToken() + room.getRoomNumber() + player.getName() + " has won the coin flip and goes first!"));
-            lobbyRepository.delete(lobby);
+            ;
         }
         else {
             if (Objects.equals(playerList.get(0).getName(), player.getName())) {
@@ -181,7 +180,7 @@ public class PlayerAndRoom {
             webSocketMessageSender.sendMessage("/topic/turn", new Chat(room.getRoomNumber() + playerToSelect.getName()));
         }}}
         webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken()+ room.getRoomNumber() + "All ships placed! Match Start!"));
-        lobbyRepository.delete(lobby);
+        ;
     }
 
     // Handles the room number submission from the frontend and decides if it is an existing room or a new one, creates a lobby for validating room information before its creation
@@ -200,6 +199,10 @@ public class PlayerAndRoom {
                 player.setRoomNumber(roomNumberFound);
                 playerRepository.save(player);
             } else {
+                if (Objects.equals(player.getRoomNumber(), roomNumberFound)){
+                    webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken()  + "Admin: " + player.getName() + " You have rejoined the lobby for your room"));
+                    return;
+                }
                 Lobby roomToValidate = lobbyRepository.findLobbySingleRoom(roomNumberFound);
                 roomToValidate.setValidated(true);
                 lobbyRepository.save(roomToValidate);
@@ -210,6 +213,8 @@ public class PlayerAndRoom {
             if (roomToCheck.isSaved() && roomToCheck.isValidated()) {
                 webSocketMessageSender.sendMessage("/topic/connect", new Greeting("Server: Rooms synced"));
                 webSocketMessageSender.sendMessage("/topic/hidden", new Hidden(roomNumberFound + "Server: Room synced!"));
+                Lobby lobbyRoomToDelete = lobbyRepository.findLobbySingleRoom(player.getRoomNumber());
+                lobbyRepository.delete(lobbyRoomToDelete);
                 Room addRoom = new Room(roomNumberFound);
                 addRoom.setRoomNumber(roomNumberFound);
                 System.out.println("Room created: " + roomNumberFound);
