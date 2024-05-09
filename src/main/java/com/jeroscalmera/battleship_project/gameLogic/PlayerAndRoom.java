@@ -276,7 +276,7 @@ public class PlayerAndRoom {
         Thread.sleep(50);
         Thread placeShipsThread = new Thread(() -> {
             try {
-                placing.computerPlaceShips(computerPlayerCreated);
+                placing.computerPlaceShips(computerPlayerCreated.getName());
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
