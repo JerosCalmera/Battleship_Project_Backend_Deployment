@@ -279,7 +279,7 @@ public class PlayerAndRoom {
     }
 
     // Logic for a computer player to prepare itself for the game
-    public void computerMatchStart(String roomNumber) throws InterruptedException {
+    public void computerMatchStart(String roomNumber, String humanPlayer) throws InterruptedException {
         Random random = new Random();
         int rando = random.nextInt(10000);
         String randomNumber = String.format("%05d", rando);
@@ -292,13 +292,7 @@ public class PlayerAndRoom {
         Thread.sleep(50);
         handlePassword(roomNumber + computerPlayerCreated.getName());
         Thread.sleep(50);
-        List<Player> playersNotInRoom = new ArrayList<>();
-        playersNotInRoom = playerRepository.findByStoredRoomNumber(roomNumber);
-        for (Player humanPlayer: playersNotInRoom) {
-            if (!humanPlayer.isComputer()); {
-                handlePassword(roomNumber + humanPlayer.getName());
-            }
-        }
+        handlePassword(roomNumber + humanPlayer);
         Thread.sleep(50);
         Thread placeShipsThread = new Thread(() -> {
             try {

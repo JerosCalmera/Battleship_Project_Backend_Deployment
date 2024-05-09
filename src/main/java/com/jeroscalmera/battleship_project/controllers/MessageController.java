@@ -100,8 +100,8 @@ public class MessageController {
     }
 
     @MessageMapping("/computer")
-    public void computer(String roomNumber) throws InterruptedException {
-        playerAndRoom.computerMatchStart(roomNumber);
+    public void computer(String roomNumber, String humanPlayer) throws InterruptedException {
+        playerAndRoom.computerMatchStart(roomNumber + humanPlayer);
     }
 
     @MessageMapping("/miss")
