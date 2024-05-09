@@ -43,8 +43,8 @@ public class PlayerAndRoom {
         Player player = playerRepository.findByNameContaining(playerName.substring(1, 6));
         for (Player playerFound: playersNotInRoom) {
             System.out.println("Players found in players not in room list: " + playerFound.getName());}
-        if (playersNotInRoom.contains(player.getName())) {
-            playersNotInRoom.remove(player.getName());
+        if (playersNotInRoom.contains(player)) {
+            playersNotInRoom.remove(player);
             System.out.println("Removed from players not in room");
         } else {
             System.out.println("player not found in players not in room");
@@ -248,7 +248,7 @@ public class PlayerAndRoom {
                 Player player = new Player(name);
                 if (!playersNotInRoom.contains(player)) {
                     playersNotInRoom.add(player);
-                    System.out.println(player.getName() + " added to players not in room list");
+                    System.out.println("New player" + player.getName() + " added to players not in room list");
                 }
                 else
                 {
@@ -262,8 +262,7 @@ public class PlayerAndRoom {
                 webSocketMessageSender.sendMessage("/topic/nameValidated", new Chat(playerName.getName()));
             }else
             {webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken() + "Admin: A Game against the Computer has been selected"));}
-            String name = playerName.getName();
-            Player player = new Player(name);
+            Player player = playerRepository.findByNameContaining(playerName.getName());
                 if (!playersNotInRoom.contains(player)) {
                     playersNotInRoom.add(player);
                     System.out.println(player.getName() + " added to players not in room list");
