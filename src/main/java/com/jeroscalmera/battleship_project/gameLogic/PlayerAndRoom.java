@@ -19,7 +19,6 @@ public class PlayerAndRoom {
 
     private LobbyRepository lobbyRepository;
     private WebSocketMessageSender webSocketMessageSender;
-//    private static final List<Player> playersNotInRoom = new ArrayList<>();
     private Placing placing;
     private Shooting shooting;
 
@@ -41,12 +40,6 @@ public class PlayerAndRoom {
     // Restart a players room and ships, deletes any leftover lobby, deletes the room the player is the last player removed from the room, it will store players for reset if the function is already running, deletes computer players when no longer needed
     public void resetPlayer(String playerName) {
         Player player = playerRepository.findByNameContaining(playerName.substring(1, 6));
-//        System.out.println("Player name to remove from players not in room list: " + player.getName());
-//        for (Player playerFound: playersNotInRoom) {
-//            if (Objects.equals(playerFound.getName(), player.getName())) {
-//                playersNotInRoom.remove(player);
-//                System.out.println("Player found and removed from players not in room list : " + player.getName());
-//            } else {System.out.println("player not found in players not in room list");}}
         if (placing.shipPlacement) {
             webSocketMessageSender.sendMessage("/topic/chat", new Chat(player.getRoom().getRoomNumber() + "Admin: Auto ship placement in progress, cannot reset right now!"));
             return;
@@ -246,15 +239,6 @@ public class PlayerAndRoom {
             if (players.stream().anyMatch(name -> name.startsWith(playerName.getName().substring(0, 4)))) {
                 webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken() + "Admin: Sorry, " + playerName.getName() + " is too similar to an existing username!"));
             } else {
-//                String name = playerName.getName();
-//                Player player = new Player(name);
-//                if (!playersNotInRoom.contains(player)) {
-//                    playersNotInRoom.add(player);
-//                    System.out.println("New player" + player.getName() + " added to players not in room list");
-//                }
-//                else
-//                {
-//                    System.out.println(player.getName() + " was not added to players in room");}
                 webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken()  + "Admin: Hello to our new player " + playerName.getName() + " your profile has been saved!"));
                 webSocketMessageSender.sendMessage("/topic/nameValidated", new Chat(playerName.getName()));
                 Player player = new Player(playerName.getName());
@@ -266,15 +250,6 @@ public class PlayerAndRoom {
                 webSocketMessageSender.sendMessage("/topic/nameValidated", new Chat(playerName.getName()));
             }else
             {webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken() + "Admin: A Game against the Computer has been selected"));}
-//            Player player = playerRepository.findByNameContaining(playerName.getName());
-//                if (!playersNotInRoom.contains(player)) {
-//                    playersNotInRoom.add(player);
-//                    System.out.println(player.getName() + " added to players not in room list");
-//                }
-//                else
-//                {
-//                    System.out.println(player.getName() + " was not added to players in room");
-//            }
         }
     }
 

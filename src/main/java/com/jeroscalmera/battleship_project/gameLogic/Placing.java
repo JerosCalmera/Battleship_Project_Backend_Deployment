@@ -37,7 +37,7 @@ public class Placing {
 
     // Ship placing logic (Checks ship placement is valid)
     public synchronized void placeShip(String target) throws InterruptedException {
-        Thread.sleep(200);
+        Thread.sleep(100);
         Player selectedPlayer = playerRepository.findByNameContaining((target.substring(4, 9)));
         List<String> shipsList = playerRepository.findAllCoOrdsByPlayerName(selectedPlayer.getName());
         if (shipsList.contains(target.substring(1, 3))) {
