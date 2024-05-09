@@ -62,7 +62,7 @@ public class PlayerAndRoom {
             return;
         }
         Lobby lobby = new Lobby();
-        lobby = lobbyRepository.findLobbySingleRoom(room.getRoomNumber());
+        lobby = lobbyRepository.findLobbySingleRoom(player.getRoomNumber());
         if (lobby != null) {
             lobbyRepository.delete(lobby);
             System.out.println("Lobby " + lobby.getLobbyRoom() + " deleted");
