@@ -215,22 +215,17 @@ public class PlayerAndRoom {
                 webSocketMessageSender.sendMessage("/topic/hidden", new Hidden(roomNumberFound + "Server: Room synced!"));
                 Room addRoom = new Room(roomNumberFound);
                 addRoom.setRoomNumber(roomNumberFound);
+                System.out.println("Room created: " + roomNumberFound);
                 roomRepository.save(addRoom);
                 Thread.sleep(50);
                 List<Player> playersNotInRoom = new ArrayList<>();
                 playersNotInRoom = playerRepository.findByStoredRoomNumber(roomNumberFound);
                 for (Player newPlayer : playersNotInRoom) {
-                    Player playerToFind = playerRepository.findByName(newPlayer.getName());
-                    if (playerToFind != null) {
-                        playerToFind.setRoom(addRoom);
-                        shipRepository.deleteAllCoOrdsByPlayerId((playerToFind.getId()));
-                        playerRepository.save(playerToFind);
-                    } else {
                         newPlayer.setRoom(addRoom);
                         shipRepository.deleteAllCoOrdsByPlayerId((newPlayer.getId()));
                         playerRepository.save(newPlayer);
-                    }
-                    addRoom.addPlayerToRoom(newPlayer);
+                        addRoom.addPlayerToRoom(newPlayer);
+                        roomRepository.save(addRoom);
                 }
                 Player playerDetails1 = playerRepository.findByNameContaining(playersNotInRoom.get(1).getName());
                 Player playerDetails2 = playerRepository.findByNameContaining(playersNotInRoom.get(0).getName());
