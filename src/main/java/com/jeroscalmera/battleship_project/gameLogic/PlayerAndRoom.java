@@ -190,6 +190,10 @@ public class PlayerAndRoom {
         String playerName = roomNumber.substring(5, 9);
         System.out.println("Player used for this room = " + playerName);
         Player player = playerRepository.findByNameContaining(playerName);
+        if (roomRepository.findByRoomNumber(roomNumberFound) != null) {
+            webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken()  + "Admin: That room already exists, please choose another room number"));
+            return;
+        }
             if (!lobbyRepository.findLobbyRoomExists(roomNumberFound)) {
                 Lobby roomToSave = new Lobby(roomNumberFound);
                 roomToSave.setSaved(true);
