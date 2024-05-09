@@ -257,6 +257,8 @@ public class PlayerAndRoom {
 //                    System.out.println(player.getName() + " was not added to players in room");}
                 webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken()  + "Admin: Hello to our new player " + playerName.getName() + " your profile has been saved!"));
                 webSocketMessageSender.sendMessage("/topic/nameValidated", new Chat(playerName.getName()));
+                Player player = new Player(playerName.getName());
+                playerRepository.save(player);
             }
         } else {
             if (!playerName.getName().contains("Computer")) {
