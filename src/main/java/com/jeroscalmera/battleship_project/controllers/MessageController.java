@@ -138,4 +138,10 @@ public class MessageController {
         playerAndRoom.bugReport(bugReport);
     }
 
+    @MessageMapping("/ping")
+    @SendTo("/topic/ping")
+    public Chat ping(Chat message) throws Exception {
+        String pingReturn = message.getContent();
+        return new Chat(pingReturn);
+    }
 }
