@@ -63,7 +63,7 @@ public class PlayerAndRoom {
         if (room == null) {
             return;
         }
-        webSocketMessageSender.sendMessage("/topic/reset", new Chat(room.getRoomNumber() + "Player left"));
+        webSocketMessageSender.sendMessage("/topic/restart", new Chat(room.getRoomNumber() + "Player left"));
         System.out.println("Players remaining in room " + room.getRoomNumber() + " is " + room.getPlayers().size());
         boolean playerPresent = roomRepository.existsByPlayersName(player.getName());
         if (playerPresent) {
