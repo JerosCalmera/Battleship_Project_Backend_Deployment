@@ -39,13 +39,8 @@ public class PlayerAndRoom {
 
     // Restart a players room and ships, deletes any leftover lobby, deletes the room the player is the last player removed from the room, it will store players for reset if the function is already running, deletes computer players when no longer needed
     public void resetPlayer(String playerName) {
-        System.out.println("Resting in process");
+        System.out.println("Reset in process");
         Player player = playerRepository.findByNameContaining(playerName.substring(1, 6));
-        if (placing.shipPlacement) {
-            webSocketMessageSender.sendMessage("/topic/chat", new Chat(player.getRoom().getRoomNumber() + "Admin: Auto ship placement in progress, cannot reset right now!"));
-            System.out.println("Cancelling reset at ship placement is happening");
-            return;
-        }
         Lobby lobby = new Lobby();
         lobby = lobbyRepository.findLobbySingleRoom(player.getRoomNumber());
         if (lobby != null) {
