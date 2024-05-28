@@ -345,6 +345,7 @@ public class Placing {
                 shipPlacement = false;
                 computerPlaceShips(playerName);
                 System.out.println("overriding");
+                counter = 0;
                 return;
             }
             counter = counter + 1;
