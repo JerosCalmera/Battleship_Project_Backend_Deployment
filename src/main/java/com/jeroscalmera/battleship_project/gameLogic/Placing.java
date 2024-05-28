@@ -326,17 +326,17 @@ public class Placing {
             return firstCoOrd + secondCoOrd;
         }
     }
-    public boolean shipPlacement = false;
+//    public boolean shipPlacement = false;
 
     // Logic so that the computer can automatically place ships in a random fashion
     public void computerPlaceShips(String playerName) throws InterruptedException {
         System.out.println("Starting computer ship placement");
         Player player = playerRepository.findByNameContaining(playerName.substring(0,5));
-        if (shipPlacement) {
-            webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + player.getRoomNumber() + "Admin: The computer is placing ships, please wait and try again"));
-            return;
-        }
-        shipPlacement = true;
+//        if (shipPlacement) {
+//            webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + player.getRoomNumber() + "Admin: The computer is placing ships, please wait and try again"));
+//            return;
+//        }
+//        shipPlacement = true;
         List<String> shipsList = playerRepository.findAllCoOrdsByPlayerName(player.getName());
         String shipList = String.join("", shipsList);
         String placedShips = "";
@@ -368,6 +368,6 @@ public class Placing {
             placeShip("P" + firstCoOrd + 2 + player.getName());
             placeShip("P" + secondCoOrd + 2 + player.getName());
         }
-        shipPlacement = false;
+//        shipPlacement = false;
     }
 }
