@@ -334,20 +334,16 @@ public class Placing {
     public void computerPlaceShips(String playerName) throws InterruptedException {
         System.out.println("Starting computer ship placement");
         Player player = playerRepository.findByNameContaining(playerName.substring(0,5));
-        String name;
-        if (player.getName().contains("the computer player")) {
-            name = "Computer";}
-        else {name = player.getName();};
         if (shipPlacement) {
-            webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + player.getRoomNumber() + "Admin: The computer is placing ships for" + name + ", the next players placement will be attempted in 5 seconds"));
+            webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + player.getRoomNumber() + "Admin: The computer is placing ships for another player, the next players placement will be attempted in 5 seconds"));
+            if (counter >= 3) {
+                shipPlacement = false;
+                computerPlaceShips(playerName);
+                return;
+            }
+            counter = counter + 1;
             Thread.sleep(5000);
             computerPlaceShips(playerName);
-            if (counter >= 4) {
-                shipPlacement = false;
-                counter = 0;
-            }
-            else {
-            counter++;};
             return;
         }
         shipPlacement = true;
