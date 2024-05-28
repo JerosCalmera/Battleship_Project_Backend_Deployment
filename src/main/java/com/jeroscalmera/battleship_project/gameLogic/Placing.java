@@ -335,8 +335,9 @@ public class Placing {
         System.out.println("Starting computer ship placement");
         Player player = playerRepository.findByNameContaining(playerName.substring(0,5));
         if (shipPlacement) {
-            webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + player.getRoomNumber() + "Admin: The computer is placing ships for another player, the next players placement will be attempted in 5 seconds"));
-            if (counter >= 3) {
+            if (!player.getName().contains("Computer")){
+            webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + player.getRoomNumber() + "Admin: The computer is placing ships for another player, the next players placement will be attempted in 5 seconds"));}
+            if (counter >= 2) {
                 shipPlacement = false;
                 computerPlaceShips(playerName);
                 return;
