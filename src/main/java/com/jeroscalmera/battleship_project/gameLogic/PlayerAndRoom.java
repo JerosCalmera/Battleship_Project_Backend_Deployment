@@ -63,7 +63,9 @@ public class PlayerAndRoom {
         if (room == null) {
             return;
         }
-        webSocketMessageSender.sendMessage("/topic/hidden", new Chat(room.getRoomNumber() + player.getName() + "Player left"));
+        if (!player.getName().contains("Computer")) {
+            webSocketMessageSender.sendMessage("/topic/hidden", new Chat(room.getRoomNumber() + player.getName() + "Player left"));
+        }
         System.out.println("Players remaining in room " + room.getRoomNumber() + " is " + room.getPlayers().size());
         boolean playerPresent = roomRepository.existsByPlayersName(player.getName());
         if (playerPresent) {
