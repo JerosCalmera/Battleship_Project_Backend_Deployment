@@ -198,6 +198,7 @@ public class PlayerAndRoom {
             roomToSave.setSaved(true);
             lobbyRepository.save(roomToSave);
             System.out.println("Creating lobby for " + playerName);
+            Thread.sleep(1000);
             webSocketMessageSender.sendMessage("/topic/connect", new Greeting("Server: Room saved!"));
             webSocketMessageSender.sendMessage("/topic/hidden", new Hidden(roomNumberFound + "Server: Room saved!"));
             player.setRoomNumber(roomNumberFound);
@@ -205,6 +206,7 @@ public class PlayerAndRoom {
         } else {
             if (Objects.equals(player.getRoomNumber(), roomNumberFound)) {
                 webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken() + "Admin: " + player.getName() + " You have rejoined the lobby for your room"));
+                Thread.sleep(1000);
                 webSocketMessageSender.sendMessage("/topic/hidden", new Hidden(roomNumberFound + "Server: Room saved!"));
                 return;
             }
