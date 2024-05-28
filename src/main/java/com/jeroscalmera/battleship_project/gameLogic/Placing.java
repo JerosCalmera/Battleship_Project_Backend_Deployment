@@ -159,7 +159,7 @@ public class Placing {
                     verticalPlacement = true;
                 }
             }
-            if (invalidPlacement == true || horizontalPlacement == true && verticalPlacement == true) {
+            if (invalidPlacement || horizontalPlacement && verticalPlacement) {
                 damage = "";
                 coOrds.clear();
                 if (target.charAt(0) != 'P') {

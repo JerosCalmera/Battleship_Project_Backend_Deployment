@@ -32,7 +32,7 @@ public class Shooting {
         this.placing = placing;
     }
 
-    // Debugging function
+    // Checks if a player is in the game lost list and if it is a computer player
     public void computerCheck(String string) throws InterruptedException {
         Player playerToCheck;
         playerToCheck = playerRepository.findByNameContaining(string.substring(1, 5));

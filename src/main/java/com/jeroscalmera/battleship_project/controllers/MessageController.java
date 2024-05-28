@@ -8,7 +8,6 @@ import com.jeroscalmera.battleship_project.models.BugReport;
 import com.jeroscalmera.battleship_project.models.Player;
 import com.jeroscalmera.battleship_project.websocket.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -115,7 +114,7 @@ public class MessageController {
     public void leaderboard(String trigger) throws InterruptedException {
         playerAndRoom.leaderBoard(trigger);
     }
-    
+
     @MessageMapping("/turn")
     public void turn(String playerName) throws InterruptedException {
         playerAndRoom.coinFlip(playerName);
@@ -134,10 +133,4 @@ public class MessageController {
         playerAndRoom.bugReport(bugReport);
     }
 
-    @MessageMapping("/ping")
-    @SendTo("/topic/ping")
-    public Chat ping(Chat message) throws Exception {
-        String pingReturn = message.getContent();
-        return new Chat(pingReturn);
-    }
 }
