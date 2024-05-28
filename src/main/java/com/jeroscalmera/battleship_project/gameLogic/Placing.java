@@ -336,10 +336,6 @@ public class Placing {
         Player player = playerRepository.findByNameContaining(playerName.substring(0,5));
         List<Ship> ships = new ArrayList<>();
         ships = shipRepository.findAllShipsByPlayerId(player.getId());
-        if (ships.size() > 1) {
-            System.out.println("Aborting placement");
-            return;
-        }
         if (shipPlacement) {
             if (!player.getName().contains("Computer")){
             webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + player.getRoomNumber() + "Admin: The computer is placing ships for another player, the next players placement will be attempted in 5 seconds"));
