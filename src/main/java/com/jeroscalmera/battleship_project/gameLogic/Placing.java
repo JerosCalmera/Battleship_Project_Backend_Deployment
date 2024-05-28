@@ -330,7 +330,7 @@ public class Placing {
 
     int counter = 0;
 
-    // Logic so that the computer can automatically place ships in a random fashion, if the placement was interrupted before, it will attempt to wait before overriding after a set time
+    // Logic so that the computer can automatically place ships in a random fashion, if the placement was interrupted before, it will attempt to wait before overriding after a set number of attempts
     public void computerPlaceShips(String playerName) throws InterruptedException {
         System.out.println("Starting computer ship placement");
         Player player = playerRepository.findByNameContaining(playerName.substring(0,5));
@@ -338,7 +338,7 @@ public class Placing {
         ships = shipRepository.findAllShipsByPlayerId(player.getId());
         if (shipPlacement) {
             if (!player.getName().contains("Computer")){
-            webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + player.getRoomNumber() + "Admin: The computer is placing ships for another player, the next players placement will be attempted in 5 seconds"));
+            webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + player.getRoomNumber() + "Admin: The computer is placing ships for another player, the next players placement will be attempted in 3 seconds"));
             System.out.println("Player delay");}
             else {System.out.println("Computer delay");};
             if (counter >= 2) {
@@ -348,7 +348,7 @@ public class Placing {
                 return;
             }
             counter = counter + 1;
-            Thread.sleep(5000);
+            Thread.sleep(3000);
             computerPlaceShips(playerName);
             System.out.println("Counter state = " + counter);
             return;
