@@ -202,14 +202,18 @@ public class Shooting {
         }
 
         String shoot = generateRandomCoOrd();
+        int counter = computerPlayer.getAiShotAttempts();
         if (computerPlayer.getAiHitCheck()) {
-            shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));}
+            if (counter < 3)
+            shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
+            computerPlayer.setAiShotAttempts(counter + 1);}
 
         while (computerPlayer.getAiShot().contains(shoot)) {
             if (computerPlayer.getAiHitCheck()) {
                 shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
             } else {
                 shoot = generateRandomCoOrd();
+                computerPlayer.setAiShotAttempts(0);
             }
 
             if (!computerPlayer.getAiShot().contains(shoot)) {;

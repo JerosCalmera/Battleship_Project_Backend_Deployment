@@ -55,6 +55,8 @@ public class Player implements Comparable<Player>{
     @Column(name = "aiHitCheck")
     private boolean aiHitCheck;
 
+    @Column(name = "aiShotAttempts")
+    private int aiShotAttempts;
 
     public Player(String name) {
         this.name = name;
@@ -63,6 +65,7 @@ public class Player implements Comparable<Player>{
         this.aiHitCheck = false;
         this.aiShot = "*";
         this.aiConfirmedHit = "*";
+        this.aiShotAttempts = 0;
     }
 
     public Player() {
@@ -205,5 +208,13 @@ public class Player implements Comparable<Player>{
 
     public boolean isAiHitCheck() {
         return aiHitCheck;
+    }
+
+    public int getAiShotAttempts() {
+        return aiShotAttempts;
+    }
+
+    public void setAiShotAttempts(int aiShotAttempts) {
+        this.aiShotAttempts = aiShotAttempts;
     }
 }
