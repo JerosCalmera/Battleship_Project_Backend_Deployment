@@ -59,6 +59,9 @@ public class Shooting {
                 webSocketMessageSender.sendMessage("/topic/gameInfo", new Chat(selectedPlayer.getRoom().getRoomNumber() + selectedPlayer2.getName() + " Hit!"));
             } else {
                 webSocketMessageSender.sendMessage("/topic/gameInfo", new Chat(selectedPlayer.getRoom().getRoomNumber() + "The Computer Hit!"));
+                if (selectedPlayer2.getAiConfirmedHitInitial().length() == 0) {
+                    selectedPlayer2.setAiConfirmedHitInitial(aimPoint);
+                }
                 selectedPlayer2.setAiConfirmedHit(aimPoint);
                 selectedPlayer2.setAiHitCheck(true);
                 playerRepository.save(selectedPlayer2);
@@ -206,12 +209,15 @@ public class Shooting {
             shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));}
 
         while (computerPlayer.getAiShot().contains(shoot)) {
-            if (computerPlayer.getAiHitCheck()) {
+            if (computerPlayer.getAiConfirmedHitInitial().length() != 0 && !computerPlayer.getAiHitCheck()) {
+                shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHitInitial(), true));
+            }
+            else if (computerPlayer.getAiHitCheck()) {
                 shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
             } else {
                 shoot = generateRandomCoOrd();
+                computerPlayer.setAiConfirmedHitInitial("");
             }
-
             if (!computerPlayer.getAiShot().contains(shoot)) {;
                 break;
             }
