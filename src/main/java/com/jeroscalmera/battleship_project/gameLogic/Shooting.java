@@ -59,7 +59,7 @@ public class Shooting {
                 webSocketMessageSender.sendMessage("/topic/gameInfo", new Chat(selectedPlayer.getRoom().getRoomNumber() + selectedPlayer2.getName() + " Hit!"));
             } else {
                 webSocketMessageSender.sendMessage("/topic/gameInfo", new Chat(selectedPlayer.getRoom().getRoomNumber() + "The Computer Hit!"));
-                if (selectedPlayer2.getAiConfirmedHitInitial().length() == 0) {
+                if (Objects.equals(selectedPlayer2.getAiConfirmedHitInitial(), "")) {
                     selectedPlayer2.setAiConfirmedHitInitial(aimPoint);
                 }
                 selectedPlayer2.setAiConfirmedHit(aimPoint);
@@ -207,8 +207,9 @@ public class Shooting {
         String shoot = generateRandomCoOrd();
 
         while (computerPlayer.getAiShot().contains(shoot)) {
-            if (computerPlayer.getAiConfirmedHitInitial().length() != 0 && !computerPlayer.getAiHitCheck()) {
+            if (!Objects.equals(computerPlayer.getAiConfirmedHitInitial(), "") && !computerPlayer.getAiHitCheck()) {
                 shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHitInitial(), true));
+                System.out.println("Miss but ship not destroyed");
             }
             else if (computerPlayer.getAiHitCheck()) {
                 shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
