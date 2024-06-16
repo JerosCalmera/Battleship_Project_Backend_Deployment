@@ -206,7 +206,7 @@ public class Shooting {
 
         String shoot = generateRandomCoOrd();
 
-        while (computerPlayer.getAiShot().contains(shoot)) {
+//        while (computerPlayer.getAiShot().contains(shoot)) {
             if (!Objects.equals(computerPlayer.getAiConfirmedHitInitial(), "") && !computerPlayer.getAiHitCheck()) {
                 shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHitInitial(), true));
                 System.out.println("Miss but ship not destroyed");
@@ -221,9 +221,9 @@ public class Shooting {
             }
             if (!computerPlayer.getAiShot().contains(shoot)) {;
                 System.out.println("Shooting target has already been shot");
-                break;
+//                break;
             }
-        }
+//        }
 
         computerPlayer.setAiShot(computerPlayer.getAiShot() + shoot);
         playerRepository.save(computerPlayer);
