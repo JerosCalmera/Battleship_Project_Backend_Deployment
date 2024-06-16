@@ -210,22 +210,23 @@ public class Shooting {
 
         String shoot = generateRandomCoOrd();
 
-        while (computerPlayer.getAiShot().contains(shoot)) {
-            if (computerPlayer.getAiConfirmedHitInitial() != null && !computerPlayer.getAiHitCheck()) {
-                shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHitInitial(), true));
-                System.out.println("Miss but ship not destroyed");
-            }
-            else if (computerPlayer.getAiHitCheck()) {
-                shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
-                System.out.println("Confirmed hit, attempting to find ship");
-            } else {
-                shoot = generateRandomCoOrd();
-                computerPlayer.setAiConfirmedHitInitial("");
-                System.out.println("Failed to find a valid square to shoot");
-            }
-            if (!computerPlayer.getAiShot().contains(shoot)) {;
-                System.out.println("Emergency loop break");
-                break;
+        if (computerPlayer.getAiConfirmedHitInitial() != null) {
+            while (computerPlayer.getAiShot().contains(shoot)) {
+                if (computerPlayer.getAiConfirmedHitInitial() != null && !computerPlayer.getAiHitCheck()) {
+                    shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHitInitial(), true));
+                    System.out.println("Miss but ship not destroyed");
+                } else if (computerPlayer.getAiHitCheck()) {
+                    shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
+                    System.out.println("Confirmed hit, attempting to find ship");
+                } else {
+                    shoot = generateRandomCoOrd();
+                    computerPlayer.setAiConfirmedHitInitial("");
+                    System.out.println("Failed to find a valid square to shoot");
+                }
+                if (!computerPlayer.getAiShot().contains(shoot)) {
+                    System.out.println("Emergency loop break");
+                    break;
+                }
             }
         }
 
