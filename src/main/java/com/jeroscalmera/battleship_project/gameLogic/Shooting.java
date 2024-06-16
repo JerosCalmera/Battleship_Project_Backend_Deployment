@@ -75,7 +75,7 @@ public class Shooting {
             String newShipHealth = shipHealth.replace(aimPoint, "XX");
             ship.setCoOrds(newShipHealth);
             shipRepository.save(ship);
-            enumerateShips(selectedPlayer.getId());
+            enumerateShips(selectedPlayer.getId(), selectedPlayer2.getId());
             computerCheck(selectedPlayer.getName());
         } else {
             if (!selectedPlayer2.isComputer()) {
@@ -94,9 +94,10 @@ public class Shooting {
 
     // Checks the damage state of a players ships
     @Transactional
-    public void enumerateShips(Long id) throws InterruptedException {
+    public void enumerateShips(Long id, Long id2) throws InterruptedException {
         boolean allShipsDestroyed = true;
         Player playerToCheck = playerRepository.findPlayerById(id);
+        Player playerToCheck2 = playerRepository.findPlayerById(id2);
         String playerName = playerToCheck.getName();
         if (playerToCheck.isComputer()) {
             playerName = "Computer";
@@ -108,37 +109,45 @@ public class Shooting {
                 shipToCheck.setShipDamage("Destroyed");
                 shipRepository.save(shipToCheck);
                 webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + playerToCheck.getRoom().getRoomNumber() + playerName + ": You destroyed my Carrier!"));
-                if (!playerName.contains("Computer")) {
-                    playerToCheck.setAiHitCheck(false);
-                    playerToCheck.setAiConfirmedHitInitial(null);
+                if (!playerName.contains("Computer") && playerToCheck2.getName().contains("Computer")) {
+                    playerToCheck2.setAiHitCheck(false);
+                    playerToCheck2.setAiConfirmedHit(null);
+                    playerToCheck2.setAiConfirmedHitInitial(null);
                     playerRepository.save(playerToCheck);
+                    playerRepository.save(playerToCheck2);
                 }
             } else if (Objects.equals(shipToCheck.getShipDamage(), "XXXXXXXX")) {
                 shipToCheck.setShipDamage("Destroyed");
                 shipRepository.save(shipToCheck);
                 webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + playerToCheck.getRoom().getRoomNumber() + playerName + ": You destroyed my Battleship!"));
-                if (!playerName.contains("Computer")) {
-                    playerToCheck.setAiHitCheck(false);
-                    playerToCheck.setAiConfirmedHitInitial(null);
+                if (!playerName.contains("Computer") && playerToCheck2.getName().contains("Computer")) {
+                    playerToCheck2.setAiHitCheck(false);
+                    playerToCheck2.setAiConfirmedHit(null);
+                    playerToCheck2.setAiConfirmedHitInitial(null);
                     playerRepository.save(playerToCheck);
+                    playerRepository.save(playerToCheck2);
                 }
             } else if (Objects.equals(shipToCheck.getShipDamage(), "XXXXXX")) {
                 shipToCheck.setShipDamage("Destroyed");
                 shipRepository.save(shipToCheck);
                 webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + playerToCheck.getRoom().getRoomNumber() + playerName + ": You destroyed my Cruiser!"));
-                if (!playerName.contains("Computer")) {
-                    playerToCheck.setAiHitCheck(false);
-                    playerToCheck.setAiConfirmedHitInitial(null);
+                if (!playerName.contains("Computer") && playerToCheck2.getName().contains("Computer")) {
+                    playerToCheck2.setAiHitCheck(false);
+                    playerToCheck2.setAiConfirmedHit(null);
+                    playerToCheck2.setAiConfirmedHitInitial(null);
                     playerRepository.save(playerToCheck);
+                    playerRepository.save(playerToCheck2);
                 }
             } else if (Objects.equals(shipToCheck.getShipDamage(), "XXXX")) {
                 shipToCheck.setShipDamage("Destroyed");
                 shipRepository.save(shipToCheck);
                 webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + playerToCheck.getRoom().getRoomNumber() + playerName + ": You destroyed my Destroyer!"));
-                if (!playerName.contains("Computer")) {
-                    playerToCheck.setAiHitCheck(false);
-                    playerToCheck.setAiConfirmedHitInitial(null);
+                if (!playerName.contains("Computer") && playerToCheck2.getName().contains("Computer")) {
+                    playerToCheck2.setAiHitCheck(false);
+                    playerToCheck2.setAiConfirmedHit(null);
+                    playerToCheck2.setAiConfirmedHitInitial(null);
                     playerRepository.save(playerToCheck);
+                    playerRepository.save(playerToCheck2);
                 }
             }
         for (Ship shipToCheck : shipToModify)
