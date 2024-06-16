@@ -162,6 +162,7 @@ public class Shooting {
                     }
                     winner.setLevel(winner.levelUp(1));
                     winner.setAiConfirmedHit(null);
+                    winner.setAiConfirmedHitInitial(null);
                     winner.setAiShot(null);
                     winner.setAiHitCheck(false);
                     playerRepository.save(winner);
@@ -210,8 +211,7 @@ public class Shooting {
 
         String shoot = generateRandomCoOrd();
 
-        if (computerPlayer.getAiConfirmedHitInitial() != null) {
-            while (computerPlayer.getAiShot().contains(shoot)) {
+            while (computerPlayer.getAiShot().contains(shoot) || computerPlayer.getAiConfirmedHitInitial() != null) {
                 if (computerPlayer.getAiConfirmedHitInitial() != null && !computerPlayer.getAiHitCheck()) {
                     shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHitInitial(), true));
                     System.out.println("Miss but ship not destroyed");
@@ -221,14 +221,13 @@ public class Shooting {
                 } else {
                     shoot = generateRandomCoOrd();
                     computerPlayer.setAiConfirmedHitInitial("");
-                    System.out.println("Failed to find a valid square to shoot");
+                    System.out.println("Failed to find a valid square to shoot, ending loop");
                 }
-                if (!computerPlayer.getAiShot().contains(shoot)) {
-                    System.out.println("Emergency loop break");
-                    break;
-                }
+//                if (!computerPlayer.getAiShot().contains(shoot)) {
+//                    System.out.println("Emergency loop break");
+//                    break;
+//                }
             }
-        }
 
         computerPlayer.setAiShot(computerPlayer.getAiShot() + shoot);
         playerRepository.save(computerPlayer);
