@@ -213,14 +213,18 @@ public class Shooting {
             }
             else if (computerPlayer.getAiHitCheck()) {
                 shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
+                System.out.println("Confirmed hit, attempting to find ship");
             } else {
                 shoot = generateRandomCoOrd();
                 computerPlayer.setAiConfirmedHitInitial("");
+                System.out.println("Failed to find a valid square to shoot");
             }
             if (!computerPlayer.getAiShot().contains(shoot)) {;
+                System.out.println("Shooting target has already been shot");
                 break;
             }
         }
+
         computerPlayer.setAiShot(computerPlayer.getAiShot() + shoot);
         playerRepository.save(computerPlayer);
         shootAtShip(shoot + humanPlayer.getName().substring(0, 4) + computerPlayer.getName().substring(0, 4));
