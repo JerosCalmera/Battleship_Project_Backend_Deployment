@@ -220,23 +220,23 @@ public class Shooting {
 
         String shoot = generateRandomCoOrd();
 
-        while (computerPlayer.getAiShot().contains(shoot) || computerPlayer.getAiConfirmedHitInitial() != null) {
-            if (computerPlayer.getAiConfirmedHitInitial() != null && !computerPlayer.getAiHitCheck()) {
-                shoot = placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHitInitial(), true);
-                System.out.println("Miss but ship not destroyed");
-            } else if (computerPlayer.getAiHitCheck()) {
-                shoot = placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true);
-                System.out.println("Confirmed hit, attempting to find ship");
-            } else {
-                shoot = generateRandomCoOrd();
-                computerPlayer.setAiConfirmedHitInitial(null); // Set to null explicitly instead of empty string
-                System.out.println("Failed to find a valid square to shoot, ending loop");
+            while (computerPlayer.getAiShot().contains(shoot)) {
+                if (computerPlayer.getAiConfirmedHitInitial() != null && !computerPlayer.getAiHitCheck()) {
+                    shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHitInitial(), true));
+                    System.out.println("Miss but ship not destroyed");
+                } else if (computerPlayer.getAiHitCheck()) {
+                    shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
+                    System.out.println("Confirmed hit, attempting to find ship");
+                } else {
+                    shoot = generateRandomCoOrd();
+                    computerPlayer.setAiConfirmedHitInitial("");
+                    System.out.println("Failed to find a valid square to shoot, ending loop");
+                }
+                if (!computerPlayer.getAiShot().contains(shoot)) {
+                    System.out.println("loop break");
+                    break;
+                }
             }
-            if (!computerPlayer.getAiShot().contains(shoot)) {
-                System.out.println("loop break");
-                break;
-            }
-        }
 
         computerPlayer.setAiShot(computerPlayer.getAiShot() + shoot);
         playerRepository.save(computerPlayer);
