@@ -205,11 +205,6 @@ public class Shooting {
         }
 
         String shoot = generateRandomCoOrd();
-        int counter = computerPlayer.getAiShotAttempts();
-        if (computerPlayer.getAiHitCheck()) {
-            if (counter < 3)
-            shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
-            computerPlayer.setAiShotAttempts(counter + 1);}
 
         while (computerPlayer.getAiShot().contains(shoot)) {
             if (computerPlayer.getAiConfirmedHitInitial().length() != 0 && !computerPlayer.getAiHitCheck()) {
