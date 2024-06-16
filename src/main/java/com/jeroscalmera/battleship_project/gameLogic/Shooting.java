@@ -211,13 +211,17 @@ public class Shooting {
 
         String shoot = generateRandomCoOrd();
 
+        int counter = 0;
+
             while (computerPlayer.getAiShot().contains(shoot) || computerPlayer.getAiConfirmedHitInitial() != null) {
-                if (computerPlayer.getAiConfirmedHitInitial() != null && !computerPlayer.getAiHitCheck()) {
+                if (counter == 3 || computerPlayer.getAiConfirmedHitInitial() != null && !computerPlayer.getAiHitCheck()) {
                     shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHitInitial(), true));
                     System.out.println("Miss but ship not destroyed");
+                    counter = 0;
                 } else if (computerPlayer.getAiHitCheck()) {
                     shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
                     System.out.println("Confirmed hit, attempting to find ship");
+                    counter++;
                 } else {
                     shoot = generateRandomCoOrd();
                     computerPlayer.setAiConfirmedHitInitial("");
