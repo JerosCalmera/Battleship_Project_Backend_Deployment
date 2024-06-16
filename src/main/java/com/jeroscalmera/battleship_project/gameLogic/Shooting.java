@@ -223,6 +223,7 @@ public class Shooting {
                     computerPlayer.setAiConfirmedHitInitial("");
                     System.out.println("Failed to find a valid square to shoot, ending loop");
                 }
+                // test
 //                if (!computerPlayer.getAiShot().contains(shoot)) {
 //                    System.out.println("Emergency loop break");
 //                    break;
