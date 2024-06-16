@@ -59,7 +59,7 @@ public class Shooting {
                 webSocketMessageSender.sendMessage("/topic/gameInfo", new Chat(selectedPlayer.getRoom().getRoomNumber() + selectedPlayer2.getName() + " Hit!"));
             } else {
                 webSocketMessageSender.sendMessage("/topic/gameInfo", new Chat(selectedPlayer.getRoom().getRoomNumber() + "The Computer Hit!"));
-                if (Objects.equals(selectedPlayer2.getAiConfirmedHitInitial(), "")) {
+                if (selectedPlayer2.getAiConfirmedHitInitial() == null) {
                     selectedPlayer2.setAiConfirmedHitInitial(aimPoint);
                 }
                 selectedPlayer2.setAiConfirmedHit(aimPoint);
@@ -110,6 +110,7 @@ public class Shooting {
                 webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + playerToCheck.getRoom().getRoomNumber() + playerName + ": You destroyed my Carrier!"));
                 if (!playerName.contains("Computer")) {
                     playerToCheck.setAiHitCheck(false);
+                    playerToCheck.setAiConfirmedHitInitial(null);
                     playerRepository.save(playerToCheck);
                 }
             } else if (Objects.equals(shipToCheck.getShipDamage(), "XXXXXXXX")) {
@@ -118,6 +119,7 @@ public class Shooting {
                 webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + playerToCheck.getRoom().getRoomNumber() + playerName + ": You destroyed my Battleship!"));
                 if (!playerName.contains("Computer")) {
                     playerToCheck.setAiHitCheck(false);
+                    playerToCheck.setAiConfirmedHitInitial(null);
                     playerRepository.save(playerToCheck);
                 }
             } else if (Objects.equals(shipToCheck.getShipDamage(), "XXXXXX")) {
@@ -126,6 +128,7 @@ public class Shooting {
                 webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + playerToCheck.getRoom().getRoomNumber() + playerName + ": You destroyed my Cruiser!"));
                 if (!playerName.contains("Computer")) {
                     playerToCheck.setAiHitCheck(false);
+                    playerToCheck.setAiConfirmedHitInitial(null);
                     playerRepository.save(playerToCheck);
                 }
             } else if (Objects.equals(shipToCheck.getShipDamage(), "XXXX")) {
@@ -134,6 +137,7 @@ public class Shooting {
                 webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + playerToCheck.getRoom().getRoomNumber() + playerName + ": You destroyed my Destroyer!"));
                 if (!playerName.contains("Computer")) {
                     playerToCheck.setAiHitCheck(false);
+                    playerToCheck.setAiConfirmedHitInitial(null);
                     playerRepository.save(playerToCheck);
                 }
             }
@@ -206,8 +210,8 @@ public class Shooting {
 
         String shoot = generateRandomCoOrd();
 
-//        while (computerPlayer.getAiShot().contains(shoot)) {
-            if (!Objects.equals(computerPlayer.getAiConfirmedHitInitial(), "") && !computerPlayer.getAiHitCheck()) {
+        while (computerPlayer.getAiShot().contains(shoot)) {
+            if (computerPlayer.getAiConfirmedHitInitial() != null && !computerPlayer.getAiHitCheck()) {
                 shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHitInitial(), true));
                 System.out.println("Miss but ship not destroyed");
             }
@@ -220,10 +224,10 @@ public class Shooting {
                 System.out.println("Failed to find a valid square to shoot");
             }
             if (!computerPlayer.getAiShot().contains(shoot)) {;
-                System.out.println("Shooting target has already been shot");
-//                break;
+                System.out.println("Emergency loop break");
+                break;
             }
-//        }
+        }
 
         computerPlayer.setAiShot(computerPlayer.getAiShot() + shoot);
         playerRepository.save(computerPlayer);
