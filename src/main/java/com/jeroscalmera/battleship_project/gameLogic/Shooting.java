@@ -225,6 +225,7 @@ public class Shooting {
         if (computerPlayer.getAiHitCheck()) {
             shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
             System.out.println("Confirmed hit at: " + computerPlayer.getAiConfirmedHit() + ", attempting to find ship");
+            System.out.println("Attempting to shoot at: " + shoot);
             playerRepository.save(computerPlayer);
             while (computerPlayer.getAiShot().contains(shoot)) {
                 int counter = 0;
@@ -242,6 +243,7 @@ public class Shooting {
             playerRepository.save(computerPlayer);
             Thread.sleep(50);
             shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
+            System.out.println("Attempting to shoot at: " + shoot);
             while (computerPlayer.getAiShot().contains(shoot)) {
                 int counter = 0;
                 System.out.println(shoot + " already found in shot data, regenerating");
@@ -253,13 +255,13 @@ public class Shooting {
                     computerPlayer.setAiConfirmedHitInitial(null);
                     System.out.println("Out of valid targets");
                     break;
+                }
             }
-        }
         } else {
             do {
                 shoot = generateRandomCoOrd();
-            } while (computerPlayer.getAiShot().contains(shoot));
-            System.out.println("Shooting randomly");
+                } while (computerPlayer.getAiShot().contains(shoot));
+                System.out.println("Shooting randomly");
         }
         computerPlayer.setAiShot(computerPlayer.getAiShot() + shoot);
         playerRepository.save(computerPlayer);
