@@ -234,10 +234,25 @@ public class Shooting {
                 System.out.println("Attempting to shoot at: " + shoot);
                 counter++;
                 if (counter == 20) {
-                    computerPlayer.setAiShotAttempts(1);
                     break;
                 }
             }
+        } else if (computerPlayer.getAiConfirmedHitInitial() != null && !computerPlayer.getAiHitCheck()) {
+            System.out.println("Confirmed hit at: " + computerPlayer.getAiConfirmedHit() + ", attempting to find ship again");
+            shoot = (aiCoOrdShoot(computerPlayer.getAiConfirmedHit()));
+            System.out.println("Attempting to shoot at: " + shoot);
+            playerRepository.save(computerPlayer);
+            int counter = 0;
+            while (computerPlayer.getAiShot().contains(shoot)) {
+                System.out.println(shoot + " already found in shot data, regenerating");
+                shoot = (aiCoOrdShoot(computerPlayer.getAiConfirmedHit()));
+                System.out.println("Attempting to shoot at: " + shoot);
+                counter++;
+                if (counter == 20) {
+                    computerPlayer.setAiShotAttempts(1);
+                    break;
+                }
+        }
         } else if (computerPlayer.getAiConfirmedHitInitial() != null && !computerPlayer.getAiHitCheck() && (computerPlayer.getAiShotAttempts() == 1)) {
             System.out.println("Cannot find ship, moving back to first hit position");
             computerPlayer.setAiConfirmedHit(computerPlayer.getAiConfirmedHitInitial());
