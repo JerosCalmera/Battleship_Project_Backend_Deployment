@@ -212,7 +212,6 @@ public class Placing {
         }
         Random random = new Random();
         int randomCoOrd = random.nextInt(100);
-        // Of random CoOrd letter = index 0, number index 1,
         String firstCoOrd = computerAllCoOrds.get(randomCoOrd);
         int rando = random.nextInt(3);
         int firstCoOrdIndexLetter = coOrdLetters.indexOf(String.valueOf(firstCoOrd.charAt(0)));
@@ -220,7 +219,7 @@ public class Placing {
         int secondCoOrdIndexLetter = 0;
         int secondCoOrdIndexNumber = 0;
 
-        // Debug print
+
         System.out.println("Initial random coordinate: " + firstCoOrd);
         System.out.println("Initial indices - Letter: " + firstCoOrdIndexLetter + ", Number: " + firstCoOrdIndexNumber);
 
@@ -231,7 +230,7 @@ public class Placing {
                 firstCoOrdIndexLetter = coOrdLetters.indexOf(String.valueOf(firstCoOrd.charAt(0)));
                 firstCoOrdIndexNumber = coOrdNumbers.indexOf(String.valueOf(firstCoOrd.charAt(1)));
 
-                // Debug print
+
                 System.out.println("Computer game - using provided first coordinate: " + firstCoOrd);
                 System.out.println("Updated indices - Letter: " + firstCoOrdIndexLetter + ", Number: " + firstCoOrdIndexNumber);
 
@@ -247,7 +246,7 @@ public class Placing {
                     }
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
 
-                    // Debug print
+
                     System.out.println("Generated second coordinate: " + secondCoOrd);
 
                     return secondCoOrd;
@@ -263,7 +262,7 @@ public class Placing {
                     }
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
 
-                    // Debug print
+
                     System.out.println("Generated second coordinate: " + secondCoOrd);
 
                     return secondCoOrd;
@@ -279,7 +278,7 @@ public class Placing {
                     }
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
 
-                    // Debug print
+
                     System.out.println("Generated second coordinate: " + secondCoOrd);
 
                     return secondCoOrd;
@@ -295,7 +294,7 @@ public class Placing {
                     }
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
 
-                    // Debug print
+
                     System.out.println("Generated second coordinate: " + secondCoOrd);
 
                     return secondCoOrd;
@@ -311,7 +310,7 @@ public class Placing {
                     }
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
 
-                    // Debug print
+
                     System.out.println("Generated second coordinate: " + secondCoOrd);
 
                     return secondCoOrd;
@@ -327,7 +326,7 @@ public class Placing {
                     }
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
 
-                    // Debug print
+
                     System.out.println("Generated second coordinate: " + secondCoOrd);
 
                     return secondCoOrd;
@@ -343,7 +342,7 @@ public class Placing {
                     }
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
 
-                    // Debug print
+
                     System.out.println("Generated second coordinate: " + secondCoOrd);
 
                     return secondCoOrd;
@@ -359,7 +358,7 @@ public class Placing {
                     }
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
 
-                    // Debug print
+
                     System.out.println("Generated second coordinate: " + secondCoOrd);
 
                     return secondCoOrd;
@@ -367,13 +366,12 @@ public class Placing {
             } else {
                 firstCoOrd = computerAllCoOrds.get(randomCoOrd);
 
-                // Debug print
                 System.out.println("Else coordinate: " + firstCoOrd);
             }
             firstCoOrdIndexLetter = coOrdLetters.indexOf(String.valueOf(firstCoOrd.charAt(0)));
             firstCoOrdIndexNumber = coOrdNumbers.indexOf(String.valueOf(firstCoOrd.charAt(1)));
 
-            // Debug print
+
             System.out.println("Updated indices - Letter: " + firstCoOrdIndexLetter + ", Number: " + firstCoOrdIndexNumber);
 
         } while (firstCoOrdIndexLetter == 0 || firstCoOrdIndexLetter == 9 || firstCoOrdIndexNumber == 0 || firstCoOrdIndexNumber == 9);
@@ -391,7 +389,6 @@ public class Placing {
 
         String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
 
-        // Debug print
         System.out.println("Final generated second coordinate: " + secondCoOrd);
 
         if (computerGame) {
