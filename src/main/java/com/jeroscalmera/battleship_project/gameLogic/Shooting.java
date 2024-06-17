@@ -223,57 +223,24 @@ public class Shooting {
 
         if (computerPlayer.getAiHitCheck()) {
             System.out.println("Confirmed hit at: " + computerPlayer.getAiConfirmedHit() + ", attempting to find ship");
-            shoot = (aiCoOrdShoot(computerPlayer.getAiConfirmedHit()));
+            shoot = (aiCoOrdShoot(computerPlayer.getAiConfirmedHit(), computerPlayer.getId()));
             System.out.println("Attempting to shoot at: " + shoot);
             playerRepository.save(computerPlayer);
-            int counter = 0;
-            while (computerPlayer.getAiShot().contains(shoot)) {
-                System.out.println(shoot + " already found in shot data, regenerating");
-                shoot = (aiCoOrdShoot(computerPlayer.getAiConfirmedHit()));
-                System.out.println("Attempting to shoot at: " + shoot);
-                counter++;
-                if (counter == 20) {
-                    break;
-                }
-            }
+
         } else if (computerPlayer.getAiConfirmedHitInitial() != null && !computerPlayer.getAiHitCheck()) {
             System.out.println("Confirmed hit at: " + computerPlayer.getAiConfirmedHit() + ", attempting to find ship again");
-            shoot = (aiCoOrdShoot(computerPlayer.getAiConfirmedHit()));
+            shoot = (aiCoOrdShoot(computerPlayer.getAiConfirmedHit(), computerPlayer.getId()));
             System.out.println("Attempting to shoot at: " + shoot);
             playerRepository.save(computerPlayer);
-            int counter = 0;
-            while (computerPlayer.getAiShot().contains(shoot)) {
-                System.out.println(shoot + " already found in shot data, regenerating");
-                shoot = (aiCoOrdShoot(computerPlayer.getAiConfirmedHit()));
-                System.out.println("Attempting to shoot at: " + shoot);
-                counter++;
-                if (counter == 20) {
-                    computerPlayer.setAiShotAttempts(1);
-                    break;
-                }
-        }
+
         } else if (computerPlayer.getAiConfirmedHitInitial() != null && !computerPlayer.getAiHitCheck() && (computerPlayer.getAiShotAttempts() == 1)) {
             System.out.println("Cannot find ship, moving back to first hit position");
             computerPlayer.setAiConfirmedHit(computerPlayer.getAiConfirmedHitInitial());
             playerRepository.save(computerPlayer);
             Thread.sleep(50);
-            shoot = (aiCoOrdShoot(computerPlayer.getAiConfirmedHit()));
+            shoot = (aiCoOrdShoot(computerPlayer.getAiConfirmedHit(), computerPlayer.getId()));
             System.out.println("Attempting to shoot at: " + shoot);
-            int counter = 0;
-            while (computerPlayer.getAiShot().contains(shoot)) {
-                System.out.println(shoot + " already found in shot data, regenerating");
-                shoot = aiCoOrdShoot(computerPlayer.getAiConfirmedHit());
-                counter++;
-                if (counter == 20) {
-                    computerPlayer.setAiHitCheck(false);
-                    computerPlayer.setAiConfirmedHit(null);
-                    computerPlayer.setAiConfirmedHitInitial(null);
-                    computerPlayer.setAiShotAttempts(0);
-                    System.out.println("Out of valid targets");
-                    shoot = generateRandomCoOrd();
-                    break;
-                }
-            }
+
         } else {
             do {
                 shoot = generateRandomCoOrd();
@@ -285,7 +252,8 @@ public class Shooting {
         shootAtShip(shoot + humanPlayer.getName().substring(0, 4) + computerPlayer.getName().substring(0, 4));
     }
 
-    public String aiCoOrdShoot(String firstCoOrd) {
+    public String aiCoOrdShoot(String firstCoOrd, long playerId) {
+        Player computerPlayer = playerRepository.findPlayerById(playerId);
         coOrdLetters = Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I", "J");
         coOrdNumbers = Arrays.asList("0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
         Random random = new Random();
@@ -415,6 +383,15 @@ public class Shooting {
         }
         String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
         System.out.println("Final Gen complete: " + secondCoOrd);
+        int counter = 0;
+        while (computerPlayer.getAiShot().contains(secondCoOrd)) {
+            aiCoOrdShoot(firstCoOrd, playerId);
+            counter++;
+            if (counter == 20) {
+                break;
+            }
+            return generateRandomCoOrd();
+        }
         return secondCoOrd;
     }
 }
