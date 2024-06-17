@@ -24,6 +24,7 @@ public class Shooting {
     private List<String> coOrdNumbers = new ArrayList<>();
     private List<String> lost = new ArrayList<>();
     private Placing placing;
+
     public Shooting(PlayerRepository playerRepository, ShipRepository shipRepository, WebSocketMessageSender webSocketMessageSender, RoomRepository roomRepository, Placing placing) {
         this.playerRepository = playerRepository;
         this.shipRepository = shipRepository;
@@ -181,8 +182,8 @@ public class Shooting {
                     webSocketMessageSender.sendMessage("/topic/gameInfo", new Chat(playerToCheck.getRoom().getRoomNumber() + winnerName + " Wins!"));
                 }
             }
-            }
         }
+    }
 
     // Generates a random coordinate
     public String generateRandomCoOrd() {
@@ -220,62 +221,55 @@ public class Shooting {
         }
 
         String shoot = generateRandomCoOrd();
-        boolean validCoOrd = false;
 
-            while (!validCoOrd) {
-                if (computerPlayer.getAiShotAttempts() < 3 && computerPlayer.getAiHitCheck()) {
-                    shoot = placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true);
-                    System.out.println("Confirmed hit, attempting to find ship");
-                    validCoOrd = !computerPlayer.getAiShot().contains(shoot);
-                    if (validCoOrd) {
-                        computerPlayer.setAiShotAttempts(computerPlayer.getAiShotAttempts() + 1);
-                    }
-                } else if (computerPlayer.getAiShotAttempts() == 3) {
-                    computerPlayer.setAiConfirmedHit(computerPlayer.getAiConfirmedHitInitial());
-                    Thread.sleep(50);
-                    shoot = placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true);
-                    System.out.println("Miss but ship not destroyed");
-                    validCoOrd = !computerPlayer.getAiShot().contains(shoot);
-                    if (validCoOrd) {
-                        computerPlayer.setAiShotAttempts(0);
-                    }
-                } else if (computerPlayer.getAiShotAttempts() >= 3) {
-                    shoot = generateRandomCoOrd();
-                    System.out.println("Out of valid search params, Shooting randomly");
-                    validCoOrd = !computerPlayer.getAiShot().contains(shoot);
-                    if (validCoOrd) {
-                        computerPlayer.setAiShotAttempts(0);
-                        computerPlayer.setAiHitCheck(false);
-                        computerPlayer.setAiConfirmedHit(null);
-                        computerPlayer.setAiConfirmedHitInitial(null);
-                    }
-                } else {
-                    shoot = generateRandomCoOrd();
-                    System.out.println("Shooting randomly");
-                    validCoOrd = !computerPlayer.getAiShot().contains(shoot);
-                }
-
-                if (validCoOrd) {
-                    computerPlayer.setAiShot(computerPlayer.getAiShot() + shoot);
-                    playerRepository.save(computerPlayer);
-                    shootAtShip(shoot + humanPlayer.getName().substring(0, 4) + computerPlayer.getName().substring(0, 4));
+        if (computerPlayer.getAiHitCheck()) {
+            shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
+            System.out.println("Confirmed hit, attempting to find ship");
+            computerPlayer.setAiShotAttempts(computerPlayer.getAiShotAttempts() + 1);
+            playerRepository.save(computerPlayer);
+            while (computerPlayer.getAiShot().contains(shoot)) {
+                int counter = 0;
+                shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
+                counter++;
+                if (counter == 4) {
+                    break;
                 }
             }
+        } else if (computerPlayer.getAiConfirmedHitInitial() != null && !computerPlayer.getAiHitCheck()) {
+            System.out.println("Cannot find ship, moving back to first hit position");
+            computerPlayer.setAiConfirmedHit(computerPlayer.getAiConfirmedHitInitial());
+            playerRepository.save(computerPlayer);
+            Thread.sleep(50);
+            shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
+            while (computerPlayer.getAiShot().contains(shoot)) {
+                int counter = 0;
+                shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
+                counter++;
+                if (counter == 4) {
+                    computerPlayer.setAiHitCheck(false);
+                    computerPlayer.setAiConfirmedHit(null);
+                    computerPlayer.setAiConfirmedHitInitial(null);
+                    System.out.println("Out of valid targets");
+                    break;
+            }
         }
-
-
-//        if (computerPlayer.getAiShotAttempts() < 3 && computerPlayer.getAiHitCheck()) {
-//            shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
-//            System.out.println("Confirmed hit, attempting to find ship");
-//            computerPlayer.setAiShotAttempts(computerPlayer.getAiShotAttempts() + 1);
-//            playerRepository.save(computerPlayer);
-//        } else if (computerPlayer.getAiShotAttempts() == 3) {
+        } else {
+            shoot = generateRandomCoOrd();
+            System.out.println("Shooting randomly");
+        }
+        computerPlayer.setAiShot(computerPlayer.getAiShot() + shoot);
+        playerRepository.save(computerPlayer);
+        shootAtShip(shoot + humanPlayer.getName().substring(0, 4) + computerPlayer.getName().substring(0, 4));
+    }
+}
+//
+//
+//        computerPlayer.getAiShotAttempts() == 3) {
 //            computerPlayer.setAiConfirmedHit(computerPlayer.getAiConfirmedHitInitial());
 //            playerRepository.save(computerPlayer);
 //            Thread.sleep(50);
 //            shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
 //            System.out.println("Miss but ship not destroyed");
-//            computerPlayer.setAiShotAttempts(0);
 //            playerRepository.save(computerPlayer);
 //        } else if (computerPlayer.getAiShotAttempts() >= 3) {
 //            shoot = generateRandomCoOrd();
@@ -302,7 +296,6 @@ public class Shooting {
 //                Thread.sleep(50);
 //                shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
 //                System.out.println("Miss but ship not destroyed");
-//                computerPlayer.setAiShotAttempts(0);
 //                playerRepository.save(computerPlayer);
 //            } else if (computerPlayer.getAiShotAttempts() >= 3) {
 //                shoot = generateRandomCoOrd();
@@ -320,5 +313,3 @@ public class Shooting {
 //        computerPlayer.setAiShot(computerPlayer.getAiShot() + shoot);
 //        playerRepository.save(computerPlayer);
 //        shootAtShip(shoot + humanPlayer.getName().substring(0, 4) + computerPlayer.getName().substring(0, 4));
-//    }
-}

@@ -321,6 +321,7 @@ public class Placing {
             secondCoOrdIndexNumber = firstCoOrdIndexNumber;}
         String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
         if (computerGame) {
+            System.out.println("computer attempting to shoot at: " + secondCoOrd);
             return secondCoOrd;
         } else {
             return firstCoOrd + secondCoOrd;
