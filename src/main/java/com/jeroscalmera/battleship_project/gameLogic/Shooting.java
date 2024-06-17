@@ -83,7 +83,6 @@ public class Shooting {
                 webSocketMessageSender.sendMessage("/topic/gameInfo", new Chat(selectedPlayer.getRoom().getRoomNumber() + selectedPlayer2.getName() + " Missed!"));
             } else {
                 webSocketMessageSender.sendMessage("/topic/gameInfo", new Chat(selectedPlayer.getRoom().getRoomNumber() + "The Computer Missed!"));
-                selectedPlayer2.setAiConfirmedHit("");
                 selectedPlayer2.setAiHitCheck(false);
                 playerRepository.save(selectedPlayer2);
             }
