@@ -233,7 +233,7 @@ public class Shooting {
                 shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
                 System.out.println("Attempting to shoot at: " + shoot);
                 counter++;
-                if (counter == 50) {
+                if (counter == 20) {
                     computerPlayer.setAiShotAttempts(1);
                     break;
                 }
@@ -250,7 +250,7 @@ public class Shooting {
                 System.out.println(shoot + " already found in shot data, regenerating");
                 shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHitInitial(), true));
                 counter++;
-                if (counter == 50) {
+                if (counter == 20) {
                     computerPlayer.setAiHitCheck(false);
                     computerPlayer.setAiConfirmedHit(null);
                     computerPlayer.setAiConfirmedHitInitial(null);
