@@ -274,9 +274,6 @@ public class Shooting {
     public String aiCoOrdShoot(String firstCoOrd) {
         coOrdLetters = Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I", "J");
         coOrdNumbers = Arrays.asList("0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
-        if (placing.computerAllCoOrds.size() < 100) {
-            placing.fillCoOrds();
-        }
         Random random = new Random();
         int rando = random.nextInt(3);
         int firstCoOrdIndexLetter = coOrdLetters.indexOf(String.valueOf(firstCoOrd.charAt(0)));
