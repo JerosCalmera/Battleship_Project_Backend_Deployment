@@ -225,17 +225,18 @@ public class Shooting {
         if (computerPlayer.getAiHitCheck()) {
             shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
             System.out.println("Confirmed hit, attempting to find ship");
-            computerPlayer.setAiShotAttempts(computerPlayer.getAiShotAttempts() + 1);
             playerRepository.save(computerPlayer);
             while (computerPlayer.getAiShot().contains(shoot)) {
                 int counter = 0;
+                System.out.println(shoot + " already found in shot data, regenerating");
                 shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
                 counter++;
                 if (counter == 4) {
+                    computerPlayer.setAiShotAttempts(1);
                     break;
                 }
             }
-        } else if (computerPlayer.getAiConfirmedHitInitial() != null && !computerPlayer.getAiHitCheck()) {
+        } else if (computerPlayer.getAiConfirmedHitInitial() != null && !computerPlayer.getAiHitCheck() && (computerPlayer.getAiShotAttempts() == 1)) {
             System.out.println("Cannot find ship, moving back to first hit position");
             computerPlayer.setAiConfirmedHit(computerPlayer.getAiConfirmedHitInitial());
             playerRepository.save(computerPlayer);
@@ -243,6 +244,7 @@ public class Shooting {
             shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
             while (computerPlayer.getAiShot().contains(shoot)) {
                 int counter = 0;
+                System.out.println(shoot + " already found in shot data, regenerating");
                 shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
                 counter++;
                 if (counter == 4) {
@@ -254,7 +256,9 @@ public class Shooting {
             }
         }
         } else {
-            shoot = generateRandomCoOrd();
+            do {
+                shoot = generateRandomCoOrd();
+            } while (computerPlayer.getAiShot().contains(shoot));
             System.out.println("Shooting randomly");
         }
         computerPlayer.setAiShot(computerPlayer.getAiShot() + shoot);
