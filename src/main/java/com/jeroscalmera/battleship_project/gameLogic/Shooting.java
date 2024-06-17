@@ -227,8 +227,8 @@ public class Shooting {
             System.out.println("Confirmed hit at: " + computerPlayer.getAiConfirmedHit() + ", attempting to find ship");
             System.out.println("Attempting to shoot at: " + shoot);
             playerRepository.save(computerPlayer);
+            int counter = 0;
             while (computerPlayer.getAiShot().contains(shoot)) {
-                int counter = 0;
                 System.out.println(shoot + " already found in shot data, regenerating");
                 shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
                 counter++;
@@ -244,8 +244,8 @@ public class Shooting {
             Thread.sleep(50);
             shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
             System.out.println("Attempting to shoot at: " + shoot);
+            int counter = 0;
             while (computerPlayer.getAiShot().contains(shoot)) {
-                int counter = 0;
                 System.out.println(shoot + " already found in shot data, regenerating");
                 shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
                 counter++;
