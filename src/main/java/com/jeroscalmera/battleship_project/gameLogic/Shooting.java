@@ -254,6 +254,7 @@ public class Shooting {
                     computerPlayer.setAiConfirmedHit(null);
                     computerPlayer.setAiConfirmedHitInitial(null);
                     System.out.println("Out of valid targets");
+                    shoot = generateRandomCoOrd();
                     break;
                 }
             }
