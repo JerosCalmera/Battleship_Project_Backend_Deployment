@@ -223,14 +223,14 @@ public class Shooting {
         String shoot = generateRandomCoOrd();
 
         if (computerPlayer.getAiHitCheck()) {
-            shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
             System.out.println("Confirmed hit at: " + computerPlayer.getAiConfirmedHit() + ", attempting to find ship");
+            shoot = (aiCoOrdShoot(computerPlayer.getAiConfirmedHit()));
             System.out.println("Attempting to shoot at: " + shoot);
             playerRepository.save(computerPlayer);
             int counter = 0;
             while (computerPlayer.getAiShot().contains(shoot)) {
                 System.out.println(shoot + " already found in shot data, regenerating");
-                shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
+                shoot = (aiCoOrdShoot(computerPlayer.getAiConfirmedHit()));
                 System.out.println("Attempting to shoot at: " + shoot);
                 counter++;
                 if (counter == 20) {
@@ -243,12 +243,12 @@ public class Shooting {
             computerPlayer.setAiConfirmedHit(computerPlayer.getAiConfirmedHitInitial());
             playerRepository.save(computerPlayer);
             Thread.sleep(50);
-            shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHitInitial(), true));
+            shoot = (aiCoOrdShoot(computerPlayer.getAiConfirmedHit()));
             System.out.println("Attempting to shoot at: " + shoot);
             int counter = 0;
             while (computerPlayer.getAiShot().contains(shoot)) {
                 System.out.println(shoot + " already found in shot data, regenerating");
-                shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHitInitial(), true));
+                shoot = aiCoOrdShoot(computerPlayer.getAiConfirmedHit());
                 counter++;
                 if (counter == 20) {
                     computerPlayer.setAiHitCheck(false);
@@ -263,42 +263,147 @@ public class Shooting {
         } else {
             do {
                 shoot = generateRandomCoOrd();
-                } while (computerPlayer.getAiShot().contains(shoot));
-                System.out.println("Shooting randomly");
+            } while (computerPlayer.getAiShot().contains(shoot));
+            System.out.println("Shooting randomly");
         }
         computerPlayer.setAiShot(computerPlayer.getAiShot() + shoot);
         playerRepository.save(computerPlayer);
         shootAtShip(shoot + humanPlayer.getName().substring(0, 4) + computerPlayer.getName().substring(0, 4));
     }
-}
 
-//
-//        while (computerPlayer.getAiShot().contains(shoot)) {
-//            if (computerPlayer.getAiShotAttempts() < 3 && computerPlayer.getAiHitCheck()) {
-//                shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
-//                System.out.println("Confirmed hit, attempting to find ship");
-//                computerPlayer.setAiShotAttempts(computerPlayer.getAiShotAttempts() + 1);
-//                playerRepository.save(computerPlayer);
-//            } else if (computerPlayer.getAiShotAttempts() == 3) {
-//                computerPlayer.setAiConfirmedHit(computerPlayer.getAiConfirmedHitInitial());
-//                playerRepository.save(computerPlayer);
-//                Thread.sleep(50);
-//                shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
-//                System.out.println("Miss but ship not destroyed");
-//                playerRepository.save(computerPlayer);
-//            } else if (computerPlayer.getAiShotAttempts() >= 3) {
-//                shoot = generateRandomCoOrd();
-//                System.out.println("Out of valid search params, Shooting randomly");
-//                computerPlayer.setAiShotAttempts(0);
-//                computerPlayer.setAiHitCheck(false);
-//                computerPlayer.setAiConfirmedHit(null);
-//                computerPlayer.setAiConfirmedHitInitial(null);
-//                playerRepository.save(computerPlayer);
-//            } else {
-//                shoot = generateRandomCoOrd();
-//                System.out.println("Shooting randomly");
-//            }
-//        }
-//        computerPlayer.setAiShot(computerPlayer.getAiShot() + shoot);
-//        playerRepository.save(computerPlayer);
-//        shootAtShip(shoot + humanPlayer.getName().substring(0, 4) + computerPlayer.getName().substring(0, 4));
+    public String aiCoOrdShoot(String firstCoOrd) {
+        coOrdLetters = Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I", "J");
+        coOrdNumbers = Arrays.asList("0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
+        if (placing.computerAllCoOrds.size() < 100) {
+            placing.fillCoOrds();
+        }
+        Random random = new Random();
+        int rando = random.nextInt(3);
+        int firstCoOrdIndexLetter = coOrdLetters.indexOf(String.valueOf(firstCoOrd.charAt(0)));
+        int firstCoOrdIndexNumber = coOrdNumbers.indexOf(String.valueOf(firstCoOrd.charAt(1)));
+        int secondCoOrdIndexLetter = 0;
+        int secondCoOrdIndexNumber = 0;
+        do {
+                rando = random.nextInt(2);
+                if (firstCoOrdIndexLetter == 0 && firstCoOrdIndexNumber == 0) {
+                    if (rando == 0) {
+                        secondCoOrdIndexLetter = firstCoOrdIndexLetter + 1;
+                        secondCoOrdIndexNumber = firstCoOrdIndexNumber;
+                    }
+                    if (rando == 1) {
+                        secondCoOrdIndexLetter = firstCoOrdIndexLetter;
+                        secondCoOrdIndexNumber = firstCoOrdIndexNumber + 1;
+                    }
+                    String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
+                    System.out.println("Gen complete at position 1: " + secondCoOrd);
+                    return secondCoOrd;
+                }
+                if (firstCoOrdIndexLetter == 9 && firstCoOrdIndexNumber == 9) {
+                    if (rando == 0) {
+                        secondCoOrdIndexLetter = firstCoOrdIndexLetter - 1;
+                        secondCoOrdIndexNumber = firstCoOrdIndexNumber;
+                    }
+                    if (rando == 1) {
+                        secondCoOrdIndexLetter = firstCoOrdIndexLetter;
+                        secondCoOrdIndexNumber = firstCoOrdIndexNumber - 1;
+                    }
+                    String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
+                    System.out.println("Gen complete at position 2: " + secondCoOrd);
+                    return secondCoOrd;
+                }
+                if (firstCoOrdIndexLetter == 0 && firstCoOrdIndexNumber == 9) {
+                    if (rando == 0) {
+                        secondCoOrdIndexLetter = firstCoOrdIndexLetter + 1;
+                        secondCoOrdIndexNumber = firstCoOrdIndexNumber;
+                    }
+                    if (rando == 1) {
+                        secondCoOrdIndexLetter = firstCoOrdIndexLetter;
+                        secondCoOrdIndexNumber = firstCoOrdIndexNumber - 1;
+                    }
+                    String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
+                    System.out.println("Gen complete at position 3: " + secondCoOrd);
+                    return secondCoOrd;
+                }
+                if (firstCoOrdIndexLetter == 9 && firstCoOrdIndexNumber == 0) {
+                    if (rando == 0) {
+                        secondCoOrdIndexLetter = firstCoOrdIndexLetter - 1;
+                        secondCoOrdIndexNumber = firstCoOrdIndexNumber;
+                    }
+                    if (rando == 1) {
+                        secondCoOrdIndexLetter = firstCoOrdIndexLetter;
+                        secondCoOrdIndexNumber = firstCoOrdIndexNumber + 1;
+                    }
+                    String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
+                    System.out.println("Gen complete at position 4: " + secondCoOrd);
+                    return secondCoOrd;
+                }
+                if (firstCoOrdIndexLetter == 0 && firstCoOrdIndexNumber != 0 && firstCoOrdIndexNumber != 9) {
+                    if (rando == 0) {
+                        secondCoOrdIndexLetter = firstCoOrdIndexLetter;
+                        secondCoOrdIndexNumber = firstCoOrdIndexNumber + 1;
+                    }
+                    if (rando == 1) {
+                        secondCoOrdIndexLetter = firstCoOrdIndexLetter;
+                        secondCoOrdIndexNumber = firstCoOrdIndexNumber - 1;
+                    }
+                    String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
+                    System.out.println("Gen complete at position 5: " + secondCoOrd);
+                    return secondCoOrd;
+                }
+                if (firstCoOrdIndexLetter == 9 && firstCoOrdIndexNumber != 0 && firstCoOrdIndexNumber != 9) {
+                    if (rando == 0) {
+                        secondCoOrdIndexLetter = firstCoOrdIndexLetter;
+                        secondCoOrdIndexNumber = firstCoOrdIndexNumber + 1;
+                    }
+                    if (rando == 1) {
+                        secondCoOrdIndexLetter = firstCoOrdIndexLetter;
+                        secondCoOrdIndexNumber = firstCoOrdIndexNumber - 1;
+                    }
+                    String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
+                    System.out.println("Gen complete at position 6: " + secondCoOrd);
+                    return secondCoOrd;
+                }
+                if (firstCoOrdIndexNumber == 0 && firstCoOrdIndexLetter != 0 && firstCoOrdIndexLetter != 9) {
+                    if (rando == 0) {
+                        secondCoOrdIndexLetter = firstCoOrdIndexLetter + 1;
+                        secondCoOrdIndexNumber = firstCoOrdIndexNumber;
+                    }
+                    if (rando == 1) {
+                        secondCoOrdIndexLetter = firstCoOrdIndexLetter - 1;
+                        secondCoOrdIndexNumber = firstCoOrdIndexNumber;
+                    }
+                    String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
+                    System.out.println("Gen complete at position 7: " + secondCoOrd);
+                    return secondCoOrd;
+                }
+                if (firstCoOrdIndexNumber == 9 && firstCoOrdIndexLetter != 0 && firstCoOrdIndexLetter != 9) {
+                    if (rando == 0) {
+                        secondCoOrdIndexLetter = firstCoOrdIndexLetter + 1;
+                        secondCoOrdIndexNumber = firstCoOrdIndexNumber;
+                    }
+                    if (rando == 1) {
+                        secondCoOrdIndexLetter = firstCoOrdIndexLetter - 1;
+                        secondCoOrdIndexNumber = firstCoOrdIndexNumber;
+                    }
+                    String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
+                    System.out.println("Gen complete at position 8: " + secondCoOrd);
+                    return secondCoOrd;
+                }
+            firstCoOrdIndexLetter = coOrdLetters.indexOf(String.valueOf(firstCoOrd.charAt(0)));
+            firstCoOrdIndexNumber = coOrdNumbers.indexOf(String.valueOf(firstCoOrd.charAt(1)));
+        } while (firstCoOrdIndexLetter == 0 || firstCoOrdIndexLetter == 9 || firstCoOrdIndexNumber == 0 || firstCoOrdIndexNumber == 9);
+        if (rando == 0) {
+            secondCoOrdIndexLetter = firstCoOrdIndexLetter;
+            secondCoOrdIndexNumber = firstCoOrdIndexNumber + 1;
+        } else if (rando == 1) {
+            secondCoOrdIndexLetter = firstCoOrdIndexLetter;
+            secondCoOrdIndexNumber = firstCoOrdIndexNumber - 1;
+        } else if (rando == 2) {
+            secondCoOrdIndexLetter = firstCoOrdIndexLetter + 1;
+            secondCoOrdIndexNumber = firstCoOrdIndexNumber;
+        }
+        String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
+        System.out.println("Final Gen complete: " + secondCoOrd);
+        return secondCoOrd;
+    }
+}

@@ -231,7 +231,6 @@ public class Placing {
                         secondCoOrdIndexLetter = firstCoOrdIndexLetter;
                         secondCoOrdIndexNumber = firstCoOrdIndexNumber + 1;}
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
-                    System.out.println("Gen complete at position 1: " + secondCoOrd);
                     return secondCoOrd;
                 }
                 if (firstCoOrdIndexLetter == 9 && firstCoOrdIndexNumber == 9 ) {
@@ -242,7 +241,6 @@ public class Placing {
                         secondCoOrdIndexLetter = firstCoOrdIndexLetter;
                         secondCoOrdIndexNumber = firstCoOrdIndexNumber - 1;}
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
-                    System.out.println("Gen complete at position 2: " + secondCoOrd);
                     return secondCoOrd;
                 }
                 if (firstCoOrdIndexLetter == 0 && firstCoOrdIndexNumber == 9 ) {
@@ -253,7 +251,6 @@ public class Placing {
                         secondCoOrdIndexLetter = firstCoOrdIndexLetter;
                         secondCoOrdIndexNumber = firstCoOrdIndexNumber - 1;}
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
-                    System.out.println("Gen complete at position 3: " + secondCoOrd);
                     return secondCoOrd;
                 }
                 if (firstCoOrdIndexLetter == 9 && firstCoOrdIndexNumber == 0 ) {
@@ -264,7 +261,6 @@ public class Placing {
                         secondCoOrdIndexLetter = firstCoOrdIndexLetter;
                         secondCoOrdIndexNumber = firstCoOrdIndexNumber + 1;}
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
-                    System.out.println("Gen complete at position 4: " + secondCoOrd);
                     return secondCoOrd;
                 }
                 if (firstCoOrdIndexLetter == 0 && firstCoOrdIndexNumber != 0 && firstCoOrdIndexNumber != 9) {
@@ -275,7 +271,6 @@ public class Placing {
                         secondCoOrdIndexLetter = firstCoOrdIndexLetter;
                         secondCoOrdIndexNumber = firstCoOrdIndexNumber - 1;}
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
-                    System.out.println("Gen complete at position 5: " + secondCoOrd);
                     return secondCoOrd;
                 }
                 if (firstCoOrdIndexLetter == 9  && firstCoOrdIndexNumber != 0 && firstCoOrdIndexNumber != 9) {
@@ -286,7 +281,6 @@ public class Placing {
                         secondCoOrdIndexLetter = firstCoOrdIndexLetter;
                         secondCoOrdIndexNumber = firstCoOrdIndexNumber - 1;}
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
-                    System.out.println("Gen complete at position 6: " + secondCoOrd);
                     return secondCoOrd;
                 }
                 if (firstCoOrdIndexNumber == 0  && firstCoOrdIndexLetter != 0 && firstCoOrdIndexLetter != 9) {
@@ -297,7 +291,6 @@ public class Placing {
                         secondCoOrdIndexLetter = firstCoOrdIndexLetter - 1;
                         secondCoOrdIndexNumber = firstCoOrdIndexNumber;}
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
-                    System.out.println("Gen complete at position 7: " + secondCoOrd);
                     return secondCoOrd;
                 }
                 if (firstCoOrdIndexNumber == 9 && firstCoOrdIndexLetter != 0 && firstCoOrdIndexLetter != 9) {
@@ -308,7 +301,6 @@ public class Placing {
                         secondCoOrdIndexLetter = firstCoOrdIndexLetter - 1;
                         secondCoOrdIndexNumber = firstCoOrdIndexNumber;}
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
-                    System.out.println("Gen complete at position 8: " + secondCoOrd);
                     return secondCoOrd;
                 }
             } else {
@@ -328,7 +320,6 @@ public class Placing {
             secondCoOrdIndexNumber = firstCoOrdIndexNumber;}
         String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
         if (computerGame) {
-            System.out.println("Final Gen complete: " + secondCoOrd);
             return secondCoOrd;
         } else {
             return firstCoOrd + secondCoOrd;
