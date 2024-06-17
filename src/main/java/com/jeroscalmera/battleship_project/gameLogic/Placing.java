@@ -324,6 +324,7 @@ public class Placing {
             System.out.println("computer attempting to shoot at: " + secondCoOrd);
             return secondCoOrd;
         } else {
+            System.out.println("shooting at: " + firstCoOrd + " + " + secondCoOrd);
             return firstCoOrd + secondCoOrd;
         }
     }
