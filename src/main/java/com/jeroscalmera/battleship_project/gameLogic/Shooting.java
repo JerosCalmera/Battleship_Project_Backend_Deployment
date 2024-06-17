@@ -231,8 +231,9 @@ public class Shooting {
             while (computerPlayer.getAiShot().contains(shoot)) {
                 System.out.println(shoot + " already found in shot data, regenerating");
                 shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
+                System.out.println("Attempting to shoot at: " + shoot);
                 counter++;
-                if (counter == 4) {
+                if (counter == 50) {
                     computerPlayer.setAiShotAttempts(1);
                     break;
                 }
@@ -242,17 +243,18 @@ public class Shooting {
             computerPlayer.setAiConfirmedHit(computerPlayer.getAiConfirmedHitInitial());
             playerRepository.save(computerPlayer);
             Thread.sleep(50);
-            shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
+            shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHitInitial(), true));
             System.out.println("Attempting to shoot at: " + shoot);
             int counter = 0;
             while (computerPlayer.getAiShot().contains(shoot)) {
                 System.out.println(shoot + " already found in shot data, regenerating");
-                shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHit(), true));
+                shoot = (placing.generateStartingRandomCoOrds(computerPlayer.getAiConfirmedHitInitial(), true));
                 counter++;
-                if (counter == 4) {
+                if (counter == 50) {
                     computerPlayer.setAiHitCheck(false);
                     computerPlayer.setAiConfirmedHit(null);
                     computerPlayer.setAiConfirmedHitInitial(null);
+                    computerPlayer.setAiShotAttempts(0);
                     System.out.println("Out of valid targets");
                     shoot = generateRandomCoOrd();
                     break;
