@@ -220,7 +220,7 @@ public class Placing {
         } else {
             firstCoOrd = computerAllCoOrds.get(randomCoOrd);
         }
-        System.out.println("Random CoOrd: " + randomCoOrd);
+        System.out.println("Random CoOrd: " + firstCoOrd);
         int firstCoOrdIndexLetter = coOrdLetters.indexOf(String.valueOf(firstCoOrd.charAt(0)));
         int firstCoOrdIndexNumber = coOrdNumbers.indexOf(String.valueOf(firstCoOrd.charAt(1)));
         int secondCoOrdIndexLetter = 0;
@@ -380,6 +380,7 @@ public class Placing {
         String placedShips = "";
         while ((shipList = String.join("", playerRepository.findAllCoOrdsByPlayerName(player.getName()))).length() < 10) {
             String placementCoOrds = generateStartingRandomCoOrds("N/A", false);
+            System.out.println("Placement CoOrds: " + placementCoOrds);
             String firstCoOrd = placementCoOrds.substring(0, 2);
             String secondCoOrd = placementCoOrds.substring(2, 4);
             placeShip("P" + firstCoOrd + 5 + player.getName());
