@@ -263,8 +263,6 @@ public class Shooting {
         int secondCoOrdIndexLetter = 0;
         int secondCoOrdIndexNumber = 0;
 
-        firstCoOrd = generateRandomCoOrd();
-
         do {
                 int rando = random.nextInt(2);
                 if (firstCoOrdIndexLetter == 0 && firstCoOrdIndexNumber == 0) {
