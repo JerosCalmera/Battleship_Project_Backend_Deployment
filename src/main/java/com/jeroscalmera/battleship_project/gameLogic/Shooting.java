@@ -224,30 +224,12 @@ public class Shooting {
         if (computerPlayer.getAiHitCheck()) {
             System.out.println("Confirmed hit at: " + computerPlayer.getAiConfirmedHit() + ", attempting to find ship");
             shoot = (aiCoOrdShoot(computerPlayer.getAiConfirmedHit(), computerPlayer.getId()));
-            int counter = 0;
-            while (computerPlayer.getAiShot().contains(shoot) && counter < 20) {
-                aiCoOrdShoot(computerPlayer.getAiConfirmedHit(), computerPlayer.getId());
-                counter++;
-            }
-            if (counter == 20) {
-                shoot = generateRandomCoOrd();
-                System.out.println("Shooting random co-ordinate as no valid space found");
-            }
             System.out.println("Attempting to shoot at: " + shoot);
             playerRepository.save(computerPlayer);
 
         } else if (computerPlayer.getAiConfirmedHitInitial() != null && !computerPlayer.getAiHitCheck()) {
             System.out.println("Confirmed hit at: " + computerPlayer.getAiConfirmedHit() + ", attempting to find ship again");
             shoot = (aiCoOrdShoot(computerPlayer.getAiConfirmedHit(), computerPlayer.getId()));
-            int counter = 0;
-            while (computerPlayer.getAiShot().contains(shoot) && counter < 20) {
-                aiCoOrdShoot(computerPlayer.getAiConfirmedHit(), computerPlayer.getId());
-                counter++;
-            }
-            if (counter == 20) {
-                shoot = generateRandomCoOrd();
-                System.out.println("Shooting random co-ordinate as no valid space found");
-            }
             System.out.println("Attempting to shoot at: " + shoot);
             playerRepository.save(computerPlayer);
 
@@ -257,15 +239,6 @@ public class Shooting {
             playerRepository.save(computerPlayer);
             Thread.sleep(50);
             shoot = (aiCoOrdShoot(computerPlayer.getAiConfirmedHit(), computerPlayer.getId()));
-            int counter = 0;
-            while (computerPlayer.getAiShot().contains(shoot) && counter < 20) {
-                aiCoOrdShoot(computerPlayer.getAiConfirmedHit(), computerPlayer.getId());
-                counter++;
-            }
-            if (counter == 20) {
-                shoot = generateRandomCoOrd();
-                System.out.println("Shooting random co-ordinate as no valid space found");
-            }
             System.out.println("Attempting to shoot at: " + shoot);
         } else {
             do {
@@ -414,6 +387,19 @@ public class Shooting {
             secondCoOrdIndexNumber = firstCoOrdIndexNumber;
         }
         String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
+        int counter = 0;
+        while (computerPlayer.getAiShot().contains(secondCoOrd) && counter < 20) {
+            aiCoOrdShoot(computerPlayer.getAiConfirmedHit(), computerPlayer.getId());
+            counter++;
+        }
+        if (counter == 20) {
+            secondCoOrd = generateRandomCoOrd();
+            while (computerPlayer.getAiShot().contains(secondCoOrd) && counter < 20) {
+                secondCoOrd = generateRandomCoOrd();
+                counter++;
+            }
+            System.out.println("Shooting random co-ordinate as no valid space found");
+        }
         System.out.println("Final Gen complete: " + secondCoOrd);
         return secondCoOrd;
     }
