@@ -230,7 +230,10 @@ public class Shooting {
                 counter++;
             }
             if (counter == 15) {
-                System.out.println("No valid co-ords found (you should never see this)");
+                System.out.println("No valid co-ords found shooting randomly");
+                do {
+                    shoot = generateRandomCoOrd();
+                } while (computerPlayer.getAiShot().contains(shoot));
             }
             playerRepository.save(computerPlayer);
         } else if (computerPlayer.getAiConfirmedHitInitial() != null && !computerPlayer.getAiHitCheck()) {
@@ -253,7 +256,7 @@ public class Shooting {
                     counter++;
                 }
                 if (counter == 15) {
-                    System.out.println("Not valid further co-ords found from orginal points, skipping");
+                    System.out.println("Not valid further co-ords found from original points, skipping");
                     computerPlayer.setAiShotAttempts(0);
                     computerPlayer.setAiHitCheck(false);
                     computerPlayer.setAiConfirmedHit(null);
