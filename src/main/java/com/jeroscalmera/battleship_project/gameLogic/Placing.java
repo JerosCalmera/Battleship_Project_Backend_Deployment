@@ -213,10 +213,6 @@ public class Placing {
         Random random = new Random();
         int randomCoOrd = random.nextInt(100);
         String firstCoOrd = computerAllCoOrds.get(randomCoOrd);
-        int firstCoOrdIndexLetter = coOrdLetters.indexOf(String.valueOf(firstCoOrd.charAt(0)));
-        int firstCoOrdIndexNumber = coOrdNumbers.indexOf(String.valueOf(firstCoOrd.charAt(1)));
-        int secondCoOrdIndexLetter = 0;
-        int secondCoOrdIndexNumber = 0;
 
         if (computerGame) {
             firstCoOrd = firstCoOrds;
@@ -224,6 +220,11 @@ public class Placing {
         } else {
             firstCoOrd = computerAllCoOrds.get(randomCoOrd);
         }
+
+        int firstCoOrdIndexLetter = coOrdLetters.indexOf(String.valueOf(firstCoOrd.charAt(0)));
+        int firstCoOrdIndexNumber = coOrdNumbers.indexOf(String.valueOf(firstCoOrd.charAt(1)));
+        int secondCoOrdIndexLetter = 0;
+        int secondCoOrdIndexNumber = 0;
 
         // Handle edge cases
         do {
