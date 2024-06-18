@@ -220,7 +220,7 @@ public class Placing {
         } else {
             firstCoOrd = computerAllCoOrds.get(randomCoOrd);
         }
-
+        System.out.println("Random CoOrd: " + randomCoOrd);
         int firstCoOrdIndexLetter = coOrdLetters.indexOf(String.valueOf(firstCoOrd.charAt(0)));
         int firstCoOrdIndexNumber = coOrdNumbers.indexOf(String.valueOf(firstCoOrd.charAt(1)));
         int secondCoOrdIndexLetter = 0;
