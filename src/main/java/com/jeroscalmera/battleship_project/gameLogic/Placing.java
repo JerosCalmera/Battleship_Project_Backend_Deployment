@@ -204,7 +204,7 @@ public class Placing {
     }
 
     // Generates a random second coordinate when given a first
-    public String generateStartingRandomCoOrds(String firstCoOrds, Boolean computerGame) {
+    public String generateRandomNextCoOrds(String firstCoOrds, Boolean computerGame) {
         coOrdLetters = Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I", "J");
         coOrdNumbers = Arrays.asList("0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
         if (computerAllCoOrds.size() < 100) {
@@ -381,7 +381,7 @@ public class Placing {
         String shipList = String.join("", shipsList);
         String placedShips = "";
         while ((shipList = String.join("", playerRepository.findAllCoOrdsByPlayerName(player.getName()))).length() < 10) {
-            String placementCoOrds = generateStartingRandomCoOrds("N/A", false);
+            String placementCoOrds = generateRandomNextCoOrds("N/A", false);
             System.out.println("Placement CoOrds: " + placementCoOrds);
             String firstCoOrd = placementCoOrds.substring(0, 2);
             String secondCoOrd = placementCoOrds.substring(2, 4);
@@ -389,21 +389,21 @@ public class Placing {
             placeShip("P" + secondCoOrd + 5 + player.getName());
         }
         while ((shipList = String.join("", playerRepository.findAllCoOrdsByPlayerName(player.getName()))).length() < 26) {
-            String placementCoOrds = generateStartingRandomCoOrds("N/A", false);
+            String placementCoOrds = generateRandomNextCoOrds("N/A", false);
             String firstCoOrd = placementCoOrds.substring(0, 2);
             String secondCoOrd = placementCoOrds.substring(2, 4);
             placeShip("P" + firstCoOrd + 4 + player.getName());
             placeShip("P" + secondCoOrd + 4 + player.getName());
         }
         while ((shipList = String.join("", playerRepository.findAllCoOrdsByPlayerName(player.getName()))).length() < 44) {
-            String placementCoOrds = generateStartingRandomCoOrds("N/A", false);
+            String placementCoOrds = generateRandomNextCoOrds("N/A", false);
             String firstCoOrd = placementCoOrds.substring(0, 2);
             String secondCoOrd = placementCoOrds.substring(2, 4);
             placeShip("P" + firstCoOrd + 3 + player.getName());
             placeShip("P" + secondCoOrd + 3 + player.getName());
         }
         while ((shipList = String.join("", playerRepository.findAllCoOrdsByPlayerName(player.getName()))).length() < 60) {
-            String placementCoOrds = generateStartingRandomCoOrds("N/A", false);
+            String placementCoOrds = generateRandomNextCoOrds("N/A", false);
             String firstCoOrd = placementCoOrds.substring(0, 2);
             String secondCoOrd = placementCoOrds.substring(2, 4);
             placeShip("P" + firstCoOrd + 2 + player.getName());
