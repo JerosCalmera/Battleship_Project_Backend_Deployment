@@ -217,11 +217,16 @@ public class Placing {
         int firstCoOrdIndexNumber = coOrdNumbers.indexOf(String.valueOf(firstCoOrd.charAt(1)));
         int secondCoOrdIndexLetter = 0;
         int secondCoOrdIndexNumber = 0;
+
+        if (computerGame) {
+            firstCoOrd = firstCoOrds;
+            System.out.println("Computer coOrds loaded: " + firstCoOrds);
+        } else {
+            firstCoOrd = computerAllCoOrds.get(randomCoOrd);
+        }
+
+        // Handle edge cases
         do {
-            randomCoOrd = random.nextInt(100);
-            if (computerGame) {
-                firstCoOrd = firstCoOrds;
-                System.out.println("Computer coOrds loaded: " + firstCoOrds);
                 int rando = random.nextInt(2);
                 if (firstCoOrdIndexLetter == 0 && firstCoOrdIndexNumber == 0 ) {
                     if (rando == 0){
@@ -311,12 +316,11 @@ public class Placing {
                     System.out.println("Gen complete at position right edge: " + secondCoOrd);
                     return secondCoOrd;
                 }
-            } else {
-                firstCoOrd = computerAllCoOrds.get(randomCoOrd);
-            }
             firstCoOrdIndexLetter = coOrdLetters.indexOf(String.valueOf(firstCoOrd.charAt(0)));
             firstCoOrdIndexNumber = coOrdNumbers.indexOf(String.valueOf(firstCoOrd.charAt(1)));
         } while (firstCoOrdIndexLetter == 0 || firstCoOrdIndexLetter == 9 || firstCoOrdIndexNumber == 0 || firstCoOrdIndexNumber == 9);
+
+        // Handle if not edge case
         int rando = random.nextInt(4);
         if (rando == 0) {
             secondCoOrdIndexLetter = firstCoOrdIndexLetter;
@@ -331,6 +335,7 @@ public class Placing {
             secondCoOrdIndexLetter = firstCoOrdIndexLetter - 1;
             secondCoOrdIndexNumber = firstCoOrdIndexNumber;
         }
+
         String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
         if (computerGame) {
             System.out.println("Final gen complete: " + secondCoOrd);
