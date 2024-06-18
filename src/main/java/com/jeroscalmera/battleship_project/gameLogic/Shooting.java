@@ -230,7 +230,7 @@ public class Shooting {
                 counter++;
             }
             if (counter == 15) {
-                System.out.println("Not valid co-ords found, skipping");
+                System.out.println("No valid co-ords found (you should never see this)");
             }
             playerRepository.save(computerPlayer);
         } else if (computerPlayer.getAiConfirmedHitInitial() != null && !computerPlayer.getAiHitCheck()) {
@@ -242,28 +242,29 @@ public class Shooting {
                 counter++;
             }
             if (counter == 15) {
-                System.out.println("Not valid further co-ords found, skipping");
-                computerPlayer.setAiShotAttempts(1);
-            }
-            playerRepository.save(computerPlayer);
-        } else if (computerPlayer.getAiConfirmedHitInitial() != null && !computerPlayer.getAiHitCheck() && (computerPlayer.getAiShotAttempts() == 1)) {
-            System.out.println("Cannot find ship, moving back to first hit position");
-            computerPlayer.setAiConfirmedHit(computerPlayer.getAiConfirmedHitInitial());
-            playerRepository.save(computerPlayer);
-            shoot = (placing.generateRandomNextCoOrds(computerPlayer.getAiConfirmedHit(), true));
-            int counter = 0;
-            while (computerPlayer.getAiShot().contains(shoot) && counter < 15) {
-                shoot = (placing.generateRandomNextCoOrds(computerPlayer.getAiConfirmedHit(), true));
-                counter++;
-            }
-            if (counter == 15) {
-                System.out.println("Not valid further co-ords found from orginal points, skipping");
-                computerPlayer.setAiShotAttempts(0);
-                computerPlayer.setAiHitCheck(false);
-                computerPlayer.setAiConfirmedHit(null);
-                computerPlayer.setAiConfirmedHitInitial(null);
+                System.out.println("Not valid further co-ords found");
+                System.out.println("Cannot find ship, moving back to first hit position");
+                computerPlayer.setAiConfirmedHit(computerPlayer.getAiConfirmedHitInitial());
                 playerRepository.save(computerPlayer);
+                shoot = (placing.generateRandomNextCoOrds(computerPlayer.getAiConfirmedHit(), true));
+                counter = 0;
+                while (computerPlayer.getAiShot().contains(shoot) && counter < 15) {
+                    shoot = (placing.generateRandomNextCoOrds(computerPlayer.getAiConfirmedHit(), true));
+                    counter++;
+                }
+                if (counter == 15) {
+                    System.out.println("Not valid further co-ords found from orginal points, skipping");
+                    computerPlayer.setAiShotAttempts(0);
+                    computerPlayer.setAiHitCheck(false);
+                    computerPlayer.setAiConfirmedHit(null);
+                    computerPlayer.setAiConfirmedHitInitial(null);
+                    playerRepository.save(computerPlayer);
+                    do {
+                        shoot = generateRandomCoOrd();
+                    } while (computerPlayer.getAiShot().contains(shoot));
+                }
             }
+            playerRepository.save(computerPlayer);
         } else {
             do {
                 shoot = generateRandomCoOrd();
