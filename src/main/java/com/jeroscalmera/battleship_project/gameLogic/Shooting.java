@@ -373,6 +373,7 @@ public class Shooting {
 
         } while (firstCoOrdIndexLetter == 0 || firstCoOrdIndexLetter == 9 || firstCoOrdIndexNumber == 0 || firstCoOrdIndexNumber == 9);
         int rando = random.nextInt(4);
+        System.out.println("Random number: " + rando);
         if (rando == 0) {
             secondCoOrdIndexLetter = firstCoOrdIndexLetter;
             secondCoOrdIndexNumber = firstCoOrdIndexNumber + 1;
