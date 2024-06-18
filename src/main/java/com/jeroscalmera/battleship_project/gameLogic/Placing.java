@@ -309,6 +309,7 @@ public class Placing {
             firstCoOrdIndexLetter = coOrdLetters.indexOf(String.valueOf(firstCoOrd.charAt(0)));
             firstCoOrdIndexNumber = coOrdNumbers.indexOf(String.valueOf(firstCoOrd.charAt(1)));
         } while (firstCoOrdIndexLetter == 0 || firstCoOrdIndexLetter == 9 || firstCoOrdIndexNumber == 0 || firstCoOrdIndexNumber == 9);
+        rando = random.nextInt(4);
         if (rando == 0) {
             secondCoOrdIndexLetter = firstCoOrdIndexLetter;
             secondCoOrdIndexNumber = firstCoOrdIndexNumber + 1;
@@ -317,7 +318,11 @@ public class Placing {
             secondCoOrdIndexNumber = firstCoOrdIndexNumber - 1;
         } else if (rando == 2) {
             secondCoOrdIndexLetter = firstCoOrdIndexLetter + 1;
-            secondCoOrdIndexNumber = firstCoOrdIndexNumber;}
+            secondCoOrdIndexNumber = firstCoOrdIndexNumber;
+        } else {
+            secondCoOrdIndexLetter = firstCoOrdIndexLetter - 1;
+            secondCoOrdIndexNumber = firstCoOrdIndexNumber;
+        }
         String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
         if (computerGame) {
             return secondCoOrd;
