@@ -223,7 +223,6 @@ public class Placing {
         do {
             if (computerGame) {
                 firstCoOrd = firstCoOrds;
-            }
             rando = random.nextInt(2);
             if (firstCoOrdIndexLetter == 0 && firstCoOrdIndexNumber == 0) {
                 if (rando == 0) {
@@ -328,6 +327,9 @@ public class Placing {
                 String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
                 System.out.println("Gen complete at position right edge: " + secondCoOrd);
                 return secondCoOrd;
+            }
+            } else {
+                firstCoOrd = computerAllCoOrds.get(randomCoOrd);
             }
             firstCoOrdIndexLetter = coOrdLetters.indexOf(String.valueOf(firstCoOrd.charAt(0)));
             firstCoOrdIndexNumber = coOrdNumbers.indexOf(String.valueOf(firstCoOrd.charAt(1)));
