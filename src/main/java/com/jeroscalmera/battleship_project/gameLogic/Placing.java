@@ -221,6 +221,7 @@ public class Placing {
             randomCoOrd = random.nextInt(100);
             if (computerGame) {
                 firstCoOrd = firstCoOrds;
+                System.out.println("Computer coOrds loaded: " + firstCoOrds);
                 int rando = random.nextInt(2);
                 if (firstCoOrdIndexLetter == 0 && firstCoOrdIndexNumber == 0 ) {
                     if (rando == 0){
