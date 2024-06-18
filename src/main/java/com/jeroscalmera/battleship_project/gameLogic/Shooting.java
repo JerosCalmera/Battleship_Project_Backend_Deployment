@@ -232,7 +232,6 @@ public class Shooting {
             if (counter == 15) {
                 System.out.println("Not valid co-ords found, skipping");
             }
-            System.out.println("Attempting to shoot at: " + shoot);
             playerRepository.save(computerPlayer);
         } else if (computerPlayer.getAiConfirmedHitInitial() != null && !computerPlayer.getAiHitCheck()) {
             System.out.println("Confirmed hit at: " + computerPlayer.getAiConfirmedHit() + ", attempting to find ship again");
@@ -244,22 +243,34 @@ public class Shooting {
             }
             if (counter == 15) {
                 System.out.println("Not valid further co-ords found, skipping");
+                computerPlayer.setAiShotAttempts(1);
             }
-            System.out.println("Attempting to shoot at: " + shoot);
             playerRepository.save(computerPlayer);
-//        } else if (computerPlayer.getAiConfirmedHitInitial() != null && !computerPlayer.getAiHitCheck() && (computerPlayer.getAiShotAttempts() == 1)) {
-//            System.out.println("Cannot find ship, moving back to first hit position");
-//            computerPlayer.setAiConfirmedHit(computerPlayer.getAiConfirmedHitInitial());
-//            playerRepository.save(computerPlayer);
-//            Thread.sleep(50);
-//            shoot = (aiCoOrdShoot(computerPlayer.getAiConfirmedHit(), computerPlayer.getId()));
-//            System.out.println("Attempting to shoot at: " + shoot);
+        } else if (computerPlayer.getAiConfirmedHitInitial() != null && !computerPlayer.getAiHitCheck() && (computerPlayer.getAiShotAttempts() == 1)) {
+            System.out.println("Cannot find ship, moving back to first hit position");
+            computerPlayer.setAiConfirmedHit(computerPlayer.getAiConfirmedHitInitial());
+            playerRepository.save(computerPlayer);
+            shoot = (placing.generateRandomNextCoOrds(computerPlayer.getAiConfirmedHit(), true));
+            int counter = 0;
+            while (computerPlayer.getAiShot().contains(shoot) && counter < 15) {
+                shoot = (placing.generateRandomNextCoOrds(computerPlayer.getAiConfirmedHit(), true));
+                counter++;
+            }
+            if (counter == 15) {
+                System.out.println("Not valid further co-ords found from orginal points, skipping");
+                computerPlayer.setAiShotAttempts(0);
+                computerPlayer.setAiHitCheck(false);
+                computerPlayer.setAiConfirmedHit(null);
+                computerPlayer.setAiConfirmedHitInitial(null);
+                playerRepository.save(computerPlayer);
+            }
         } else {
             do {
                 shoot = generateRandomCoOrd();
             } while (computerPlayer.getAiShot().contains(shoot));
             System.out.println("Shooting randomly");
         }
+        System.out.println("Attempting to shoot at: " + shoot);
         computerPlayer.setAiShot(computerPlayer.getAiShot() + shoot);
         playerRepository.save(computerPlayer);
         shootAtShip(shoot + humanPlayer.getName().substring(0, 4) + computerPlayer.getName().substring(0, 4));
