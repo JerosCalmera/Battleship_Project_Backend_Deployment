@@ -376,8 +376,10 @@ public class Placing {
         ships = shipRepository.findAllShipsByPlayerId(player.getId());
         if (shipPlacement) {
             if (!player.getName().contains("Computer")){
-            webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + player.getRoomNumber() + "Admin: The computer is placing ships for another player, the next players placement will be attempted in 3 seconds"));
-            System.out.println("Player delay");}
+            webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + player.getRoomNumber() + "Admin: The computer is placing ships for another player."));
+            webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + player.getRoomNumber() + "Admin: The next players placement will be attempted in 3 seconds"));
+
+                System.out.println("Player delay");}
             else {System.out.println("Computer delay");};
             if (counter >= 4) {
                 shipPlacement = false;
