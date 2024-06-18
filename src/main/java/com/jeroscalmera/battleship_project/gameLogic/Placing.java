@@ -238,7 +238,6 @@ public class Placing {
                         secondCoOrdIndexNumber = firstCoOrdIndexNumber + 1;}
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
                     System.out.println("Gen complete at position top left: " + secondCoOrd);
-                    return secondCoOrd;
                 }
                 if (firstCoOrdIndexLetter == 9 && firstCoOrdIndexNumber == 9 ) {
                     if (rando == 0){
@@ -249,7 +248,6 @@ public class Placing {
                         secondCoOrdIndexNumber = firstCoOrdIndexNumber - 1;}
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
                     System.out.println("Gen complete at position bottom: " + secondCoOrd);
-                    return secondCoOrd;
                 }
                 if (firstCoOrdIndexLetter == 0 && firstCoOrdIndexNumber == 9 ) {
                     if (rando == 0){
@@ -260,7 +258,6 @@ public class Placing {
                         secondCoOrdIndexNumber = firstCoOrdIndexNumber - 1;}
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
                     System.out.println("Gen complete at position top right: " + secondCoOrd);
-                    return secondCoOrd;
                 }
                 if (firstCoOrdIndexLetter == 9 && firstCoOrdIndexNumber == 0 ) {
                     if (rando == 0){
@@ -271,7 +268,6 @@ public class Placing {
                         secondCoOrdIndexNumber = firstCoOrdIndexNumber + 1;}
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
                     System.out.println("Gen complete at position bottom left: " + secondCoOrd);
-                    return secondCoOrd;
                 }
                 if (firstCoOrdIndexLetter == 0 && firstCoOrdIndexNumber != 0 && firstCoOrdIndexNumber != 9) {
                     if (rando == 0){
@@ -282,7 +278,6 @@ public class Placing {
                         secondCoOrdIndexNumber = firstCoOrdIndexNumber - 1;}
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
                     System.out.println("Gen complete at position top edge: " + secondCoOrd);
-                    return secondCoOrd;
                 }
                 if (firstCoOrdIndexLetter == 9  && firstCoOrdIndexNumber != 0 && firstCoOrdIndexNumber != 9) {
                     if (rando == 0){
@@ -293,7 +288,6 @@ public class Placing {
                         secondCoOrdIndexNumber = firstCoOrdIndexNumber - 1;}
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
                     System.out.println("Gen complete at position bottom edge: " + secondCoOrd);
-                    return secondCoOrd;
                 }
                 if (firstCoOrdIndexNumber == 0  && firstCoOrdIndexLetter != 0 && firstCoOrdIndexLetter != 9) {
                     if (rando == 0){
@@ -304,7 +298,6 @@ public class Placing {
                         secondCoOrdIndexNumber = firstCoOrdIndexNumber;}
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
                     System.out.println("Gen complete at position left edge: " + secondCoOrd);
-                    return secondCoOrd;
                 }
                 if (firstCoOrdIndexNumber == 9 && firstCoOrdIndexLetter != 0 && firstCoOrdIndexLetter != 9) {
                     if (rando == 0){
@@ -315,7 +308,6 @@ public class Placing {
                         secondCoOrdIndexNumber = firstCoOrdIndexNumber;}
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
                     System.out.println("Gen complete at position right edge: " + secondCoOrd);
-                    return secondCoOrd;
                 }
             firstCoOrdIndexLetter = coOrdLetters.indexOf(String.valueOf(firstCoOrd.charAt(0)));
             firstCoOrdIndexNumber = coOrdNumbers.indexOf(String.valueOf(firstCoOrd.charAt(1)));
