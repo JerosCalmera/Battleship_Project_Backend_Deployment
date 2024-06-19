@@ -60,8 +60,9 @@ public class Player implements Comparable<Player>{
         this.isComputer = false;
         this.ready = false;
         this.aiHitCheck = false;
-        this.aiShot = "*";
-        this.aiConfirmedHit = "*";
+        this.aiShot = null;
+        this.aiConfirmedHit = null;
+        this.aiConfirmedHitInitial = null;
     }
 
     public Player() {

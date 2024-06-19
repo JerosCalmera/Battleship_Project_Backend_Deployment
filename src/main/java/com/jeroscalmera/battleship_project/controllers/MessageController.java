@@ -22,8 +22,7 @@ public class MessageController {
     public MessageController(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
     }
-
-    // Other ex
+    
     @Autowired
     private PlayerAndRoom playerAndRoom;
     @Autowired
