@@ -215,6 +215,10 @@ public class Shooting {
             computerPlayer = players.get(1);
         }
 
+        if (computerPlayer.getAiShot() == null) {
+            computerPlayer.setAiShot("");
+        }
+
         String shoot = generateRandomCoOrd();
 
         if (computerPlayer.getAiHitCheck()) {

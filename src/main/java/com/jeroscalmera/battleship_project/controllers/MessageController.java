@@ -22,7 +22,7 @@ public class MessageController {
     public MessageController(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
     }
-    
+
     @Autowired
     private PlayerAndRoom playerAndRoom;
     @Autowired
