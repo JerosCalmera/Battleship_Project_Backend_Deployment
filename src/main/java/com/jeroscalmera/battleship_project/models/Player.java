@@ -17,10 +17,7 @@ public class Player implements Comparable<Player>{
     private Long id;
     @Column(name = "name")
     private String name;
-
-    @Column(name = "playerNumber")
-    private String playerNumber;
-
+    
     @Column(name = "player_is_computer")
     private boolean isComputer;
 
@@ -58,9 +55,6 @@ public class Player implements Comparable<Player>{
     @Column(name = "aiHitCheck")
     private boolean aiHitCheck;
 
-    @Column(name = "aiShotAttempts")
-    private int aiShotAttempts;
-
     public Player(String name) {
         this.name = name;
         this.isComputer = false;
@@ -68,8 +62,6 @@ public class Player implements Comparable<Player>{
         this.aiHitCheck = false;
         this.aiShot = "*";
         this.aiConfirmedHit = "*";
-        this.aiConfirmedHitInitial = null;
-        this.aiShotAttempts = 0;
     }
 
     public Player() {
@@ -91,14 +83,6 @@ public class Player implements Comparable<Player>{
         isComputer = computer;
     }
 
-    public String getPlayerNumber() {
-        return playerNumber;
-    }
-
-    public void setPlayerNumber(String playerNumber) {
-        this.playerNumber = playerNumber;
-    }
-
     public Room getRoom() {
         return room;
     }
@@ -109,10 +93,6 @@ public class Player implements Comparable<Player>{
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -136,19 +116,8 @@ public class Player implements Comparable<Player>{
         return this.level;
     }
 
-    public String generatePlayerNumber() {
-            Random random = new Random();
-            int randomNumber = random.nextInt(100000);
-            String formattedRandom = String.format("%05d", randomNumber);
-            return formattedRandom;
-        }
-
     public void setLevel(int level) {
         this.level = level;
-    }
-
-    public int getShips() {
-        return ships.size();
     }
 
     public void addShip(Ship ship) {
@@ -158,25 +127,6 @@ public class Player implements Comparable<Player>{
     public void setReady() {this.ready = true;}
 
     public void setUnReady() {this.ready = false;}
-
-    public String checkReady() {
-        String output = "No info";
-        if (!this.ready) {
-            output = this.name + " is not ready!";
-        }
-        else if (this.ready){
-            output = this.name + " is ready!";
-        }
-        return output;
-    }
-
-    public boolean isReady() {
-        return ready;
-    }
-
-    public void setReady(boolean ready) {
-        this.ready = ready;
-    }
 
     public String getAiShot() {
         return aiShot;
@@ -210,24 +160,12 @@ public class Player implements Comparable<Player>{
         this.storedRoomNumber = storedRoomNumber;
     }
 
-    public boolean isAiHitCheck() {
-        return aiHitCheck;
-    }
-
     public String getAiConfirmedHitInitial() {
         return aiConfirmedHitInitial;
     }
 
     public void setAiConfirmedHitInitial(String aiConfirmedHitInitial) {
         this.aiConfirmedHitInitial = aiConfirmedHitInitial;
-    }
-
-    public int getAiShotAttempts() {
-        return aiShotAttempts;
-    }
-
-    public void setAiShotAttempts(int aiShotAttempts) {
-        this.aiShotAttempts = aiShotAttempts;
     }
 }
 

@@ -222,7 +222,6 @@ public class Shooting {
         String shoot = generateRandomCoOrd();
 
         if (computerPlayer.getAiHitCheck()) {
-            System.out.println("Confirmed hit at: " + computerPlayer.getAiConfirmedHit() + ", attempting to find ship");
             shoot = (placing.generateRandomNextCoOrds(computerPlayer.getAiConfirmedHit(), true));
             int counter = 0;
             while (computerPlayer.getAiShot().contains(shoot) && counter < 15) {
@@ -230,14 +229,12 @@ public class Shooting {
                 counter++;
             }
             if (counter == 15) {
-                System.out.println("No valid co-ords found shooting randomly");
                 do {
                     shoot = generateRandomCoOrd();
                 } while (computerPlayer.getAiShot().contains(shoot));
             }
             playerRepository.save(computerPlayer);
         } else if (computerPlayer.getAiConfirmedHitInitial() != null && !computerPlayer.getAiHitCheck()) {
-            System.out.println("Confirmed hit at: " + computerPlayer.getAiConfirmedHit() + ", attempting to find ship again");
             shoot = (placing.generateRandomNextCoOrds(computerPlayer.getAiConfirmedHit(), true));
             int counter = 0;
             while (computerPlayer.getAiShot().contains(shoot) && counter < 15) {
@@ -245,8 +242,6 @@ public class Shooting {
                 counter++;
             }
             if (counter == 15) {
-                System.out.println("Not valid further co-ords found");
-                System.out.println("Cannot find ship, moving back to first hit position");
                 computerPlayer.setAiConfirmedHit(computerPlayer.getAiConfirmedHitInitial());
                 playerRepository.save(computerPlayer);
                 shoot = (placing.generateRandomNextCoOrds(computerPlayer.getAiConfirmedHit(), true));
@@ -256,8 +251,6 @@ public class Shooting {
                     counter++;
                 }
                 if (counter == 15) {
-                    System.out.println("Not valid further co-ords found from original points, skipping");
-                    computerPlayer.setAiShotAttempts(0);
                     computerPlayer.setAiHitCheck(false);
                     computerPlayer.setAiConfirmedHit(null);
                     computerPlayer.setAiConfirmedHitInitial(null);
@@ -272,9 +265,7 @@ public class Shooting {
             do {
                 shoot = generateRandomCoOrd();
             } while (computerPlayer.getAiShot().contains(shoot));
-            System.out.println("Shooting randomly");
         }
-        System.out.println("Attempting to shoot at: " + shoot);
         computerPlayer.setAiShot(computerPlayer.getAiShot() + shoot);
         playerRepository.save(computerPlayer);
         shootAtShip(shoot + humanPlayer.getName().substring(0, 4) + computerPlayer.getName().substring(0, 4));

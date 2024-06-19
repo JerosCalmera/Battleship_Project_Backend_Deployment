@@ -23,19 +23,6 @@ public class Lobby {
     }
 
     public Lobby() {
-
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getLobbyRoom() {
-        return lobbyRoom;
-    }
-
-    public void setLobbyRoom(String lobbyroom) {
-        this.lobbyRoom = lobbyroom;
     }
 
     public boolean isSaved() {

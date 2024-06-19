@@ -25,17 +25,9 @@ public class Ship {
         this.maxSize = maxSize;
         this.coOrds = coOrds;
     }
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public void setPlayer(Player player) {
         this.player = player;
     }
-
     public Player getPlayer() {
         return player;
     }
@@ -44,20 +36,8 @@ public class Ship {
     public String getName() {
         return name;
     }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public void setMaxSize(int maxSize) {
-        this.maxSize = maxSize;
-    }
     public String getCoOrds() {
         return coOrds;
-    }
-    public int getMaxSize() {
-        return maxSize;
-    }
-    public int getDamage() {
-        return coOrds.length();
     }
     public void setShipDamage(String damage) {
         this.coOrds = damage;
@@ -71,8 +51,5 @@ public class Ship {
     public void setDamage(String newCoOrd) {
         if (this.coOrds.length() < this.maxSize)
         {setCoOrds(getCoOrds() + newCoOrd);}
-        else {
-            System.out.println(this.getName() + " cannot have any more co-ordinates added");
-        }
     }
 }

@@ -216,11 +216,9 @@ public class Placing {
 
         if (computerGame) {
             firstCoOrd = firstCoOrds;
-            System.out.println("Computer coOrds loaded: " + firstCoOrds);
         } else {
             firstCoOrd = computerAllCoOrds.get(randomCoOrd);
         }
-        System.out.println("Random CoOrd: " + firstCoOrd);
         int firstCoOrdIndexLetter = coOrdLetters.indexOf(String.valueOf(firstCoOrd.charAt(0)));
         int firstCoOrdIndexNumber = coOrdNumbers.indexOf(String.valueOf(firstCoOrd.charAt(1)));
         int secondCoOrdIndexLetter = 0;
@@ -255,7 +253,6 @@ public class Placing {
                         secondCoOrdIndexLetter = firstCoOrdIndexLetter;
                         secondCoOrdIndexNumber = firstCoOrdIndexNumber + 1;}
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
-                    System.out.println("Gen complete at position top left: " + secondCoOrd);
                     break;
                 }
                 if (firstCoOrdIndexLetter == 9 && firstCoOrdIndexNumber == 9 ) {
@@ -266,7 +263,6 @@ public class Placing {
                         secondCoOrdIndexLetter = firstCoOrdIndexLetter;
                         secondCoOrdIndexNumber = firstCoOrdIndexNumber - 1;}
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
-                    System.out.println("Gen complete at position bottom right: " + secondCoOrd);
                     break;
                 }
                 if (firstCoOrdIndexLetter == 0 && firstCoOrdIndexNumber == 9 ) {
@@ -277,7 +273,6 @@ public class Placing {
                         secondCoOrdIndexLetter = firstCoOrdIndexLetter;
                         secondCoOrdIndexNumber = firstCoOrdIndexNumber - 1;}
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
-                    System.out.println("Gen complete at position top right: " + secondCoOrd);
                     break;
                 }
                 if (firstCoOrdIndexLetter == 9 && firstCoOrdIndexNumber == 0 ) {
@@ -288,7 +283,6 @@ public class Placing {
                         secondCoOrdIndexLetter = firstCoOrdIndexLetter;
                         secondCoOrdIndexNumber = firstCoOrdIndexNumber + 1;}
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
-                    System.out.println("Gen complete at position bottom left: " + secondCoOrd);
                     break;
                 }
                 if (firstCoOrdIndexLetter == 0 && firstCoOrdIndexNumber != 0 && firstCoOrdIndexNumber != 9) {
@@ -303,7 +297,6 @@ public class Placing {
                         secondCoOrdIndexLetter = firstCoOrdIndexLetter + 1;
                         secondCoOrdIndexNumber = firstCoOrdIndexNumber;}
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
-                    System.out.println("Gen complete at position top edge: " + secondCoOrd);
                     break;
                 }
                 if (firstCoOrdIndexLetter == 9  && firstCoOrdIndexNumber != 0 && firstCoOrdIndexNumber != 9) {
@@ -318,7 +311,6 @@ public class Placing {
                         secondCoOrdIndexLetter = firstCoOrdIndexLetter - 1;
                         secondCoOrdIndexNumber = firstCoOrdIndexNumber;}
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
-                    System.out.println("Gen complete at position bottom edge: " + secondCoOrd);
                     break;
                 }
                 if (firstCoOrdIndexNumber == 0  && firstCoOrdIndexLetter != 0 && firstCoOrdIndexLetter != 9) {
@@ -333,7 +325,6 @@ public class Placing {
                         secondCoOrdIndexLetter = firstCoOrdIndexLetter;
                         secondCoOrdIndexNumber = firstCoOrdIndexNumber + 1;}
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
-                    System.out.println("Gen complete at position left edge: " + secondCoOrd);
                     break;
                 }
                 if (firstCoOrdIndexNumber == 9 && firstCoOrdIndexLetter != 0 && firstCoOrdIndexLetter != 9) {
@@ -348,7 +339,6 @@ public class Placing {
                         secondCoOrdIndexLetter = firstCoOrdIndexLetter;
                         secondCoOrdIndexNumber = firstCoOrdIndexNumber - 1;}
                     String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
-                    System.out.println("Gen complete at position right edge: " + secondCoOrd);
                     break;
                 }
             firstCoOrdIndexLetter = coOrdLetters.indexOf(String.valueOf(firstCoOrd.charAt(0)));
@@ -357,10 +347,8 @@ public class Placing {
 
         String secondCoOrd = coOrdLetters.get(secondCoOrdIndexLetter) + coOrdNumbers.get(secondCoOrdIndexNumber);
         if (computerGame) {
-            System.out.println("Final gen complete: " + secondCoOrd);
             return secondCoOrd;
         } else {
-            System.out.println("Final gen complete for ship placement: " + firstCoOrd + secondCoOrd);
             return firstCoOrd + secondCoOrd;
         }
     }
@@ -370,7 +358,6 @@ public class Placing {
 
     // Logic so that the computer can automatically place ships in a random fashion, if the placement was interrupted before, it will attempt to wait before overriding after a set number of attempts
     public void computerPlaceShips(String playerName) throws InterruptedException {
-        System.out.println("Starting computer ship placement");
         Player player = playerRepository.findByNameContaining(playerName.substring(0,5));
         List<Ship> ships = new ArrayList<>();
         ships = shipRepository.findAllShipsByPlayerId(player.getId());
@@ -378,19 +365,16 @@ public class Placing {
             if (!player.getName().contains("Computer")){
             webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + player.getRoomNumber() + "Admin: The computer is placing ships for another player"));
             webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + player.getRoomNumber() + "Admin: The next players placement will be attempted in 3 seconds"));
-                System.out.println("Player delay");}
-            else {System.out.println("Computer delay");};
+                }
             if (counter >= 4) {
                 shipPlacement = false;
                 computerPlaceShips(playerName);
-                System.out.println("overriding");
                 counter = 0;
                 return;
             }
             counter = counter + 1;
             Thread.sleep(3000);
             computerPlaceShips(playerName);
-            System.out.println("Counter state = " + counter);
             return;
         }
         shipPlacement = true;
@@ -399,7 +383,6 @@ public class Placing {
         String placedShips = "";
         while ((shipList = String.join("", playerRepository.findAllCoOrdsByPlayerName(player.getName()))).length() < 10) {
             String placementCoOrds = generateRandomNextCoOrds("N/A", false);
-            System.out.println("Placement CoOrds: " + placementCoOrds);
             String firstCoOrd = placementCoOrds.substring(0, 2);
             String secondCoOrd = placementCoOrds.substring(2, 4);
             placeShip("P" + firstCoOrd + 5 + player.getName());

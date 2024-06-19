@@ -39,25 +39,20 @@ public class PlayerAndRoom {
 
     // Restart a players room and ships, deletes any leftover lobby, deletes the room the player is the last player removed from the room, it will store players for reset if the function is already running, deletes computer players when no longer needed
     public void resetPlayer(String playerName) {
-        System.out.println("Reset in process");
         Player player = playerRepository.findByNameContaining(playerName.substring(1, 6));
         Lobby lobby = new Lobby();
         lobby = lobbyRepository.findLobbySingleRoom(player.getRoomNumber());
         if (lobby != null) {
             lobbyRepository.delete(lobby);
-            System.out.println("Lobby " + lobby.getLobbyRoom() + " deleted");
         }
         if (resetting) {
             storedPlayers.add(playerName);
-            System.out.println("Queuing reset as another player is being reset");
             return;
         }
         resetting = true;
         if (storedPlayers.contains(playerName)) {
             storedPlayers.remove(playerName);
-            System.out.println("player removed for reset queue");
         }
-        System.out.println("Player name to remove from room: " + player.getName());
         shipRepository.deleteAllCoOrdsByPlayerId(player.getId());
         Room room = roomRepository.findRoomByPlayersName(player.getName());
         if (room == null) {
@@ -66,26 +61,21 @@ public class PlayerAndRoom {
         if (!player.getName().contains("Computer")) {
             webSocketMessageSender.sendMessage("/topic/hidden", new Chat(room.getRoomNumber() + player.getName() + "Player left"));
         }
-        System.out.println("Players remaining in room " + room.getRoomNumber() + " is " + room.getPlayers().size());
         boolean playerPresent = roomRepository.existsByPlayersName(player.getName());
         if (playerPresent) {
             player.setRoom(null);
             room.removePlayerFromRoom(player);
-            System.out.println("removing player: " + player.getName());
         }
         player.setUnReady();
         player.setShips(null);
         player.setRoomNumber(null);
         playerRepository.save(player);
         roomRepository.save(room);
-        System.out.println("Player reset done");
         if (room.getPlayers() == null || room.getPlayers().isEmpty() || room.getPlayers().size() == 1) {
             roomRepository.delete(room);
-            System.out.println("Deleting room: " + room.getRoomNumber());
         }
         if (player.isComputer()) {
             playerRepository.delete(player);
-            System.out.println(player.getName() + " deleted");
         }
         resetting = false;
         if (!storedPlayers.isEmpty()) {
@@ -185,9 +175,7 @@ public class PlayerAndRoom {
     // Handles the room number submission from the frontend and decides if it is an existing room or a new one, creates a lobby for validating room information before its creation
     public void handlePassword(String roomNumber) throws InterruptedException {
         String roomNumberFound = roomNumber.substring(1, 5);
-        System.out.println("Starting room creation, room number = " + roomNumberFound);
         String playerName = roomNumber.substring(5, 9);
-        System.out.println("Player used for this room = " + playerName);
         Player player = playerRepository.findByNameContaining(playerName);
         if (roomRepository.findByRoomNumber(roomNumberFound) != null) {
             webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken() + "Admin: That room already exists, please choose another room number"));
@@ -197,7 +185,6 @@ public class PlayerAndRoom {
             Lobby roomToSave = new Lobby(roomNumberFound);
             roomToSave.setSaved(true);
             lobbyRepository.save(roomToSave);
-            System.out.println("Creating lobby for " + playerName);
             Thread.sleep(1000);
             webSocketMessageSender.sendMessage("/topic/connect", new Greeting("Server: Room saved!"));
             webSocketMessageSender.sendMessage("/topic/hidden", new Hidden(roomNumberFound + "Server: Room saved!"));
@@ -224,7 +211,6 @@ public class PlayerAndRoom {
             lobbyRepository.delete(lobbyRoomToDelete);
             Room addRoom = new Room(roomNumberFound);
             addRoom.setRoomNumber(roomNumberFound);
-            System.out.println("Room created: " + roomNumberFound);
             roomRepository.save(addRoom);
             Thread.sleep(50);
             List<Player> playersNotInRoom = new ArrayList<>();
@@ -271,7 +257,6 @@ public class PlayerAndRoom {
 
     // Logic for a computer player to prepare itself for the game
     public void computerMatchStart(String startComputerGame) throws InterruptedException {
-        System.out.println("input: " + startComputerGame);
         Random random = new Random();
         int rando = random.nextInt(10000);
         String randomNumber = String.format("%05d", rando);
@@ -281,7 +266,6 @@ public class PlayerAndRoom {
         computerPlayerCreated.setComputer(true);
         playerRepository.save(computerPlayerCreated);
         handleNewPlayer(computerPlayerCreated);
-        System.out.println("Computer string: " + startComputerGame.substring(1, 5) + computerPlayerCreated.getName());
         Thread.sleep(50);
         handlePassword( "C" + startComputerGame.substring(1, 5) + computerPlayerCreated.getName());
         Thread.sleep(50);

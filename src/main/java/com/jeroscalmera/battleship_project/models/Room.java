@@ -36,10 +36,6 @@ public class Room {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public void addPlayerToRoom(Player player) {
         this.players.add(player);
     }
@@ -58,10 +54,6 @@ public class Room {
 
     public List<Player> getPlayers() {
         return players;
-    }
-
-    public void setPlayers(List<Player> players) {
-        this.players = players;
     }
 
     public void setPlayersReady(int playersReady) {
