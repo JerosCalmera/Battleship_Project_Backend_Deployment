@@ -205,6 +205,7 @@ public class PlayerAndRoom {
         }
         Lobby roomToCheck = lobbyRepository.findLobbySingleRoom(roomNumberFound);
         if (roomToCheck.isSaved() && roomToCheck.isValidated()) {
+            Thread.sleep(50);
             webSocketMessageSender.sendMessage("/topic/connect", new Greeting("Server: Rooms synced"));
             webSocketMessageSender.sendMessage("/topic/hidden", new Hidden(roomNumberFound + "Server: Room synced!"));
             Lobby lobbyRoomToDelete = lobbyRepository.findLobbySingleRoom(player.getRoomNumber());
