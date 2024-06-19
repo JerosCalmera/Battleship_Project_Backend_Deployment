@@ -11,9 +11,6 @@ import java.util.List;
 @Repository
 public interface LobbyRepository extends JpaRepository<Lobby, Long> {
 
-    @Query("SELECT l FROM Lobby l WHERE l.lobbyRoom =: roomNumber")
-    List<Lobby> findLobbyRooms(@Param("roomNumber") String roomNumber);
-
     @Query("SELECT l FROM Lobby l WHERE l.lobbyRoom = :roomNumber")
     Lobby findLobbySingleRoom(@Param("roomNumber") String roomNumber);
 

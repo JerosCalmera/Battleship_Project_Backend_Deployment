@@ -8,7 +8,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BugreportRepository extends JpaRepository<BugReport, Long> {
 
-    @Query
-    BugReport findReportById(Long id);
-
 }

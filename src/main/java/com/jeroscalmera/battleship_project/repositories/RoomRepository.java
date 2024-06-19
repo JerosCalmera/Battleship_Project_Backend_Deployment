@@ -16,26 +16,17 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     void deleteAll();
     @Query
     Room findByRoomNumber(String roomNumber);
-    @Query
-    Room findRoomIdByPlayersName(String name);
+
     @Query
     Room findRoomIdByPlayersId(Long id);
 
     @Query
     Room findRoomByPlayersName(String name);
 
-    @Query("SELECT DISTINCT r FROM Room r LEFT JOIN FETCH r.players")
-    List<Room> findAllWithPlayers();
-
     @Query
     List<Room> findByPlayersName(String playerName);
 
     @Query("SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END FROM Room r JOIN r.players p WHERE p.name = :name")
     boolean existsByPlayersName(@Param("name") String playerName);
-
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM Player p WHERE p.name = :name")
-    void deletePlayerByName(@Param("name") String playerName);
 
 }

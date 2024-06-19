@@ -14,21 +14,10 @@ import java.util.List;
 public interface ShipRepository extends JpaRepository<Ship, Long> {
     void deleteAll();
 
-    @Query("SELECT s.id FROM Ship s WHERE s.coOrds LIKE %:target%")
-    Long findShipIdsByCoOrdsContainingPair(@Param("target") String target);
-
-    @Query("SELECT s.coOrds FROM Ship s")
-    List<String> findAllCoOrds();
-
-    @Query("SELECT s.coOrds FROM Ship s WHERE s.player.id = :playerId")
-    List<String> findAllCoOrdsByPlayerId(@Param("playerId") Long playerId);
-
-
     @Transactional
     @Modifying
     @Query("DELETE FROM Ship s WHERE s.player.id = :playerId")
     void deleteAllCoOrdsByPlayerId(@Param("playerId") Long playerId);
-
 
     List<Ship> findAllShipsByPlayerId(Long playerId);
 

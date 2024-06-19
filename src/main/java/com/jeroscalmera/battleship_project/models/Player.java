@@ -17,7 +17,7 @@ public class Player implements Comparable<Player>{
     private Long id;
     @Column(name = "name")
     private String name;
-    
+
     @Column(name = "player_is_computer")
     private boolean isComputer;
 
