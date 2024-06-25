@@ -39,23 +39,29 @@ public class PlayerAndRoom {
 
     // Restart a players room and ships, deletes any leftover lobby, deletes the room the player is the last player removed from the room, it will store players for reset if the function is already running, deletes computer players when no longer needed
     public void resetPlayer(String playerName) {
+        System.out.println("Player found to reset: " + playerName.substring(1, 6)));
         Player player = playerRepository.findByNameContaining(playerName.substring(1, 6));
         Lobby lobby = new Lobby();
         lobby = lobbyRepository.findLobbySingleRoom(player.getRoomNumber());
+        System.out.println("Player room number: " + player.getRoomNumber());
         if (lobby != null) {
             lobbyRepository.delete(lobby);
+            System.out.println("Lobby deleted");
         }
         if (resetting) {
             storedPlayers.add(playerName);
+            System.out.println("Reset in process, delaying");
             return;
         }
         resetting = true;
         if (storedPlayers.contains(playerName)) {
             storedPlayers.remove(playerName);
+            System.out.println("Removed from stored players");
         }
         shipRepository.deleteAllCoOrdsByPlayerId(player.getId());
         Room room = roomRepository.findRoomByPlayersName(player.getName());
         if (room == null) {
+            System.out.println("Room null, cancelling");
             return;
         }
         webSocketMessageSender.sendMessage("/topic/hidden", new Chat(room.getRoomNumber() + player.getName() + "Player left"));
@@ -63,6 +69,7 @@ public class PlayerAndRoom {
         if (playerPresent) {
             player.setRoom(null);
             room.removePlayerFromRoom(player);
+            System.out.println("Room set to null and player removed from room");
         }
         player.setUnReady();
         player.setShips(null);
@@ -71,14 +78,17 @@ public class PlayerAndRoom {
         roomRepository.save(room);
         if (room.getPlayers() == null || room.getPlayers().isEmpty() || room.getPlayers().size() == 1) {
             roomRepository.delete(room);
+            System.out.println("Room deleted");
         }
         if (player.isComputer()) {
             playerRepository.delete(player);
+            System.out.println("Computer player deleted");
         }
         resetting = false;
         if (!storedPlayers.isEmpty()) {
             resetPlayer(storedPlayers.get(0));
         }
+        System.out.println("Done reseting");
     }
 
     // Saves a bugreport to the database
