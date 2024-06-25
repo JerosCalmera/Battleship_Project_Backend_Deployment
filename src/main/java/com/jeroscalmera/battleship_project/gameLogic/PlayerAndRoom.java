@@ -39,7 +39,8 @@ public class PlayerAndRoom {
 
     // Restart a players room and ships, deletes any leftover lobby, deletes the room the player is the last player removed from the room, it will store players for reset if the function is already running, deletes computer players when no longer needed
     public void resetPlayer(String playerName) {
-        if (Objects.equals(playerName, "name")) {
+        System.out.println("Player reset recived for: " + playerName);
+        if (Objects.equals(playerName, "name") || playerName == null) {
             System.out.println("Blank player detected, aborting");
             return;
         }
