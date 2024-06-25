@@ -56,7 +56,6 @@ public class PlayerAndRoom {
         shipRepository.deleteAllCoOrdsByPlayerId(player.getId());
         Room room = roomRepository.findRoomByPlayersName(player.getName());
         if (room == null) {
-            System.out.println("Room was null");
             return;
         }
         if (!player.getName().contains("Computer")) {
