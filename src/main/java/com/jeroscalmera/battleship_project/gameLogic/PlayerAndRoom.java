@@ -56,8 +56,8 @@ public class PlayerAndRoom {
         shipRepository.deleteAllCoOrdsByPlayerId(player.getId());
         Room room = roomRepository.findRoomByPlayersName(player.getName());
         if (room == null) {
-            return;
             System.out.println("Room was null");
+            return;
         }
         if (!player.getName().contains("Computer")) {
             webSocketMessageSender.sendMessage("/topic/hidden", new Chat(room.getRoomNumber() + player.getName() + "Player left"));
