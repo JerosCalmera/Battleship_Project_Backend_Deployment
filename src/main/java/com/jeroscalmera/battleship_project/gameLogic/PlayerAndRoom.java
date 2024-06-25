@@ -57,6 +57,7 @@ public class PlayerAndRoom {
         Room room = roomRepository.findRoomByPlayersName(player.getName());
         if (room == null) {
             return;
+            System.out.println("Room was null");
         }
         if (!player.getName().contains("Computer")) {
             webSocketMessageSender.sendMessage("/topic/hidden", new Chat(room.getRoomNumber() + player.getName() + "Player left"));
