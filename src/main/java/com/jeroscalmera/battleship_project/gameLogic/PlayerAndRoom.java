@@ -173,7 +173,8 @@ public class PlayerAndRoom {
     // Handles the room number submission from the frontend and decides if it is an existing room or a new one, creates a lobby for validating room information before its creation
     public void handlePassword(String roomNumber) throws InterruptedException {
         String roomNumberFound = roomNumber.substring(1, 5);
-        String playerName = roomNumber.substring(5, 10);
+        String playerName = roomNumber.substring(5, 9);
+        System.out.println("Player name: " + playerName);
         Player player = playerRepository.findByNameContaining(playerName);
         if (roomRepository.findByRoomNumber(roomNumberFound) != null) {
             webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken() + "Admin: That room already exists, please choose another room number"));
