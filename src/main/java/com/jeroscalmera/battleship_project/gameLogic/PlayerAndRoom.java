@@ -39,11 +39,6 @@ public class PlayerAndRoom {
 
     // Restart a players room and ships, deletes any leftover lobby, deletes the room the player is the last player removed from the room, it will store players for reset if the function is already running, deletes computer players when no longer needed
     public void resetPlayer(String playerName) {
-        System.out.println("Player reset recived for: " + playerName);
-        if (Objects.equals(playerName, "name") || playerName == null) {
-            System.out.println("Blank player detected, aborting");
-            return;
-        }
         Player player = playerRepository.findByNameContaining(playerName.substring(1, 6));
         Lobby lobby = new Lobby();
         lobby = lobbyRepository.findLobbySingleRoom(player.getRoomNumber());
@@ -63,9 +58,7 @@ public class PlayerAndRoom {
         if (room == null) {
             return;
         }
-        if (!player.getName().contains("Computer")) {
-            webSocketMessageSender.sendMessage("/topic/hidden", new Chat(room.getRoomNumber() + player.getName() + "Player left"));
-        }
+        webSocketMessageSender.sendMessage("/topic/hidden", new Chat(room.getRoomNumber() + player.getName() + "Player left"));
         boolean playerPresent = roomRepository.existsByPlayersName(player.getName());
         if (playerPresent) {
             player.setRoom(null);
