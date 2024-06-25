@@ -186,10 +186,10 @@ public class PlayerAndRoom {
             roomToSave.setSaved(true);
             lobbyRepository.save(roomToSave);
             Thread.sleep(1000);
-            webSocketMessageSender.sendMessage("/topic/connect", new Greeting("Server: Room saved!"));
-            webSocketMessageSender.sendMessage("/topic/hidden", new Hidden(roomNumberFound + "Server: Room saved!"));
             player.setRoomNumber(roomNumberFound);
             playerRepository.save(player);
+            webSocketMessageSender.sendMessage("/topic/connect", new Greeting("Server: Room saved!"));
+            webSocketMessageSender.sendMessage("/topic/hidden", new Hidden(roomNumberFound + "Server: Room saved!"));
         } else {
             if (Objects.equals(player.getRoomNumber(), roomNumberFound)) {
                 webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken() + "Admin: " + player.getName() + " You have rejoined the lobby for your room"));
@@ -206,8 +206,6 @@ public class PlayerAndRoom {
         Lobby roomToCheck = lobbyRepository.findLobbySingleRoom(roomNumberFound);
         if (roomToCheck.isSaved() && roomToCheck.isValidated()) {
             Thread.sleep(1000);
-            webSocketMessageSender.sendMessage("/topic/connect", new Greeting("Server: Rooms synced"));
-            webSocketMessageSender.sendMessage("/topic/hidden", new Hidden(roomNumberFound + "Server: Room synced!"));
             Lobby lobbyRoomToDelete = lobbyRepository.findLobbySingleRoom(player.getRoomNumber());
             lobbyRepository.delete(lobbyRoomToDelete);
             Room addRoom = new Room(roomNumberFound);
@@ -225,6 +223,8 @@ public class PlayerAndRoom {
             }
             Player playerDetails1 = playerRepository.findByNameContaining(playersNotInRoom.get(1).getName());
             Player playerDetails2 = playerRepository.findByNameContaining(playersNotInRoom.get(0).getName());
+            webSocketMessageSender.sendMessage("/topic/connect", new Greeting("Server: Rooms synced"));
+            webSocketMessageSender.sendMessage("/topic/hidden", new Hidden(roomNumberFound + "Server: Room synced!"));
             webSocketMessageSender.sendMessage("/topic/playerData1", new Hidden(addRoom.getRoomNumber() + playerDetails1.getDetails()));
             webSocketMessageSender.sendMessage("/topic/playerData2", new Hidden(addRoom.getRoomNumber() + playerDetails2.getDetails()));
             roomRepository.save(addRoom);
