@@ -185,7 +185,7 @@ public class PlayerAndRoom {
             Lobby roomToSave = new Lobby(roomNumberFound);
             roomToSave.setSaved(true);
             lobbyRepository.save(roomToSave);
-            Thread.sleep(3000);
+            Thread.sleep(2000);
             player.setRoomNumber(roomNumberFound);
             playerRepository.save(player);
             webSocketMessageSender.sendMessage("/topic/connect", new Greeting("Server: Room saved!"));
@@ -193,7 +193,7 @@ public class PlayerAndRoom {
         } else {
             if (Objects.equals(player.getRoomNumber(), roomNumberFound)) {
                 webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken() + "Admin: " + player.getName() + " You have rejoined the lobby for your room"));
-                Thread.sleep(3000);
+                Thread.sleep(2000);
                 webSocketMessageSender.sendMessage("/topic/hidden", new Hidden(roomNumberFound + "Server: Room saved!"));
                 return;
             }
@@ -205,7 +205,7 @@ public class PlayerAndRoom {
         }
         Lobby roomToCheck = lobbyRepository.findLobbySingleRoom(roomNumberFound);
         if (roomToCheck.isSaved() && roomToCheck.isValidated()) {
-            Thread.sleep(3000);
+            Thread.sleep(2000);
             Lobby lobbyRoomToDelete = lobbyRepository.findLobbySingleRoom(player.getRoomNumber());
             lobbyRepository.delete(lobbyRoomToDelete);
             Room addRoom = new Room(roomNumberFound);
