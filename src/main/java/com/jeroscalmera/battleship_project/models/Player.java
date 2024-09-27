@@ -5,6 +5,7 @@ import org.hibernate.annotations.Cascade;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 
@@ -55,6 +56,9 @@ public class Player implements Comparable<Player>{
     @Column(name = "aiHitCheck")
     private boolean aiHitCheck;
 
+    @Column(name = "isBanned")
+    private String isBanned;
+
     public Player(String name) {
         this.name = name;
         this.isComputer = false;
@@ -63,6 +67,7 @@ public class Player implements Comparable<Player>{
         this.aiShot = null;
         this.aiConfirmedHit = null;
         this.aiConfirmedHitInitial = null;
+        this.isBanned = "no";
     }
 
     public Player() {
@@ -167,6 +172,13 @@ public class Player implements Comparable<Player>{
 
     public void setAiConfirmedHitInitial(String aiConfirmedHitInitial) {
         this.aiConfirmedHitInitial = aiConfirmedHitInitial;
+    }
+    public String isBanned() {
+        if (Objects.equals(this.isBanned, "yes")) {
+            return "yes";
+        }else{
+            return "no";
+        }
     }
 }
 
