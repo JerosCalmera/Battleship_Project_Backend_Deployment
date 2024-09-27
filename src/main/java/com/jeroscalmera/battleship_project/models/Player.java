@@ -174,11 +174,7 @@ public class Player implements Comparable<Player>{
         this.aiConfirmedHitInitial = aiConfirmedHitInitial;
     }
     public boolean playerIsBanned() {
-        if (this.isBanned) {
-            return true;
-        }else{
-            return false;
-        }
+        return this.isBanned;
     }
 }
 
