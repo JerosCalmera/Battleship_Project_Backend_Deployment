@@ -57,7 +57,7 @@ public class Player implements Comparable<Player>{
     private boolean aiHitCheck;
 
     @Column(name = "isBanned")
-    private String isBanned;
+    private boolean isBanned;
 
     public Player(String name) {
         this.name = name;
@@ -67,7 +67,7 @@ public class Player implements Comparable<Player>{
         this.aiShot = null;
         this.aiConfirmedHit = null;
         this.aiConfirmedHitInitial = null;
-        this.isBanned = "no";
+        this.isBanned = false;
     }
 
     public Player() {
@@ -173,11 +173,11 @@ public class Player implements Comparable<Player>{
     public void setAiConfirmedHitInitial(String aiConfirmedHitInitial) {
         this.aiConfirmedHitInitial = aiConfirmedHitInitial;
     }
-    public String isBanned() {
-        if (Objects.equals(this.isBanned, "yes")) {
-            return "yes";
+    public boolean isBanned() {
+        if (this.isBanned) {
+            return true;
         }else{
-            return "no";
+            return false;
         }
     }
 }
