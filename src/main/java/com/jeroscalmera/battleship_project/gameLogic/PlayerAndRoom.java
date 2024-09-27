@@ -248,7 +248,8 @@ public class PlayerAndRoom {
             }
         } else {
             if (!playerName.getName().contains("Computer")) {
-                    if (playerName.isBanned()) {
+                System.out.println("Player: " + playerName.getName() + " Banned status: " + playerName.playerIsBanned());
+                    if (playerName.playerIsBanned()) {
                         webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken() + "Admin: Sorry that player is banned!"));
                         return;
                     }

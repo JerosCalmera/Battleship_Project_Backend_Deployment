@@ -173,7 +173,7 @@ public class Player implements Comparable<Player>{
     public void setAiConfirmedHitInitial(String aiConfirmedHitInitial) {
         this.aiConfirmedHitInitial = aiConfirmedHitInitial;
     }
-    public boolean isBanned() {
+    public boolean playerIsBanned() {
         if (this.isBanned) {
             return true;
         }else{
