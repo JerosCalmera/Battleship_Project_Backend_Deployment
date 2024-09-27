@@ -247,9 +247,9 @@ public class PlayerAndRoom {
                 playerRepository.save(player);
             }
         } else {
+            Player player = playerRepository.findByNameContaining(playerName.getName());
             if (!playerName.getName().contains("Computer")) {
-                System.out.println("Player: " + playerName.getName() + " Banned status: " + playerName.playerIsBanned());
-                    if (playerName.playerIsBanned()) {
+                    if (player.playerIsBanned()) {
                         webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken() + "Admin: Sorry that player is banned!"));
                         return;
                     }
