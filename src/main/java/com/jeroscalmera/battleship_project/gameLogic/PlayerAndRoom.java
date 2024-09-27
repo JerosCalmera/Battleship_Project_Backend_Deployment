@@ -238,7 +238,7 @@ public class PlayerAndRoom {
         Thread.sleep(100);
         List<String> players = playerRepository.findName();
         if (players.contains(playerName.getName())) {
-            if (playerName.isBanned() == "yes") {
+            if (playerName.isBanned()) {
                 webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken() + "Admin: Sorry that player is banned!"));
                 return;
             }
