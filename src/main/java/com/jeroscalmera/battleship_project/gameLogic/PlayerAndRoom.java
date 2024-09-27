@@ -237,12 +237,6 @@ public class PlayerAndRoom {
     public void handleNewPlayer(Player playerName) throws InterruptedException {
         Thread.sleep(100);
         List<String> players = playerRepository.findName();
-        if (players.contains(playerName.getName())) {
-            if (playerName.isBanned()) {
-                webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken() + "Admin: Sorry that player is banned!"));
-                return;
-            }
-        }
         if (!players.contains(playerName.getName())) {
             if (players.stream().anyMatch(name -> name.startsWith(playerName.getName().substring(0, 4)))) {
                 webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken() + "Admin: Sorry, " + playerName.getName() + " is too similar to an existing username!"));
@@ -254,6 +248,10 @@ public class PlayerAndRoom {
             }
         } else {
             if (!playerName.getName().contains("Computer")) {
+                    if (playerName.isBanned()) {
+                        webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken() + "Admin: Sorry that player is banned!"));
+                        return;
+                    }
                 webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken() + "Admin: Welcome back " + playerName.getName() + "!"));
                 webSocketMessageSender.sendMessage("/topic/nameValidated", new Chat(playerName.getName()));
             }else

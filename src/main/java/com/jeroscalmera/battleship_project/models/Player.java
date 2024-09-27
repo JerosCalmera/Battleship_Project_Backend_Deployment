@@ -58,7 +58,7 @@ public class Player implements Comparable<Player>{
 
     @Column(name = "playerIsBanned")
     private boolean isBanned;
-    
+
     public Player(String name) {
         this.name = name;
         this.isComputer = false;
