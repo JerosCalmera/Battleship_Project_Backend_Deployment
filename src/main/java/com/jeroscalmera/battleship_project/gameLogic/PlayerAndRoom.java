@@ -252,10 +252,10 @@ public class PlayerAndRoom {
             if (!playerName.getName().contains("Computer")) {
                     if (player.playerIsBanned()) {
                         webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken() + "Admin: Sorry that player is banned!"));
-                    } else {
-                        webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken() + "Admin: Welcome back " + playerName.getName() + "!"));
-                        webSocketMessageSender.sendMessage("/topic/nameValidated", new Chat(playerName.getName()));
+                        return;
                     }
+                webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken() + "Admin: Welcome back " + playerName.getName() + "!"));
+                webSocketMessageSender.sendMessage("/topic/nameValidated", new Chat(playerName.getName()));
             }else
             {webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken() + "Admin: A Game against the Computer has been selected"));}
         }
