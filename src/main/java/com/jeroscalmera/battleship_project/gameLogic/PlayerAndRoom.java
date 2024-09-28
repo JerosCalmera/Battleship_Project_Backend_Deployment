@@ -240,6 +240,7 @@ public class PlayerAndRoom {
         if (!players.contains(playerName.getName())) {
             if (players.stream().anyMatch(name -> name.startsWith(playerName.getName().substring(0, 4)))) {
                 webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken() + "Admin: Sorry, " + playerName.getName() + " is too similar to an existing username!"));
+                webSocketMessageSender.sendMessage("/topic/nameValidated", new Chat("Invalid"));
             } else {
                 webSocketMessageSender.sendMessage("/topic/globalChat", new Chat(ChatToken.generateChatToken()  + "Admin: Hello to our new player " + playerName.getName() + " your profile has been saved!"));
                 webSocketMessageSender.sendMessage("/topic/nameValidated", new Chat(playerName.getName()));
