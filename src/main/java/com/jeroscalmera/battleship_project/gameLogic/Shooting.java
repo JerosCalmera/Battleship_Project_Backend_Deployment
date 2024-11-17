@@ -119,7 +119,7 @@ public class Shooting {
             } else if (Objects.equals(shipToCheck.getShipDamage(), "XXXXXXXX")) {
                 shipToCheck.setShipDamage("Destroyed");
                 shipRepository.save(shipToCheck);
-                webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + playerToCheck.getRoom().getRoomNumber() + "SUNKSHIPX" +  playerName + "has lost a Battleship!"));
+                webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + playerToCheck.getRoom().getRoomNumber() + "SUNKSHIPX" +  playerName + " has lost a Battleship!"));
                 if (!playerName.contains("Computer") && playerToCheck2.getName().contains("Computer")) {
                     playerToCheck2.setAiHitCheck(false);
                     playerToCheck2.setAiConfirmedHit(null);
@@ -130,7 +130,7 @@ public class Shooting {
             } else if (Objects.equals(shipToCheck.getShipDamage(), "XXXXXX")) {
                 shipToCheck.setShipDamage("Destroyed");
                 shipRepository.save(shipToCheck);
-                webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + playerToCheck.getRoom().getRoomNumber() + "SUNKSHIPX" +  playerName + "has lost a Cruiser!"));
+                webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + playerToCheck.getRoom().getRoomNumber() + "SUNKSHIPX" +  playerName + " has lost a Cruiser!"));
                 if (!playerName.contains("Computer") && playerToCheck2.getName().contains("Computer")) {
                     playerToCheck2.setAiHitCheck(false);
                     playerToCheck2.setAiConfirmedHit(null);
@@ -141,7 +141,7 @@ public class Shooting {
             } else if (Objects.equals(shipToCheck.getShipDamage(), "XXXX")) {
                 shipToCheck.setShipDamage("Destroyed");
                 shipRepository.save(shipToCheck);
-                webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + playerToCheck.getRoom().getRoomNumber() + "SUNKSHIPX" +  playerName + "hast lost a Destroyer!"));
+                webSocketMessageSender.sendMessage("/topic/chat", new Chat(ChatToken.generateChatToken() + playerToCheck.getRoom().getRoomNumber() + "SUNKSHIPX" +  playerName + " has lost a Destroyer!"));
                 if (!playerName.contains("Computer") && playerToCheck2.getName().contains("Computer")) {
                     playerToCheck2.setAiHitCheck(false);
                     playerToCheck2.setAiConfirmedHit(null);
