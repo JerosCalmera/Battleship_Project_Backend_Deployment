@@ -38,11 +38,6 @@ https://solar-fury-v1-c6d0bb48da3c.herokuapp.com/ (Frontend)
 
 The backend and frontend exist as separate applications that communicate via websocket.
 
-![1](https://github.com/JerosCalmera/Battleship_Project_Frontend_Deployment/assets/136751073/3df47f39-3e66-4eec-9cca-8fbc39e26c52)
-![2](https://github.com/JerosCalmera/Battleship_Project_Frontend_Deployment/assets/136751073/bd26dc96-bb0a-460f-8ce2-74c090e671a0)
-![3](https://github.com/JerosCalmera/Battleship_Project_Frontend_Deployment/assets/136751073/00eac204-b08f-43e6-ad6c-ae1932b76c88)
-![4](https://github.com/JerosCalmera/Battleship_Project_Frontend_Deployment/assets/136751073/29d00f53-a31e-445e-a58c-ed6788866f76)
-![twoplayer](https://github.com/JerosCalmera/Battleship_Project_Frontend_Deployment/assets/136751073/43ea60ff-dbba-4390-922c-8791c22a209c)
 
 
 
